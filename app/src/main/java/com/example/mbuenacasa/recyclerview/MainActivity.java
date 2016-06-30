@@ -1,5 +1,6 @@
 package com.example.mbuenacasa.recyclerview;
 
+import android.content.res.ColorStateList;
 import android.graphics.Rect;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,11 +56,9 @@ public class MainActivity extends AppCompatActivity {
                 //Rect r11 = new Rect();
                 //l.getChildAt(firstComplete).getGlobalVisibleRect(r11);
 
-                /*
-                for(int i=0;i<length;i++){
-                    l.getChildAt(i).getGlobalVisibleRect();
-                }
-                */
+                changeColorFromView(l.getChildAt(1),getResources().getColor(R.color.white));
+                changeColorFromView(l.getChildAt(2),getResources().getColor(R.color.pink));
+                changeColorFromView(l.getChildAt(3),getResources().getColor(R.color.white));
             }
         });
         recyclerView1.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
@@ -135,5 +135,12 @@ public class MainActivity extends AppCompatActivity {
         data.add(new Data("Wsarcraft", "Fsleeing their dying home to colonize another, fearsome orc warriors invade the peaceful realm of Azeroth. "));
         data.add(new Data("Aslice in Wonderland", "Aslice in Wonderland: Through the Looking Glass "));
         return data;
+    }
+
+    private void changeColorFromView(View v, int c){
+        TextView title = (TextView) v.findViewById(R.id.title);
+        title.setTextColor(c);
+        TextView description = (TextView) v.findViewById(R.id.description);
+        description.setTextColor(c);
     }
 }
