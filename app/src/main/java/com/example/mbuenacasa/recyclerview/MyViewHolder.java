@@ -9,7 +9,7 @@ import android.widget.TextView;
 /**
  * Created by mbuenacasa on 30/06/16.
  */
-public class MyViewHolder extends RecyclerView.ViewHolder{
+public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
     CardView cv;
     TextView title;
     TextView description;
@@ -19,5 +19,17 @@ public class MyViewHolder extends RecyclerView.ViewHolder{
         cv = (CardView) itemView.findViewById(R.id.cardView);
         title = (TextView) itemView.findViewById(R.id.title);
         description = (TextView) itemView.findViewById(R.id.description);
+        listenersAsignation();
+    }
+
+    private void listenersAsignation(){
+        title.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        if(view  == title){
+            description.setText("Oh, you touch my tralala");
+        }
     }
 }
