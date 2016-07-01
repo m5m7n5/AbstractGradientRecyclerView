@@ -1,8 +1,6 @@
 package com.example.mbuenacasa.recyclerview;
 
-import android.content.res.ColorStateList;
 import android.graphics.Rect;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,6 +10,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
+
+import com.example.mbuenacasa.recyclerview.Months.MonthRecycler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,23 +61,42 @@ public class MainActivity extends AppCompatActivity {
                 alfavalue = (float) (last.right-last.left)/(medium.right-medium.left);
                 l.getChildAt(length-1).setAlpha(alfavalue*alfavalue);
 
+                if (dx >= 0) {
+                    int white = getResources().getColor(R.color.white);
+                    int pink = getResources().getColor(R.color.pink);
+                    double getChangeValue = Math.abs(getDistanceFromCenter(l,mediumval-1)/(double)getWidthOfView(l));
+                    changeColorFromView(l.getChildAt(mediumval-1),generateGradientColor(pink,white,(float)getChangeValue));
+                    getChangeValue = Math.abs(getDistanceFromCenter(l,mediumval)/(double)getWidthOfView(l));
+                    changeColorFromView(l.getChildAt(mediumval),generateGradientColor(pink,white,(float)getChangeValue));
+                    getChangeValue = Math.abs(getDistanceFromCenter(l,mediumval+1)/(double)getWidthOfView(l));
+                    changeColorFromView(l.getChildAt(mediumval+1),generateGradientColor(pink,white,(float)getChangeValue));//(pink*alfavalue) para un efecto arcoiris
+                }else{
+                    int white = getResources().getColor(R.color.white);
+                    int pink = getResources().getColor(R.color.pink);
+                    double getChangeValue = Math.abs(getDistanceFromCenter(l,mediumval-1)/(double)getWidthOfView(l));
+                    changeColorFromView(l.getChildAt(mediumval-1),generateGradientColor(pink,white,(float)getChangeValue));
+                    getChangeValue = Math.abs(getDistanceFromCenter(l,mediumval)/(double)getWidthOfView(l));
+                    changeColorFromView(l.getChildAt(mediumval),generateGradientColor(pink,white,(float)getChangeValue));//(pink*alfavalue) para un efecto arcoiris
+                }
 
 
-                //Descomentar para que cambie mientras me muevo por la lista y comentar las siguientes lineas
-                changeColorFromView(l.getChildAt(mediumval-1),getResources().getColor(R.color.white));
-                //changeColorFromView(l.getChildAt(mediumval),getResources().getColor(R.color.pink));
-                changeColorFromView(l.getChildAt(mediumval+1),getResources().getColor(R.color.white));
-                //changeColorFromView(l.getChildAt(mediumval),getResources().getColor(R.color.white));
+            }
 
-
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if(newState == RecyclerView.SCROLL_STATE_IDLE){
+                    LinearLayoutManager l = (LinearLayoutManager) recyclerView.getLayoutManager();
+                    int offset = getDistanceFromCenter(l,l.getChildCount()/2);
+                    recyclerView.scrollBy(offset,0);
+                    changeColorFromView(l.getChildAt(l.getChildCount()/2),getResources().getColor(R.color.pink));
+                }
             }
         });
         recyclerView1.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
             @Override
             public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-
                 final int action = MotionEventCompat.getActionMasked(e);
-
                 if(action==MotionEvent.ACTION_UP || action==MotionEvent.ACTION_CANCEL){
                     e.getAction();
                     LinearLayoutManager lm = (LinearLayoutManager) rv.getLayoutManager();
@@ -96,9 +115,9 @@ public class MainActivity extends AppCompatActivity {
                             lm.getChildAt(previous).getGlobalVisibleRect(previousRect);
                         }
                     }
-                    lm.getChildAt(previous).getGlobalVisibleRect(previousRect);
-                    int offset = previousRect.centerX()-center[0];
+                    int offset = getDistanceFromCenter(lm,previous);
                     rv.scrollBy(offset,0);
+                    previous = lm.getChildCount()/2;
                     changeColorFromView(lm.getChildAt(previous),getResources().getColor(R.color.pink));
                     return false;
                 }
@@ -115,32 +134,77 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
-
-
-        /*
-        RecyclerView recyclerView2 = (RecyclerView) findViewById(R.id.recyclerview2);
-        MyRecycleViewAdapter adapter2 = new MyRecycleViewAdapter(data, getApplication());
-        recyclerView2.setAdapter(adapter2);
-        LinearLayoutManager llm2 = new LinearLayoutManager(this);
-        llm2.setOrientation(LinearLayoutManager.VERTICAL);
-        recyclerView2.setLayoutManager(llm2);
-        recyclerView2.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                LinearLayoutManager l = (LinearLayoutManager) recyclerView.getLayoutManager();
-                int lenght = l.getChildCount();
-                for(int i=1;i<lenght-1;i++){
-                    l.getChildAt(i).setAlpha(1);
-                }
-                l.getChildAt(0).setAlpha((float) 0.25);
-                l.getChildAt(lenght-1).setAlpha((float) 0.25);
-            }
-        });
-        */
+        RecyclerView r = (RecyclerView) findViewById(R.id.monthRecyclerVew);
+        MonthRecycler m = new MonthRecycler();
+        m.initRecyclerAsMonthRecycler(r,this,LinearLayoutManager.HORIZONTAL,getResources().getColor(R.color.green),getResources().getColor(R.color.red));
 
     }
+
+
+
+    private void changeColorFromView(View v, int c){
+        TextView title = (TextView) v.findViewById(R.id.title);
+        title.setTextColor(c);
+        TextView description = (TextView) v.findViewById(R.id.description);
+        description.setTextColor(c);
+    }
+
+    private int [] getAbsoluteCenter(LinearLayoutManager lm){
+        int width = lm.getWidth();
+        int height = lm.getHeight();
+        int [] values = {0,0};
+        Rect first = new Rect();
+        Rect last = new Rect();
+        lm.getChildAt(0).getGlobalVisibleRect(first);
+        lm.getChildAt(lm.getChildCount()-1).getGlobalVisibleRect(last);
+        values[0] = first.left+width/2;
+        values[1] = last.top+height/2;
+        return values;
+    }
+
+    private int generateGradientColor(int fromColor,int toColor, float variation){
+        if(variation>=1){
+            return toColor;
+        }
+        //Calculo las componentes de cada color para calcular la tasa de cambio total
+        int R0 = (fromColor & 0xFF0000)>>16;
+        int G0 = (fromColor & 0x00FF00)>>8;
+        int B0 = (fromColor & 0x0000FF)>>0;
+        int R1 = (toColor & 0xFF0000)>>16;
+        int G1 = (toColor & 0x00FF00)>>8;
+        int B1 = (toColor & 0x0000FF)>>0;
+
+
+        int totalChangeR = interpolate(R0,R1,variation);
+        int totalChangeG = interpolate(G0,G1,variation);
+        int totalChangeB = interpolate(B0,B1,variation);
+
+        int auxVar = (((totalChangeR << 8) | totalChangeG ) << 8 ) | totalChangeB;
+        return fromColor + auxVar;
+
+    }
+
+    private int interpolate(int first,int second,float changeRate){
+        if(first<second) {
+            return (int) ((second - first) * changeRate);
+        }else{
+            return (int) ((first-second) * (1-changeRate));
+        }
+    }
+
+    private int getDistanceFromCenter(LinearLayoutManager lm,int index){
+        Rect aux = new Rect();
+        lm.getChildAt(index).getGlobalVisibleRect(aux);
+        int [] center = getAbsoluteCenter(lm);
+        return aux.centerX()-center[0];
+    }
+
+    private int getWidthOfView(LinearLayoutManager lm){
+        Rect r = new Rect();
+        lm.getChildAt(lm.getChildCount()/2).getGlobalVisibleRect(r);
+        return r.right-r.left;
+    }
+
 
     public List<Data> fill_with_data() {
 
@@ -167,23 +231,5 @@ public class MainActivity extends AppCompatActivity {
         return data;
     }
 
-    private void changeColorFromView(View v, int c){
-        TextView title = (TextView) v.findViewById(R.id.title);
-        title.setTextColor(c);
-        TextView description = (TextView) v.findViewById(R.id.description);
-        description.setTextColor(c);
-    }
 
-    private int [] getAbsoluteCenter(LinearLayoutManager lm){
-        int width = lm.getWidth();
-        int height = lm.getHeight();
-        int [] values = {0,0};
-        Rect first = new Rect();
-        Rect last = new Rect();
-        lm.getChildAt(0).getGlobalVisibleRect(first);
-        lm.getChildAt(lm.getChildCount()-1).getGlobalVisibleRect(last);
-        values[0] = first.left+width/2;
-        values[1] = last.top+height/2;
-        return values;
-    }
 }
