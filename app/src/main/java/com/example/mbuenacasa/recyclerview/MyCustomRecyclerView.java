@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -75,6 +76,8 @@ public abstract class MyCustomRecyclerView{
                         changeColorFromView(l.getChildAt(mediumval - 1), generateGradientColor(centerColor, sideColor, (float) getChangeValue));
                         getChangeValue = Math.abs(getDistanceFromCenter(l, mediumval) / (double) getWidthOfView(l));
                         changeColorFromView(l.getChildAt(mediumval), generateGradientColor(centerColor, sideColor, (float) getChangeValue));//(pink*alfavalue) para un efecto arcoiris
+                        getChangeValue = Math.abs(getDistanceFromCenter(l, mediumval + 1) / (double) getWidthOfView(l));
+                        changeColorFromView(l.getChildAt(mediumval + 1), generateGradientColor(centerColor, sideColor, (float) getChangeValue));
                     }
                 }
 
@@ -87,7 +90,8 @@ public abstract class MyCustomRecyclerView{
                 if(newState == RecyclerView.SCROLL_STATE_IDLE){
                     LinearLayoutManager l = (LinearLayoutManager) recyclerView.getLayoutManager();
                     int offset = getDistanceFromCenter(l,l.getChildCount()/2);
-                    recyclerView.scrollBy(offset,0);
+                    recyclerView.smoothScrollBy(offset,0);
+                    //recyclerView.scrollBy(offset, 0);
                     for(int i=0;i<l.getChildCount();i++){
                         changeColorFromView(l.getChildAt(i),sideColor);
                     }
@@ -118,10 +122,11 @@ public abstract class MyCustomRecyclerView{
                         }
                     }
                     int offset = getDistanceFromCenter(lm,previous);
-                    rv.scrollBy(offset,0);
+                    //rv.scrollBy(offset,0);
+                    rv.smoothScrollBy(offset,0);
                     previous = lm.getChildCount()/2;
                     //TODO VER PORQUE CAMBIA MAL DE COLOR
-                    //changeColorFromView(lm.getChildAt(previous),centerColor);
+                    changeColorFromView(lm.getChildAt(previous),centerColor);
                     return false;
                 }
                 return false;
@@ -189,10 +194,18 @@ public abstract class MyCustomRecyclerView{
     }
 
     private int getDistanceFromCenter(LinearLayoutManager lm,int index){
-        Rect aux = new Rect();
-        lm.getChildAt(index).getGlobalVisibleRect(aux);
-        int [] center = getAbsoluteCenter(lm);
-        return aux.centerX()-center[0];
+        if(lm.getOrientation() == LinearLayoutManager.HORIZONTAL){
+            Rect aux = new Rect();
+            lm.getChildAt(index).getGlobalVisibleRect(aux);
+            int [] center = getAbsoluteCenter(lm);
+            return aux.centerX()-center[0];
+        }else{
+            Rect aux = new Rect();
+            lm.getChildAt(index).getGlobalVisibleRect(aux);
+            int [] center = getAbsoluteCenter(lm);
+            return aux.centerY()-center[1];
+        }
+
     }
 
     private int getWidthOfView(LinearLayoutManager lm){
@@ -210,6 +223,30 @@ public abstract class MyCustomRecyclerView{
         public CustomViewHolder(View itemView) {
             super(itemView);
         }
+    }
+
+    private class CustomLinearLayoutManager extends LinearLayoutManager {
+
+        public CustomLinearLayoutManager(Context context) {
+            super(context);
+        }
+
+        public CustomLinearLayoutManager(Context context, int orientation, boolean reverseLayout) {
+            super(context, orientation, reverseLayout);
+        }
+
+        public CustomLinearLayoutManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+            super(context, attrs, defStyleAttr, defStyleRes);
+        }
+
+        @Override
+        public void smoothScrollToPosition(RecyclerView recyclerView, RecyclerView.State state, int position)
+        {
+
+
+
+        }
+
     }
 
 }

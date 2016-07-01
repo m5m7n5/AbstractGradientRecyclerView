@@ -2,6 +2,7 @@ package com.example.mbuenacasa.recyclerview.Months;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +23,7 @@ public class MonthRecycler extends MyCustomRecyclerView {
 
     public void initRecyclerAsMonthRecycler(
             @NonNull RecyclerView rv,@NonNull Context context,
-            int orientation,int centerColor,int sideColor
+            int centerColor,int sideColor
     ){
         List<String> list = new ArrayList<>();
         list.add("");
@@ -30,7 +31,7 @@ public class MonthRecycler extends MyCustomRecyclerView {
             list.add(m.month);
         }
         list.add("");
-        initCustomRecyclerView(rv,new MonthViewAdapter(list,context),context,orientation,centerColor,sideColor);
+        initCustomRecyclerView(rv,new MonthViewAdapter(list,context),context, LinearLayoutManager.HORIZONTAL,centerColor,sideColor);
     }
 
     @Override
@@ -55,10 +56,9 @@ public class MonthRecycler extends MyCustomRecyclerView {
 
         public String month;
 
-        private Months(String month){
+        Months(String month){
             this.month = month;
         }
-
 
     }
 
@@ -97,15 +97,5 @@ public class MonthRecycler extends MyCustomRecyclerView {
         public int getItemCount() {
             return list.size();
         }
-
-        @Override
-        public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-            super.onAttachedToRecyclerView(recyclerView);
-        }
     }
-
-
-
-
-
 }

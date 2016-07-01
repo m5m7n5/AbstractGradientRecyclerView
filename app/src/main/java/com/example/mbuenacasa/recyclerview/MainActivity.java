@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
@@ -17,8 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +85,10 @@ public class MainActivity extends AppCompatActivity {
                 if(newState == RecyclerView.SCROLL_STATE_IDLE){
                     LinearLayoutManager l = (LinearLayoutManager) recyclerView.getLayoutManager();
                     int offset = getDistanceFromCenter(l,l.getChildCount()/2);
-                    recyclerView.scrollBy(offset,0);
+                    recyclerView.smoothScrollBy(offset,0);
+                    for(int i=0;i<l.getChildCount();i++){
+                        changeColorFromView(l.getChildAt(i),getResources().getColor(R.color.white));
+                    }
                     changeColorFromView(l.getChildAt(l.getChildCount()/2),getResources().getColor(R.color.pink));
                 }
             }
@@ -103,7 +103,6 @@ public class MainActivity extends AppCompatActivity {
                     lm.getChildCount();
                     int medium = lm.getChildCount()/2;
                     Rect auxiliarRectangle = new Rect();
-                    Log.v("asd","asd");
                     int [] center = getAbsoluteCenter(lm);
                     int previous = medium-1;
                     Rect previousRect = new Rect();
@@ -116,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                     int offset = getDistanceFromCenter(lm,previous);
-                    rv.scrollBy(offset,0);
+                    rv.smoothScrollBy(offset,0);
                     previous = lm.getChildCount()/2;
                     changeColorFromView(lm.getChildAt(previous),getResources().getColor(R.color.pink));
                     return false;
@@ -136,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
         });
         RecyclerView r = (RecyclerView) findViewById(R.id.monthRecyclerVew);
         MonthRecycler m = new MonthRecycler();
-        m.initRecyclerAsMonthRecycler(r,this,LinearLayoutManager.HORIZONTAL,getResources().getColor(R.color.green),getResources().getColor(R.color.red));
+        m.initRecyclerAsMonthRecycler(r,this,getResources().getColor(R.color.green),getResources().getColor(R.color.red));
 
     }
 
