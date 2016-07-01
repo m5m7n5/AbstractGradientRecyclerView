@@ -2,6 +2,7 @@ package com.example.mbuenacasa.recyclerview.HoursView;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -23,6 +24,14 @@ public class HoursView extends RelativeLayout{
         super(context);
         inflater = LayoutInflater.from(context);
         init();
+    }
+
+    public HoursView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    public HoursView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
     }
 
     public void init(){
