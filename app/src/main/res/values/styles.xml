@@ -8,4 +8,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="SeatFontType11">
+        <item name="android:textSize">26sp</item>
+        <item name="android:textColor">@color/msa_dark_grey</item>
+    </style>
+
 </resources>

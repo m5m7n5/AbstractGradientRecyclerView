@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.mbuenacasa.recyclerview.MyCustomRecyclerView;
+import com.example.mbuenacasa.recyclerview.AbstractDegradeRecyclerView;
 import com.example.mbuenacasa.recyclerview.R;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Created by mbuenacasa on 1/07/16.
  */
-public class MonthRecycler extends MyCustomRecyclerView {
+public class MonthRecycler extends AbstractDegradeRecyclerView {
 
     public void initRecyclerAsMonthRecycler(
             @NonNull RecyclerView rv,@NonNull Context context,

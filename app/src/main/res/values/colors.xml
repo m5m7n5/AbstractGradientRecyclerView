@@ -11,4 +11,5 @@
     <color name="red">#FF4C4C</color>
     <color name="green">#4CA64C</color>
     <color name="yellow">#DABB55</color>
+    <color name="msa_dark_grey">#333333</color>
 </resources>

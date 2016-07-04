@@ -13,7 +13,7 @@ import android.view.View;
 /**
  * Created by mbuenacasa on 1/07/16.
  */
-public abstract class MyCustomRecyclerView{
+public abstract class AbstractDegradeRecyclerView {
 
     private CustomViewHolder ViewHolder;
     private RecyclerView recyclerView;

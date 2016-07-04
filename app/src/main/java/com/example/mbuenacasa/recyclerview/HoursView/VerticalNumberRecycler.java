@@ -9,10 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.mbuenacasa.recyclerview.MyCustomRecyclerView;
+import com.example.mbuenacasa.recyclerview.AbstractDegradeRecyclerView;
 import com.example.mbuenacasa.recyclerview.R;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,7 +19,7 @@ import java.util.List;
 /**
  * Created by mbuenacasa on 1/07/16.
  */
-public class VerticalNumberRecycler extends MyCustomRecyclerView{
+public class VerticalNumberRecycler extends AbstractDegradeRecyclerView {
 
     public void initRecyclerAsVerticalNumberRecycler(@NonNull RecyclerView rv, @NonNull Context context,
                                                      int centerColor, int sideColor,List<String> numbers){
