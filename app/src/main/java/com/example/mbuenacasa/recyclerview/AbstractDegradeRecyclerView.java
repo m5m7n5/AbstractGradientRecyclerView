@@ -58,9 +58,9 @@ public abstract class AbstractDegradeRecyclerView {
                 firstMaxIndex = nearesView(l);
                 for (int i = 0; i < length - 1; i++) {
                     if(i!=firstMaxIndex) {
-                        l.getChildAt(i).setAlpha(1);
                         changeColorFromView(l.getChildAt(i), sideColor);
                     }
+                    l.getChildAt(i).setAlpha(1);
                 }
                 /*
                 Aplico la degradación de color a los 2 elementos mas cercanos al centro, para ello calculo el máximo y un segundo máximo,

@@ -46,8 +46,8 @@ public class HoursView extends RelativeLayout{
         minutes = (RecyclerView) findViewById(R.id.minutesRecycler);
 
         VerticalNumberRecycler v = new VerticalNumberRecycler();
-        v.initRecyclerAsVerticalNumberRecycler(hours,this.getContext(),getResources().getColor(R.color.green),getResources().getColor(R.color.black),v.generateHoursNumbers());
-        v.initRecyclerAsVerticalNumberRecycler(minutes,this.getContext(),getResources().getColor(R.color.green),getResources().getColor(R.color.black),v.generateMinutesNumbers());
+        v.initRecyclerAsVerticalNumberRecycler(hours,this.getContext(),getResources().getColor(R.color.colorPrimary),getResources().getColor(R.color.black),v.generateHoursNumbers());
+        v.initRecyclerAsVerticalNumberRecycler(minutes,this.getContext(),getResources().getColor(R.color.colorPrimaryDark),getResources().getColor(R.color.black),v.generateMinutesNumbers());
 
     }
 
