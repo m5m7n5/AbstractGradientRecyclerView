@@ -17,7 +17,7 @@
 
     <TextView
         style="@style/SeatFontType11"
-        android:layout_width="53dp"
+        android:layout_width="47dp"
         android:layout_height="wrap_content"
         android:text="h."
         android:layout_centerVertical="true"
@@ -33,10 +33,11 @@
     </android.support.v7.widget.RecyclerView>
     <TextView
         style="@style/SeatFontType11"
-        android:layout_width="74dp"
+        android:layout_width="75dp"
         android:layout_height="wrap_content"
         android:text="min."
         android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
         android:id="@+id/customViewMinutes"
-        android:layout_toRightOf="@+id/minutesRecycler"/>
+        />
 </RelativeLayout>

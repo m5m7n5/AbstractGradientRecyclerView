@@ -36,7 +36,7 @@ public class VerticalNumberRecycler extends AbstractDegradeRecyclerView {
 
     public List<String> generateHoursNumbers(){
         List<String> aux = new ArrayList<>();
-        for(int i=0;i<24;i++){
+        for(int i=23;i>=0;i--){
             aux.add(Integer.toString(i));
         }
         return aux;
@@ -44,7 +44,7 @@ public class VerticalNumberRecycler extends AbstractDegradeRecyclerView {
 
     public List<String> generateMinutesNumbers(){
         List<String> aux = new ArrayList<>();
-        for(int i=0;i<60;i++){
+        for(int i=59;i>=0;i--){
             aux.add(Integer.toString(i));
         }
         return aux;

@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import com.example.mbuenacasa.recyclerview.R;
 
+import java.util.List;
+
 /**
  * Created by mbuenacasa on 1/07/16.
  */
@@ -46,8 +48,20 @@ public class HoursView extends RelativeLayout{
         minutes = (RecyclerView) findViewById(R.id.minutesRecycler);
 
         VerticalNumberRecycler v = new VerticalNumberRecycler();
-        v.initRecyclerAsVerticalNumberRecycler(hours,this.getContext(),getResources().getColor(R.color.colorPrimary),getResources().getColor(R.color.black),v.generateHoursNumbers());
-        v.initRecyclerAsVerticalNumberRecycler(minutes,this.getContext(),getResources().getColor(R.color.colorPrimaryDark),getResources().getColor(R.color.black),v.generateMinutesNumbers());
+        int centerColor = getResources().getColor(R.color.msa_dark_grey);
+        int sideColor = centerColor | 0x44000000;
+
+        List<String> list1 = v.generateHoursNumbers();
+        List<String> list2 = v.generateMinutesNumbers();
+
+        list1.add(0," ");
+        list1.add(" ");
+
+        list2.add(0," ");
+        list2.add(" ");
+
+        v.initRecyclerAsVerticalNumberRecycler(hours,this.getContext(),centerColor,sideColor,list1);
+        v.initRecyclerAsVerticalNumberRecycler(minutes,this.getContext(),centerColor,sideColor,list2);
 
     }
 

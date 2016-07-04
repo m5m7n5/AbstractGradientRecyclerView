@@ -98,7 +98,7 @@ public abstract class AbstractDegradeRecyclerView {
                 l.getChildAt(firstMaxIndex).getGlobalVisibleRect(forSize);
 
                 if(l.getOrientation()==LinearLayoutManager.HORIZONTAL){
-                    float alfavalue = (float) (firstAlphaRect.right - firstAlphaRect.left) / (forSize.right - forSize.left);
+                    float alfavalue = (float) (firstAlphaRect.right - firstAlphaRect.left) /  (forSize.right - forSize.left);
                     l.getChildAt(0).setAlpha(alfavalue * alfavalue);
                     alfavalue = (float) (lastAlphaRect.right - lastAlphaRect.left) / (forSize.right - forSize.left);
                     l.getChildAt(length - 1).setAlpha(alfavalue * alfavalue);
