@@ -36,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.HORIZONTAL);
         recyclerView1.setLayoutManager(llm);
-        //recyclerView1.getLayoutManager().scrollToPosition(5);
         recyclerView1.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -135,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
         });
         RecyclerView r = (RecyclerView) findViewById(R.id.monthRecyclerVew);
         MonthRecycler m = new MonthRecycler();
-        m.initRecyclerAsMonthRecycler(r,this,getResources().getColor(R.color.green),getResources().getColor(R.color.red));
+        m.initRecyclerAsMonthRecycler(r,this,getResources().getColor(R.color.yellow),getResources().getColor(R.color.white));
 
     }
 

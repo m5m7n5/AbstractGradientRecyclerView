@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.example.mbuenacasa.recyclerview.MyCustomRecyclerView;
 import com.example.mbuenacasa.recyclerview.R;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -30,7 +32,8 @@ public class VerticalNumberRecycler extends MyCustomRecyclerView{
 
     @Override
     protected void changeColorFromView(View v, int c) {
-
+        TextView tv = (TextView) v.findViewById(R.id.hoursTextView);
+        tv.setTextColor(c);
     }
 
     public List<String> generateHoursNumbers(){

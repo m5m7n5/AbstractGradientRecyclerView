@@ -8,7 +8,7 @@
         android:id="@+id/monthname"
         android:layout_width="120px"
         android:layout_height="50px"
-        android:textColor="@color/red"
+        android:textColor="@color/white"
         android:text="Title"
         android:gravity="center"
         android:textSize="12sp" />

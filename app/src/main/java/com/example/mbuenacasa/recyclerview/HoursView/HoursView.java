@@ -28,10 +28,14 @@ public class HoursView extends RelativeLayout{
 
     public HoursView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        inflater = LayoutInflater.from(context);
+        init();
     }
 
     public HoursView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        inflater = LayoutInflater.from(context);
+        init();
     }
 
     public void init(){

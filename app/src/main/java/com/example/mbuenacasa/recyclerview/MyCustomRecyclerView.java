@@ -45,42 +45,69 @@ public abstract class MyCustomRecyclerView{
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                /*
+                Para el correcto funcionamiento de este método supongo que en la vista siempre se ve un elemento completo,
+                es decir, que por lo menos hay un elemento entero en el layout.
+                 */
+                //TODO Repasar el algoritmo para que coja maximos y minimos correctamente y hacer que se calcule en vertical tambien
                 super.onScrolled(recyclerView, dx, dy);
+
                 LinearLayoutManager l = (LinearLayoutManager) recyclerView.getLayoutManager();
                 int length = l.getChildCount();
-                for (int i = 1; i < length - 1; i++) {
-                    l.getChildAt(i).setAlpha(1);
-                }
-                int mediumval = length / 2;
-                Rect first = new Rect();
-                Rect last = new Rect();
-                Rect medium = new Rect();
-                l.getChildAt(0).getGlobalVisibleRect(first);
-                l.getChildAt(length - 1).getGlobalVisibleRect(last);
-                l.getChildAt(mediumval).getGlobalVisibleRect(medium);
-                float alfavalue = (float) (first.right - first.left) / (medium.right - medium.left);
-                l.getChildAt(0).setAlpha(alfavalue * alfavalue);
-                alfavalue = (float) (last.right - last.left) / (medium.right - medium.left);
-                l.getChildAt(length - 1).setAlpha(alfavalue * alfavalue);
-
-                if (mediumval+1<l.getChildCount()){
-                    if (dx >= 0) {
-                        double getChangeValue = Math.abs(getDistanceFromCenter(l, mediumval - 1) / (double) getWidthOfView(l));
-                        changeColorFromView(l.getChildAt(mediumval - 1), generateGradientColor(centerColor, sideColor, (float) getChangeValue));
-                        getChangeValue = Math.abs(getDistanceFromCenter(l, mediumval) / (double) getWidthOfView(l));
-                        changeColorFromView(l.getChildAt(mediumval), generateGradientColor(centerColor, sideColor, (float) getChangeValue));
-                        getChangeValue = Math.abs(getDistanceFromCenter(l, mediumval + 1) / (double) getWidthOfView(l));
-                        changeColorFromView(l.getChildAt(mediumval + 1), generateGradientColor(centerColor, sideColor, (float) getChangeValue));//(pink*alfavalue) para un efecto arcoiris
-                    } else {
-                        double getChangeValue = Math.abs(getDistanceFromCenter(l, mediumval - 1) / (double) getWidthOfView(l));
-                        changeColorFromView(l.getChildAt(mediumval - 1), generateGradientColor(centerColor, sideColor, (float) getChangeValue));
-                        getChangeValue = Math.abs(getDistanceFromCenter(l, mediumval) / (double) getWidthOfView(l));
-                        changeColorFromView(l.getChildAt(mediumval), generateGradientColor(centerColor, sideColor, (float) getChangeValue));//(pink*alfavalue) para un efecto arcoiris
-                        getChangeValue = Math.abs(getDistanceFromCenter(l, mediumval + 1) / (double) getWidthOfView(l));
-                        changeColorFromView(l.getChildAt(mediumval + 1), generateGradientColor(centerColor, sideColor, (float) getChangeValue));
+                int firstMaxIndex = 0;
+                firstMaxIndex = nearesView(l);
+                for (int i = 0; i < length - 1; i++) {
+                    if(i!=firstMaxIndex) {
+                        l.getChildAt(i).setAlpha(1);
+                        changeColorFromView(l.getChildAt(i), sideColor);
                     }
                 }
+                /*
+                Aplico la degradación de color a los 2 elementos mas cercanos al centro, para ello calculo el máximo y un segundo máximo,
+                como en pantalla no habrán muchos objetos, éste cálculo no sera muy costoso.
+                 */
 
+                int secondMaxIndex = 0;
+                Rect auxRectangle = new Rect();
+                Rect secondMaxRectangle = new Rect();
+                l.getChildAt(secondMaxIndex).getGlobalVisibleRect(secondMaxRectangle);
+
+                for(int i=0;i<length;i++){
+                    l.getChildAt(i).getGlobalVisibleRect(auxRectangle);
+                    if(Math.abs(getDistanceFromCenter(l,i))<=Math.abs(getDistanceFromCenter(l,secondMaxIndex)) && i!=firstMaxIndex){
+                        secondMaxIndex = i;
+                        l.getChildAt(secondMaxIndex).getGlobalVisibleRect(secondMaxRectangle);
+                    }
+                }
+                //TODO FIXIT FALLA MUY BESTIA
+                double getChangeValue = Math.abs(getDistanceFromCenter(l, firstMaxIndex) / (double) getWidthOfView(l));
+                changeColorFromView(l.getChildAt(firstMaxIndex), generateGradientColor(centerColor, sideColor, (float) (getChangeValue)));
+                getChangeValue = Math.abs(getDistanceFromCenter(l, secondMaxIndex) / (double) getWidthOfView(l));
+                changeColorFromView(l.getChildAt(secondMaxIndex), generateGradientColor(centerColor, sideColor, (float) (getChangeValue)));
+                /*
+                Aplico el degradado al primero y al último elemento visible
+                Utilizando el elemento mas cercano al centro calculo el valor alfa de cambio y lo aplico a los extremos
+                 */
+                int firstAlphaIndex = 0;
+                int lastAlphaIndex  = length-1;
+                Rect firstAlphaRect = new Rect();
+                Rect lastAlphaRect = new Rect();
+                Rect forSize = new Rect();
+                l.getChildAt(firstAlphaIndex).getGlobalVisibleRect(firstAlphaRect);
+                l.getChildAt(lastAlphaIndex).getGlobalVisibleRect(lastAlphaRect);
+                l.getChildAt(firstMaxIndex).getGlobalVisibleRect(forSize);
+
+                if(l.getOrientation()==LinearLayoutManager.HORIZONTAL){
+                    float alfavalue = (float) (firstAlphaRect.right - firstAlphaRect.left) / (forSize.right - forSize.left);
+                    l.getChildAt(0).setAlpha(alfavalue * alfavalue);
+                    alfavalue = (float) (lastAlphaRect.right - lastAlphaRect.left) / (forSize.right - forSize.left);
+                    l.getChildAt(length - 1).setAlpha(alfavalue * alfavalue);
+                }else{
+                    float alfavalue = (float) (firstAlphaRect.top - firstAlphaRect.bottom) / (forSize.top - forSize.bottom);
+                    l.getChildAt(0).setAlpha(alfavalue * alfavalue);
+                    alfavalue = (float) (lastAlphaRect.top - lastAlphaRect.bottom) / (forSize.top - forSize.bottom);
+                    l.getChildAt(length - 1).setAlpha(alfavalue * alfavalue);
+                }
 
             }
 
@@ -89,14 +116,20 @@ public abstract class MyCustomRecyclerView{
                 super.onScrollStateChanged(recyclerView, newState);
                 if(newState == RecyclerView.SCROLL_STATE_IDLE){
                     LinearLayoutManager l = (LinearLayoutManager) recyclerView.getLayoutManager();
-                    int offset = getDistanceFromCenter(l,l.getChildCount()/2);
-                    recyclerView.smoothScrollBy(offset,0);
-                    //recyclerView.scrollBy(offset, 0);
+                    int nearest = nearesView(l);
+                    int offset = getDistanceFromCenter(l,nearest);
+                    if(l.getOrientation() == LinearLayoutManager.HORIZONTAL){
+                        recyclerView.smoothScrollBy(offset,0);
+                    }else{
+                        recyclerView.smoothScrollBy(0,offset);
+                    }
                     for(int i=0;i<l.getChildCount();i++){
-                        changeColorFromView(l.getChildAt(i),sideColor);
+                        if(i!=nearest) {
+                            changeColorFromView(l.getChildAt(i), sideColor);
+                        }
                     }
                     //TODO VER PORQUE CAMBIA MAL DE COLOR
-                    changeColorFromView(l.getChildAt(l.getChildCount()/2),centerColor);
+                    changeColorFromView(l.getChildAt(nearest),centerColor);
                 }
             }
         });
@@ -107,24 +140,13 @@ public abstract class MyCustomRecyclerView{
                 if(action==MotionEvent.ACTION_UP || action==MotionEvent.ACTION_CANCEL){
                     e.getAction();
                     LinearLayoutManager lm = (LinearLayoutManager) rv.getLayoutManager();
-                    lm.getChildCount();
-                    int medium = lm.getChildCount()/2;
-                    Rect auxiliarRectangle = new Rect();
-                    int [] center = getAbsoluteCenter(lm);
-                    int previous = medium-1;
-                    Rect previousRect = new Rect();
-                    lm.getChildAt(previous).getGlobalVisibleRect(previousRect);
-                    for(int i=(medium);i<medium+2;i++){
-                        lm.getChildAt(i).getGlobalVisibleRect(auxiliarRectangle);
-                        if(Math.abs(auxiliarRectangle.centerX()-center[0])<=Math.abs(previousRect.centerX()-center[0])){
-                            previous = i;
-                            lm.getChildAt(previous).getGlobalVisibleRect(previousRect);
-                        }
-                    }
+                    int previous = nearesView(lm);
                     int offset = getDistanceFromCenter(lm,previous);
-                    //rv.scrollBy(offset,0);
-                    rv.smoothScrollBy(offset,0);
-                    previous = lm.getChildCount()/2;
+                    if(lm.getOrientation() == LinearLayoutManager.HORIZONTAL){
+                        rv.smoothScrollBy(offset,0);
+                    }else{
+                        rv.smoothScrollBy(0,offset);
+                    }
                     //TODO VER PORQUE CAMBIA MAL DE COLOR
                     changeColorFromView(lm.getChildAt(previous),centerColor);
                     return false;
@@ -155,12 +177,27 @@ public abstract class MyCustomRecyclerView{
         int height = lm.getHeight();
         int [] values = {0,0};
         Rect first = new Rect();
-        Rect last = new Rect();
         lm.getChildAt(0).getGlobalVisibleRect(first);
-        lm.getChildAt(lm.getChildCount()-1).getGlobalVisibleRect(last);
         values[0] = first.left+width/2;
-        values[1] = last.top+height/2;
+        values[1] = first.top+height/2;
         return values;
+    }
+
+    private int nearesView(LinearLayoutManager l){
+
+        int firstMaxIndex = 0;
+        Rect auxRectangle = new Rect();
+        Rect firstMaxRectangle = new Rect();
+        l.getChildAt(firstMaxIndex).getGlobalVisibleRect(firstMaxRectangle);
+
+        for(int i=0;i<l.getChildCount();i++){
+            l.getChildAt(i).getGlobalVisibleRect(auxRectangle);
+            if(Math.abs(getDistanceFromCenter(l,i))<=Math.abs(getDistanceFromCenter(l,firstMaxIndex))){
+                firstMaxIndex = i;
+                l.getChildAt(firstMaxIndex).getGlobalVisibleRect(firstMaxRectangle);
+            }
+        }
+        return firstMaxIndex;
     }
 
     private int generateGradientColor(int fromColor,int toColor, float variation){
@@ -181,15 +218,15 @@ public abstract class MyCustomRecyclerView{
         int totalChangeB = interpolate(B0,B1,variation);
 
         int auxVar = (((totalChangeR << 8) | totalChangeG ) << 8 ) | totalChangeB;
-        return fromColor + auxVar;
+        return auxVar | 0xFF000000;
 
     }
 
     private int interpolate(int first,int second,float changeRate){
         if(first<second) {
-            return (int) ((second - first) * changeRate);
+            return (int) ((second - first) * changeRate) + first;
         }else{
-            return (int) ((first-second) * (1-changeRate));
+            return (int) ((first-second) * (1-changeRate)) + second;
         }
     }
 
@@ -209,9 +246,15 @@ public abstract class MyCustomRecyclerView{
     }
 
     private int getWidthOfView(LinearLayoutManager lm){
-        Rect r = new Rect();
-        lm.getChildAt(lm.getChildCount()/2).getGlobalVisibleRect(r);
-        return r.right-r.left;
+        if(lm.getOrientation() == LinearLayoutManager.HORIZONTAL) {
+            Rect r = new Rect();
+            lm.getChildAt(lm.getChildCount() / 2).getGlobalVisibleRect(r);
+            return r.right - r.left;
+        }else{
+            Rect r = new Rect();
+            lm.getChildAt(lm.getChildCount() / 2).getGlobalVisibleRect(r);
+            return r.bottom - r.top;
+        }
     }
 
     public static abstract class MyCustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomViewHolder>{

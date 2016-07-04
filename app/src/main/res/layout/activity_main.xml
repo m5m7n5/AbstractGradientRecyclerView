@@ -27,7 +27,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="150px"
-        android:background="@drawable/multiple_gradient_effect">
+        android:background="@drawable/multiple_gradient_effect_horizontal">
         <android.support.v7.widget.RecyclerView
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/recyclerview"
@@ -37,19 +37,22 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="100px"
-        android:background="@drawable/multiple_gradient_effect">
+        android:background="@drawable/multiple_gradient_effect_horizontal">
         <android.support.v7.widget.RecyclerView
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/monthRecyclerVew"
             android:layout_width="wrap_content"
             android:layout_height="150px"/>
         </LinearLayout>
-        <!--
-        <com.example.mbuenacasa.recyclerview.HoursView.HoursView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
+            <com.example.mbuenacasa.recyclerview.HoursView.HoursView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
-        </com.example.mbuenacasa.recyclerview.HoursView.HoursView>
-        -->
+            </com.example.mbuenacasa.recyclerview.HoursView.HoursView>
+        </LinearLayout>
+
     </LinearLayout>
 </RelativeLayout>
