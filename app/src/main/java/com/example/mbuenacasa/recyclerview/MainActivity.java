@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         textForDebug = (TextView) findViewById(R.id.textForDebug);
         counting = false;
         decrementing = true;
-        countDown = new CountDownTimer(60000, 500) {
+        countDown = new CountDownTimer(10000,1000) {
 
             public void onTick(long millisUntilFinished) {
                 if(decrementing) {
@@ -60,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
 
             public void onFinish() {
                 textForDebug.setText("Done!");
+                counting = false;
+                ((Button)(findViewById(R.id.buttonCountdown))).setText("Start counting");
             }
 
         };
@@ -81,7 +83,12 @@ public class MainActivity extends AppCompatActivity {
         (findViewById(R.id.buttonReverse)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                decrementing=(!decrementing);
+                if(decrementing){
+                    ((Button)view).setText("Incrementing");
+                }else{
+                    ((Button)view).setText("Decrementing");
+                }
+                decrementing=!decrementing;
             }
         });
 
