@@ -10,7 +10,7 @@ import android.view.View;
 /**
  * Created by mbuenacasa on 1/07/16.
  */
-public abstract class AbstractDegradeRecyclerView {
+public abstract class AbstractGradientRecyclerView {
 
     private RecyclerView recyclerView;
     private int centerColor;

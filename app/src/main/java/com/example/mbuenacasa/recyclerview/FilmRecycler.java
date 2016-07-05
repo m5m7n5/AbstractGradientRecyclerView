@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by mbuenacasa on 5/07/16.
  */
-public class FilmRecycler extends AbstractDegradeRecyclerView {
+public class FilmRecycler extends AbstractGradientRecyclerView {
 
     public void initRecyclerAsFilmRecycler(
             @NonNull RecyclerView rv, @NonNull Context context,
