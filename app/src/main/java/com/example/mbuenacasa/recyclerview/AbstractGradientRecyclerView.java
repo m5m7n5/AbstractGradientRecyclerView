@@ -136,7 +136,7 @@ public abstract class AbstractGradientRecyclerView {
     protected abstract void changeColorFromView(View v, int c);
 
 
-    private int [] getAbsoluteCenter(LinearLayoutManager lm){
+    private static int [] getAbsoluteCenter(LinearLayoutManager lm){
         int width = lm.getWidth();
         int height = lm.getHeight();
         int [] values = {0,0};
@@ -147,7 +147,7 @@ public abstract class AbstractGradientRecyclerView {
         return values;
     }
 
-    private int nearesView(LinearLayoutManager l){
+    private static int nearesView(LinearLayoutManager l){
 
         int firstMaxIndex = 0;
         Rect auxRectangle = new Rect();
@@ -197,7 +197,7 @@ public abstract class AbstractGradientRecyclerView {
         }
     }
 
-    private int getDistanceFromCenter(LinearLayoutManager lm,int index){
+    private static int getDistanceFromCenter(LinearLayoutManager lm,int index){
         if(lm.getOrientation() == LinearLayoutManager.HORIZONTAL){
             Rect aux = new Rect();
             lm.getChildAt(index).getGlobalVisibleRect(aux);
@@ -229,6 +229,14 @@ public abstract class AbstractGradientRecyclerView {
         public CustomViewHolder(View itemView) {
             super(itemView);
         }
+    }
+
+    public static int getOffsetForOneMovement(RecyclerView rv){
+        LinearLayoutManager l = (LinearLayoutManager) rv.getLayoutManager();
+        int nearest = nearesView(l);
+        Rect auxiliar = new Rect();
+        l.getChildAt(nearest).getGlobalVisibleRect(auxiliar);
+        return auxiliar.right-auxiliar.left;
     }
 
 }

@@ -1,14 +1,26 @@
 package com.example.mbuenacasa.recyclerview;
 
+import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
+import com.example.mbuenacasa.recyclerview.HoursView.HoursView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    HoursView hoursView;
+    TextView textForDebug;
+    CountDownTimer countDown;
+    boolean counting;
+    boolean decrementing;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +40,50 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView rm = (RecyclerView) findViewById(R.id.monthRecyclerVew);
         MonthRecycler m = new MonthRecycler();
         m.initRecyclerAsMonthRecycler(rm,this,getResources().getColor(R.color.yellow),getResources().getColor(R.color.white));
+
+        hoursView = (HoursView) findViewById(R.id.hoursView);
+        hoursView.setSelectedHour(5);
+        hoursView.setSelectedMinute(7);
+
+        textForDebug = (TextView) findViewById(R.id.textForDebug);
+        counting = false;
+        decrementing = true;
+        countDown = new CountDownTimer(60000, 500) {
+
+            public void onTick(long millisUntilFinished) {
+                if(decrementing) {
+                    hoursView.softMinutesDecrement();
+                }else{
+                    hoursView.softMinutesIncrement();
+                }
+            }
+
+            public void onFinish() {
+                textForDebug.setText("Done!");
+            }
+
+        };
+
+        (findViewById(R.id.buttonCountdown)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!counting) {
+                    countDown.start();
+                    counting = true;
+                    ((Button)view).setText("Cancel counting");
+                }else{
+                    counting = false;
+                    countDown.cancel();
+                    ((Button)view).setText("Start counting");
+                }
+            }
+        });
+        (findViewById(R.id.buttonReverse)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                decrementing=(!decrementing);
+            }
+        });
 
     }
 

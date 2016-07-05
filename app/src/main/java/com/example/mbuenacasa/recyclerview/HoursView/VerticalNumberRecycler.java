@@ -59,19 +59,19 @@ public class VerticalNumberRecycler extends AbstractGradientRecyclerView {
         }
     }
 
-    public class VerticalNumberAdapter extends RecyclerView.Adapter<NumberHolder>{
+    public class VerticalNumberAdapter extends RecyclerView.Adapter<NumberHolder> {
 
         List<String> list = Collections.emptyList();
         Context context;
 
-        public VerticalNumberAdapter(List<String> list,Context context){
+        public VerticalNumberAdapter(List<String> list, Context context) {
             this.list = list;
             this.context = context;
         }
 
         @Override
-        public NumberHolder onCreateViewHolder(ViewGroup parent,int viewType){
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.hours_format,parent,false);
+        public NumberHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.hours_format, parent, false);
             NumberHolder holder = new NumberHolder(v);
             return holder;
         }
@@ -86,7 +86,5 @@ public class VerticalNumberRecycler extends AbstractGradientRecyclerView {
             return list.size();
         }
     }
-
-
 
 }

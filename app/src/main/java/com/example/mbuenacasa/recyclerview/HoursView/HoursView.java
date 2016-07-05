@@ -1,12 +1,14 @@
 package com.example.mbuenacasa.recyclerview.HoursView;
 
 import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.mbuenacasa.recyclerview.AbstractGradientRecyclerView;
 import com.example.mbuenacasa.recyclerview.R;
 
 import java.util.List;
@@ -16,7 +18,7 @@ import java.util.List;
  */
 public class HoursView extends RelativeLayout{
 
-    private RecyclerView hours;
+    public RecyclerView hours;
     private RecyclerView minutes;
     private LayoutInflater inflater;
 
@@ -61,4 +63,55 @@ public class HoursView extends RelativeLayout{
 
     }
 
+    public void setSelectedHour(int value){
+        hours.getLayoutManager().scrollToPosition(23-value);
+        hours.smoothScrollBy(1,1);
+    }
+
+    public void setSelectedMinute(int value){
+        minutes.getLayoutManager().scrollToPosition(59-value);
+        minutes.smoothScrollBy(1,1);
+    }
+
+    public int getSelectedHour(){
+        LinearLayoutManager lm = (LinearLayoutManager) hours.getLayoutManager();
+        int i = lm.findFirstCompletelyVisibleItemPosition();
+        return 24 - i;
+    }
+
+    public int getSelectedMinute(){
+        LinearLayoutManager lm = (LinearLayoutManager) minutes.getLayoutManager();
+        int i = lm.findFirstCompletelyVisibleItemPosition();
+        return 60 - i;
+    }
+
+    public void softHoursIncrement(){
+        if(getSelectedHour()!=24){
+            hours.smoothScrollBy(0,-AbstractGradientRecyclerView.getOffsetForOneMovement(hours));
+        }
+    }
+
+    public void softMinutesIncrement(){
+        if(getSelectedMinute() == 59 && getSelectedHour()<24){
+            setSelectedMinute(0);
+            softHoursIncrement();
+        }else if(getSelectedMinute()<60){
+            minutes.smoothScrollBy(0,-AbstractGradientRecyclerView.getOffsetForOneMovement(minutes));
+        }
+    }
+
+    public void softHoursDecrement(){
+        if(getSelectedHour()!=0){
+            hours.smoothScrollBy(0,AbstractGradientRecyclerView.getOffsetForOneMovement(hours));
+        }
+    }
+
+    public void softMinutesDecrement(){
+        if(getSelectedMinute() == 0 && getSelectedHour()>0){
+            setSelectedMinute(59);
+            softHoursDecrement();
+        }else if(getSelectedMinute()>0){
+            minutes.smoothScrollBy(0,AbstractGradientRecyclerView.getOffsetForOneMovement(minutes));
+        }
+    }
 }
