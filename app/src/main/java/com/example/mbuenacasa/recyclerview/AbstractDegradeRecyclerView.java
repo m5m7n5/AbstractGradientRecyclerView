@@ -205,20 +205,23 @@ public abstract class AbstractDegradeRecyclerView {
             return toColor;
         }
         //Calculo las componentes de cada color para calcular la tasa de cambio total
-        int R0 = (fromColor & 0xFF0000)>>16;
-        int G0 = (fromColor & 0x00FF00)>>8;
-        int B0 = (fromColor & 0x0000FF)>>0;
-        int R1 = (toColor & 0xFF0000)>>16;
-        int G1 = (toColor & 0x00FF00)>>8;
-        int B1 = (toColor & 0x0000FF)>>0;
+        int A0 = (fromColor & 0xFF000000)>>24;
+        int R0 = (fromColor & 0x00FF0000)>>16;
+        int G0 = (fromColor & 0x0000FF00)>>8;
+        int B0 = (fromColor & 0x000000FF)>>0;
+        int A1 = (toColor & 0xFF000000)>>24;
+        int R1 = (toColor & 0x00FF0000)>>16;
+        int G1 = (toColor & 0x0000FF00)>>8;
+        int B1 = (toColor & 0x000000FF)>>0;
 
 
+        int totalChangeA = interpolate(A0,A1,variation);
         int totalChangeR = interpolate(R0,R1,variation);
         int totalChangeG = interpolate(G0,G1,variation);
         int totalChangeB = interpolate(B0,B1,variation);
 
         int auxVar = (((totalChangeR << 8) | totalChangeG ) << 8 ) | totalChangeB;
-        return auxVar | 0xFF000000;
+        return auxVar | (totalChangeA<<24);
 
     }
 
