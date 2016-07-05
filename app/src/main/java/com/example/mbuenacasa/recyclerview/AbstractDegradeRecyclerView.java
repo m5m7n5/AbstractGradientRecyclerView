@@ -3,11 +3,8 @@ package com.example.mbuenacasa.recyclerview;
 import android.content.Context;
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
-import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.View;
 
 /**
@@ -15,11 +12,9 @@ import android.view.View;
  */
 public abstract class AbstractDegradeRecyclerView {
 
-    private CustomViewHolder ViewHolder;
     private RecyclerView recyclerView;
     private int centerColor;
     private int sideColor;
-    private RecyclerView.Adapter adapter;
 
 
     protected void initCustomRecyclerView(@NonNull RecyclerView rv,
@@ -32,7 +27,6 @@ public abstract class AbstractDegradeRecyclerView {
         recyclerView = rv;
         this.centerColor = centerColor;
         this.sideColor = sideColor;
-        this.adapter = adapter;
         recyclerView.setAdapter(adapter);
         LinearLayoutManager llm = new LinearLayoutManager(context);
         llm.setOrientation(orientation);
@@ -40,6 +34,11 @@ public abstract class AbstractDegradeRecyclerView {
         settingCustomListeners();
 
     }
+
+    protected void changeLayoutManager(RecyclerView.LayoutManager lm){
+        recyclerView.setLayoutManager(lm);
+    }
+
 
     private void settingCustomListeners(){
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -49,7 +48,6 @@ public abstract class AbstractDegradeRecyclerView {
                 Para el correcto funcionamiento de este método supongo que en la vista siempre se ve un elemento completo,
                 es decir, que por lo menos hay un elemento entero en el layout.
                  */
-                //TODO Repasar el algoritmo para que coja maximos y minimos correctamente y hacer que se calcule en vertical tambien
                 super.onScrolled(recyclerView, dx, dy);
 
                 LinearLayoutManager l = (LinearLayoutManager) recyclerView.getLayoutManager();
@@ -79,7 +77,6 @@ public abstract class AbstractDegradeRecyclerView {
                         l.getChildAt(secondMaxIndex).getGlobalVisibleRect(secondMaxRectangle);
                     }
                 }
-                //TODO FIXIT FALLA MUY BESTIA
                 double getChangeValue = Math.abs(getDistanceFromCenter(l, firstMaxIndex) / (double) getWidthOfView(l));
                 changeColorFromView(l.getChildAt(firstMaxIndex), generateGradientColor(centerColor, sideColor, (float) (getChangeValue)));
                 getChangeValue = Math.abs(getDistanceFromCenter(l, secondMaxIndex) / (double) getWidthOfView(l));
@@ -128,47 +125,14 @@ public abstract class AbstractDegradeRecyclerView {
                             changeColorFromView(l.getChildAt(i), sideColor);
                         }
                     }
-                    //TODO VER PORQUE CAMBIA MAL DE COLOR
                     changeColorFromView(l.getChildAt(nearest),centerColor);
                 }
-            }
-        });
-        recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
-            @Override
-            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-                final int action = MotionEventCompat.getActionMasked(e);
-                if(action==MotionEvent.ACTION_UP || action==MotionEvent.ACTION_CANCEL){
-                    e.getAction();
-                    LinearLayoutManager lm = (LinearLayoutManager) rv.getLayoutManager();
-                    int previous = nearesView(lm);
-                    int offset = getDistanceFromCenter(lm,previous);
-                    if(lm.getOrientation() == LinearLayoutManager.HORIZONTAL){
-                        rv.smoothScrollBy(offset,0);
-                    }else{
-                        rv.smoothScrollBy(0,offset);
-                    }
-                    //TODO VER PORQUE CAMBIA MAL DE COLOR
-                    changeColorFromView(lm.getChildAt(previous),centerColor);
-                    return false;
-                }
-                return false;
-            }
-
-            @Override
-            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-
-            }
-
-            @Override
-            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-
             }
         });
     }
 
 
     //Métodos para cambiar los colores en funcion de las distancias al centro
-
     protected abstract void changeColorFromView(View v, int c);
 
 
@@ -260,39 +224,11 @@ public abstract class AbstractDegradeRecyclerView {
         }
     }
 
-    public static abstract class MyCustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomViewHolder>{
-        public abstract void changeColorFromView(View v,int color);
-    }
-
     public class CustomViewHolder extends RecyclerView.ViewHolder{
 
         public CustomViewHolder(View itemView) {
             super(itemView);
         }
-    }
-
-    private class CustomLinearLayoutManager extends LinearLayoutManager {
-
-        public CustomLinearLayoutManager(Context context) {
-            super(context);
-        }
-
-        public CustomLinearLayoutManager(Context context, int orientation, boolean reverseLayout) {
-            super(context, orientation, reverseLayout);
-        }
-
-        public CustomLinearLayoutManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-            super(context, attrs, defStyleAttr, defStyleRes);
-        }
-
-        @Override
-        public void smoothScrollToPosition(RecyclerView recyclerView, RecyclerView.State state, int position)
-        {
-
-
-
-        }
-
     }
 
 }

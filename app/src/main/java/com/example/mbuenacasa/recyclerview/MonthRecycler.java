@@ -1,4 +1,4 @@
-package com.example.mbuenacasa.recyclerview.Months;
+package com.example.mbuenacasa.recyclerview;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -8,9 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
-import com.example.mbuenacasa.recyclerview.AbstractDegradeRecyclerView;
-import com.example.mbuenacasa.recyclerview.R;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -83,7 +80,7 @@ public class MonthRecycler extends AbstractDegradeRecyclerView {
 
         @Override
         public MonthHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.base_month,parent,false);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.month_format,parent,false);
             MonthHolder holder = new MonthHolder(v);
             return holder;
         }

@@ -16,8 +16,6 @@ import java.util.List;
  */
 public class HoursView extends RelativeLayout{
 
-    private TextView minText;
-    private TextView hourText;
     private RecyclerView hours;
     private RecyclerView minutes;
     private LayoutInflater inflater;
@@ -42,8 +40,6 @@ public class HoursView extends RelativeLayout{
 
     public void init(){
         inflater.inflate(R.layout.hours_view,this,true);
-        minText = (TextView) findViewById(R.id.customViewMinutes);
-        hourText = (TextView) findViewById(R.id.customViewHours);
         hours = (RecyclerView) findViewById(R.id.hoursRecycler);
         minutes = (RecyclerView) findViewById(R.id.minutesRecycler);
 
