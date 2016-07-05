@@ -32,14 +32,19 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.add(R.id.fragmentlayout,myCustomFragment);
         fragmentTransaction.commit();
 
+        /*
         List<Data> data = fill_with_data();
-
         RecyclerView rf = (RecyclerView) findViewById(R.id.recyclerview);
         FilmRecycler f = new FilmRecycler();
         f.initRecyclerAsFilmRecycler(rf,this,getResources().getColor(R.color.pink),getResources().getColor(R.color.white),data);
-        RecyclerView rm = (RecyclerView) findViewById(R.id.monthRecyclerVew);
+        RecyclerView rm = (RecyclerView) findViewById(R.id.monthRecyclerView);
         MonthRecycler m = new MonthRecycler();
-        m.initRecyclerAsMonthRecycler(rm,this,getResources().getColor(R.color.yellow),getResources().getColor(R.color.white));
+        m.initRecyclerAsMonthRecycler(rm,this,getResources().getColor(R.color.yellow),getResources().getColor(R.color.colorPrimary));
+        */
+        RecyclerView rsm = (RecyclerView) findViewById(R.id.seatMonthRecyclerView);
+        MonthRecycler ms = new MonthRecycler();
+        ms.initRecyclerAsMonthRecycler(rsm,this,getResources().getColor(R.color.seatRed),getResources().getColor(R.color.white));
+
 
         hoursView = (HoursView) findViewById(R.id.hoursView);
         hoursView.setSelectedHour(5);
