@@ -6,7 +6,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.example.mbuenacasa.recyclerview.AbstractGradientRecyclerView;
 import com.example.mbuenacasa.recyclerview.R;
