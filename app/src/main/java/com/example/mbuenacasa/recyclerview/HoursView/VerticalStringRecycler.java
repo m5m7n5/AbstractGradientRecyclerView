@@ -30,7 +30,7 @@ public class VerticalStringRecycler extends AbstractGradientRecyclerView {
 
     @Override
     protected void changeColorFromView(View v, int c) {
-        TextView tv = (TextView) v.findViewById(R.id.hoursTextView);
+        TextView tv = (TextView) v.findViewById(R.id.vertical_recycler_view_text);
         tv.setTextColor(c);
     }
 
@@ -55,7 +55,7 @@ public class VerticalStringRecycler extends AbstractGradientRecyclerView {
 
         public NumberHolder(View itemView) {
             super(itemView);
-            numbers = (TextView) itemView.findViewById(R.id.hoursTextView);
+            numbers = (TextView) itemView.findViewById(R.id.vertical_recycler_view_text);
         }
     }
 
