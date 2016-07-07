@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Created by mbuenacasa on 1/07/16.
  */
-public class VerticalNumberRecycler extends AbstractGradientRecyclerView {
+public class VerticalStringRecycler extends AbstractGradientRecyclerView {
 
     public void initRecyclerAsVerticalNumberRecycler(@NonNull RecyclerView rv, @NonNull Context context,
                                                      int centerColor, int sideColor,List<String> numbers){

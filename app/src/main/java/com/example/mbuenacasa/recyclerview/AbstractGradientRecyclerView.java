@@ -70,15 +70,10 @@ public abstract class AbstractGradientRecyclerView {
                  */
 
                 int secondMaxIndex = 0;
-                Rect auxRectangle = new Rect();
-                Rect secondMaxRectangle = new Rect();
-                l.getChildAt(secondMaxIndex).getGlobalVisibleRect(secondMaxRectangle);
 
                 for(int i=0;i<length;i++){
-                    l.getChildAt(i).getGlobalVisibleRect(auxRectangle);
                     if(Math.abs(getDistanceFromCenter(l,i))<=Math.abs(getDistanceFromCenter(l,secondMaxIndex)) && i!=firstMaxIndex){
                         secondMaxIndex = i;
-                        l.getChildAt(secondMaxIndex).getGlobalVisibleRect(secondMaxRectangle);
                     }
                 }
 
@@ -99,26 +94,7 @@ public abstract class AbstractGradientRecyclerView {
                 Aplico el degradado al primero y al último elemento visible
                 Utilizando el elemento mas cercano al centro calculo el valor alfa de cambio y lo aplico a los extremos
                  */
-                int firstAlphaIndex = 0;
-                int lastAlphaIndex  = length-1;
-                Rect firstAlphaRect = new Rect();
-                Rect lastAlphaRect = new Rect();
-                Rect forSize = new Rect();
-                l.getChildAt(firstAlphaIndex).getGlobalVisibleRect(firstAlphaRect);
-                l.getChildAt(lastAlphaIndex).getGlobalVisibleRect(lastAlphaRect);
-                l.getChildAt(firstMaxIndex).getGlobalVisibleRect(forSize);
-
-                if(l.getOrientation()==LinearLayoutManager.HORIZONTAL){
-                    float alfavalue = (float) (firstAlphaRect.right - firstAlphaRect.left) /  l.getChildAt(firstAlphaIndex).getWidth();
-                    l.getChildAt(0).setAlpha(alfavalue * alfavalue);
-                    alfavalue = (float) (lastAlphaRect.right - lastAlphaRect.left) / l.getChildAt(lastAlphaIndex).getWidth();
-                    l.getChildAt(length - 1).setAlpha(alfavalue * alfavalue);
-                }else{
-                    float alfavalue = (float) (firstAlphaRect.top - firstAlphaRect.bottom) / l.getChildAt(firstAlphaIndex).getHeight();
-                    l.getChildAt(0).setAlpha(alfavalue * alfavalue);
-                    alfavalue = (float) (lastAlphaRect.top - lastAlphaRect.bottom) / l.getChildAt(lastAlphaIndex).getHeight();
-                    l.getChildAt(length - 1).setAlpha(alfavalue * alfavalue);
-                }
+                applyAlpha(l);
 
             }
 
@@ -150,6 +126,30 @@ public abstract class AbstractGradientRecyclerView {
     //Métodos para cambiar los colores en funcion de las distancias al centro
     protected abstract void changeColorFromView(View v, int c);
 
+
+    private static void applyAlpha(LinearLayoutManager l){
+        int length = l.getChildCount();
+        float alphavalue;
+        if(l.getOrientation()==LinearLayoutManager.HORIZONTAL) {
+            for (int i = 0; i < length; i++) {
+                if(l.getChildAt(i).getWidth()>0) {
+                    alphavalue = (float) getVisibleWidth(l.getChildAt(i)) / l.getChildAt(i).getWidth();
+                    if (alphavalue < 1) {
+                        l.getChildAt(i).setAlpha(alphavalue * alphavalue);
+                    }
+                }
+            }
+        }else{
+            for (int i = 0; i < length; i++) {
+                if(l.getChildAt(i).getWidth()>0) {
+                    alphavalue = (float) getVisibleHeight(l.getChildAt(i)) / l.getChildAt(i).getHeight();
+                    if (alphavalue < 1) {
+                        l.getChildAt(i).setAlpha(alphavalue * alphavalue);
+                    }
+                }
+            }
+        }
+    }
 
     private static int [] getAbsoluteCenter(LinearLayoutManager lm){
 
@@ -250,6 +250,18 @@ public abstract class AbstractGradientRecyclerView {
         l.getChildAt(nearest).getGlobalVisibleRect(auxiliar);
         return auxiliar.right-auxiliar.left;
 
+    }
+
+    private static int getVisibleWidth(View v){
+        Rect aux = new Rect();
+        v.getGlobalVisibleRect(aux);
+        return aux.width();
+    }
+
+    private static int getVisibleHeight(View v){
+        Rect aux = new Rect();
+        v.getGlobalVisibleRect(aux);
+        return aux.height();
     }
 
 }
