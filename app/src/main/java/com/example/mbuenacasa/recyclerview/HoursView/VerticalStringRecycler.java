@@ -22,8 +22,8 @@ import java.util.List;
 public class VerticalStringRecycler extends AbstractGradientRecyclerView {
 
     public void initRecyclerAsVerticalNumberRecycler(@NonNull RecyclerView rv, @NonNull Context context,
-                                                     int centerColor, int sideColor,List<String> numbers){
-        initCustomRecyclerView(rv,new VerticalNumberAdapter(numbers,context),context, LinearLayoutManager.VERTICAL,centerColor,sideColor);
+                                                     int centerColor, int sideColor,List<String> stringList){
+        initCustomRecyclerView(rv,new VerticalNumberAdapter(stringList,context),context, LinearLayoutManager.VERTICAL,centerColor,sideColor);
 
 
     }
@@ -71,7 +71,7 @@ public class VerticalStringRecycler extends AbstractGradientRecyclerView {
 
         @Override
         public NumberHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.hours_format, parent, false);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.vertical_string_holder, parent, false);
             NumberHolder holder = new NumberHolder(v);
             return holder;
         }

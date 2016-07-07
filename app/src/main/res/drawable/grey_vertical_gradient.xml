@@ -1,4 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-
-</selector>
+<?xml version="1.0" encoding="UTF-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="90"
+                android:startColor="@color/white"
+                android:centerColor="@color/msa_dark_grey"
+                android:endColor="@color/white"
+                android:centerX="50%"
+                android:centerY="50%"
+                android:type="linear"/>
+        </shape>
+    </item>
+</layer-list>

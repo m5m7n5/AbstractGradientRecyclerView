@@ -11,34 +11,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_centerHorizontal="true"/>
-    <!--
-    <RelativeLayout
-        android:layout_width="300dp"
-        android:layout_height="155dp"
-        android:orientation="vertical"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/recyclersLinearLayout"
-        android:background="@drawable/multiple_gradient_effect_horizontal"
-        android:layout_below="@+id/fragmentlayout">
 
-        <android.support.v7.widget.RecyclerView
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/recyclerview"
-            android:layout_width="wrap_content"
-            android:layout_height="120dp"
-            android:layout_alignParentTop="true"/>
-
-        <android.support.v7.widget.RecyclerView
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/monthRecyclerView"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:layout_below="@+id/recyclerview"
-            android:layout_centerHorizontal="true"/>
-
-    </RelativeLayout>
-    android:layout_below="@+id/recyclersLinearLayout"
-    -->
     <android.support.v7.widget.RecyclerView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/seatMonthRecyclerView"
@@ -56,15 +29,24 @@
         android:layout_centerHorizontal="true">
         </com.example.mbuenacasa.recyclerview.HoursView.HoursView>
 
+    <com.example.mbuenacasa.recyclerview.HoursView.DateSelectorView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/date_selector_view"
+        android:layout_below="@+id/hoursView"
+        android:layout_centerHorizontal="true">
+
+    </com.example.mbuenacasa.recyclerview.HoursView.DateSelectorView>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/hoursView"
-        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/date_selector_view"
         android:id="@+id/textForDebug"
         android:text="Hi!"/>
+
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/textForDebug"
         android:orientation="horizontal"

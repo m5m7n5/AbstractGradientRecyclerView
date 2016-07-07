@@ -39,12 +39,12 @@ public class HoursView extends RelativeLayout{
         init();
     }
 
-    public void init(){
+    private void init(){
         inflater.inflate(R.layout.hours_view,this,true);
         hours = (RecyclerView) findViewById(R.id.hoursRecycler);
         minutes = (RecyclerView) findViewById(R.id.minutesRecycler);
 
-        VerticalNumberRecycler v = new VerticalNumberRecycler();
+        VerticalStringRecycler v = new VerticalStringRecycler();
         int centerColor = getResources().getColor(R.color.msa_dark_grey);
         int sideColor = centerColor | 0x44000000;
 
