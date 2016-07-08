@@ -25,6 +25,10 @@ public class FilmRecycler extends AbstractGradientRecyclerView {
     }
 
     @Override
+    public void whenSelected(View v){
+    }
+
+    @Override
     protected void changeColorFromView(View v, int c){
         TextView tv = (TextView) v.findViewById(R.id.title);
         tv.setTextColor(c);
@@ -32,7 +36,7 @@ public class FilmRecycler extends AbstractGradientRecyclerView {
         tv.setTextColor(c);
     }
 
-    public class FilmHolder extends CustomViewHolder implements View.OnClickListener,View.OnTouchListener{
+    public class FilmHolder extends AbstractGradientRecyclerViewHolder implements View.OnClickListener,View.OnTouchListener{
         TextView title;
         TextView description;
 
@@ -72,7 +76,7 @@ public class FilmRecycler extends AbstractGradientRecyclerView {
 
     }
 
-    public class FilmRecyclerAdapter extends RecyclerView.Adapter<FilmHolder>{
+    public class FilmRecyclerAdapter extends AbstractGradientRecyclerAdapter<FilmHolder>{
 
         List<Data> list = Collections.emptyList();
         Context context;
