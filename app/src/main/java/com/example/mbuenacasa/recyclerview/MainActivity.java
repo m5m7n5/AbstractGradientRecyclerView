@@ -15,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
     HoursView hoursView;
     TextView textForDebug;
     CountDownTimer countDown;
+    MonthRecycler ms;
     boolean counting;
     boolean decrementing;
     @Override
@@ -29,9 +30,10 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
 
         RecyclerView rsm = (RecyclerView) findViewById(R.id.seatMonthRecyclerView);
-        MonthRecycler ms = new MonthRecycler();
+        ms = new MonthRecycler();
         ms.initRecyclerAsMonthRecycler(rsm,this,getResources().getColor(R.color.seatRed),getResources().getColor(R.color.white));
 
+        hoursView = (HoursView) findViewById(R.id.hoursView);
         textForDebug = (TextView) findViewById(R.id.textForDebug);
         counting = false;
         decrementing = true;
@@ -46,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             public void onFinish() {
-                textForDebug.setText("Done!");
+                textForDebug.setText(Integer.toString(hoursView.getSelectedHour()));
                 counting = false;
                 ((Button)(findViewById(R.id.buttonCountdown))).setText("Start counting");
             }

@@ -21,11 +21,24 @@ import java.util.List;
  */
 public class VerticalStringRecycler extends AbstractGradientRecyclerView {
 
+    private Communicator communicator;
+
     public void initRecyclerAsVerticalNumberRecycler(@NonNull RecyclerView rv, @NonNull Context context,
                                                      int centerColor, int sideColor,List<String> stringList){
         initCustomRecyclerView(rv,new VerticalNumberAdapter(stringList,context),context, LinearLayoutManager.VERTICAL,centerColor,sideColor);
+        communicator = null;
 
+    }
 
+    public void setCommunicator(Communicator communicator){
+        this.communicator = communicator;
+    }
+
+    @Override
+    public void whenSelected(View v){
+        if(communicator!=null){
+            communicator.selectionChanged(this,v,selectedViewIndex);
+        }
     }
 
     @Override
@@ -50,7 +63,7 @@ public class VerticalStringRecycler extends AbstractGradientRecyclerView {
         return aux;
     }
 
-    public class NumberHolder extends CustomViewHolder{
+    public class NumberHolder extends AbstractGradientRecyclerViewHolder {
         TextView numbers;
 
         public NumberHolder(View itemView) {
@@ -59,7 +72,7 @@ public class VerticalStringRecycler extends AbstractGradientRecyclerView {
         }
     }
 
-    public class VerticalNumberAdapter extends RecyclerView.Adapter<NumberHolder> {
+    public class VerticalNumberAdapter extends AbstractGradientRecyclerAdapter<NumberHolder> {
 
         List<String> list = Collections.emptyList();
         Context context;
@@ -85,6 +98,17 @@ public class VerticalStringRecycler extends AbstractGradientRecyclerView {
         public int getItemCount() {
             return list.size();
         }
+    }
+
+    public String getSelectedString(){
+        LinearLayoutManager lm = (LinearLayoutManager) recyclerView.getLayoutManager();
+        return ((TextView)lm.getChildAt(nearestView(lm)).findViewById(R.id.vertical_recycler_view_text)).getText().toString();
+    }
+
+    public interface Communicator {
+
+        void selectionChanged(AbstractGradientRecyclerView aRecycler, View view,int index);
+
     }
 
 }

@@ -42,7 +42,7 @@ public class MonthRecycler extends AbstractGradientRecyclerView {
         tv.setTextColor(c);
     }
 
-    private enum Months{
+    public enum Months{
         JANUARY("January"),
         FEBRUARY("February"),
         MARCH("March"),
@@ -100,4 +100,12 @@ public class MonthRecycler extends AbstractGradientRecyclerView {
             return list.size();
         }
     }
+
+    public String getSelectedMonth(){
+            LinearLayoutManager lm = (LinearLayoutManager) recyclerView.getLayoutManager();
+            return ((TextView)lm.getChildAt(nearestView(lm)).findViewById(R.id.monthname)).getText().toString();
+    }
+
+
+
 }

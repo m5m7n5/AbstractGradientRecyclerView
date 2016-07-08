@@ -19,6 +19,8 @@ public class HoursView extends RelativeLayout{
 
     public RecyclerView hours;
     private RecyclerView minutes;
+    private VerticalStringRecycler hoursV;
+    private VerticalStringRecycler minutesV;
     private LayoutInflater inflater;
 
     public HoursView(Context context) {
@@ -44,12 +46,13 @@ public class HoursView extends RelativeLayout{
         hours = (RecyclerView) findViewById(R.id.hoursRecycler);
         minutes = (RecyclerView) findViewById(R.id.minutesRecycler);
 
-        VerticalStringRecycler v = new VerticalStringRecycler();
+        hoursV = new VerticalStringRecycler();
+        minutesV = new VerticalStringRecycler();
         int centerColor = getResources().getColor(R.color.msa_dark_grey);
         int sideColor = centerColor | 0x44000000;
 
-        List<String> list1 = v.generateHoursNumbers();
-        List<String> list2 = v.generateMinutesNumbers();
+        List<String> list1 = hoursV.generateHoursNumbers();
+        List<String> list2 = minutesV.generateMinutesNumbers();
 
         list1.add(0," ");
         list1.add(" ");
@@ -57,8 +60,8 @@ public class HoursView extends RelativeLayout{
         list2.add(0," ");
         list2.add(" ");
 
-        v.initRecyclerAsVerticalNumberRecycler(hours,this.getContext(),centerColor,sideColor,list1);
-        v.initRecyclerAsVerticalNumberRecycler(minutes,this.getContext(),centerColor,sideColor,list2);
+        hoursV.initRecyclerAsVerticalNumberRecycler(hours,this.getContext(),centerColor,sideColor,list1);
+        minutesV.initRecyclerAsVerticalNumberRecycler(minutes,this.getContext(),centerColor,sideColor,list2);
 
     }
 
@@ -73,15 +76,11 @@ public class HoursView extends RelativeLayout{
     }
 
     public int getSelectedHour(){
-        LinearLayoutManager lm = (LinearLayoutManager) hours.getLayoutManager();
-        int i = lm.findFirstCompletelyVisibleItemPosition();
-        return 24 - i;
+        return Integer.parseInt(hoursV.getSelectedString());
     }
 
     public int getSelectedMinute(){
-        LinearLayoutManager lm = (LinearLayoutManager) minutes.getLayoutManager();
-        int i = lm.findFirstCompletelyVisibleItemPosition();
-        return 60 - i;
+        return Integer.parseInt(minutesV.getSelectedString());
     }
 
     public void softHoursIncrement(){

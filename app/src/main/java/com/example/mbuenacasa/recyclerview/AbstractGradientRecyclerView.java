@@ -13,16 +13,45 @@ import android.view.View;
  */
 public abstract class AbstractGradientRecyclerView {
 
-    private RecyclerView recyclerView;
     private int centerColor;
     private int sideColor;
     private CountDownTimer timer;
-    protected View selectedView;
     protected int selectedViewIndex;
+    protected RecyclerView recyclerView;
+    protected View selectedView;
 
     protected abstract void whenSelected(View v);
 
     protected abstract void changeColorFromView(View v, int c);
+
+
+    /**
+     * Method that returns the current recyclerView
+     * @return
+     */
+    public RecyclerView getRecyclerView(){
+        return recyclerView;
+    }
+
+
+    /**
+     * Method that returns the needed offset to do an scroll of one item
+     * @param rv
+     * @return
+     */
+    public static int getOffsetForOneMovement(RecyclerView rv){
+
+        LinearLayoutManager l = (LinearLayoutManager) rv.getLayoutManager();
+        int nearest = nearestView(l);
+        Rect auxiliar = new Rect();
+        l.getChildAt(nearest).getGlobalVisibleRect(auxiliar);
+        if(l.getOrientation()==LinearLayoutManager.HORIZONTAL){
+            return auxiliar.width();
+        }else {
+            return auxiliar.height();
+        }
+    }
+
 
     /**
      * Method that initializes the recyclerView passed as argument with the adapter, and other needed variables
@@ -64,6 +93,7 @@ public abstract class AbstractGradientRecyclerView {
 
     }
 
+
     /**
      * Method to change the layoutManager of the current recyclerView
      * @param lm
@@ -73,6 +103,32 @@ public abstract class AbstractGradientRecyclerView {
         recyclerView.setLayoutManager(lm);
 
     }
+
+
+    /**
+     * Method that iterates over the current visible views of the LinearLayoutManager and
+     * returns which is the closest.
+     * @param l
+     * @return
+     */
+    protected static int nearestView(LinearLayoutManager l){
+
+        int firstMaxIndex = 0;
+        Rect auxRectangle = new Rect();
+        Rect firstMaxRectangle = new Rect();
+        l.getChildAt(firstMaxIndex).getGlobalVisibleRect(firstMaxRectangle);
+
+        for(int i=0;i<l.getChildCount();i++){
+            l.getChildAt(i).getGlobalVisibleRect(auxRectangle);
+            if(Math.abs(getDistanceFromCenter(l,i))<=Math.abs(getDistanceFromCenter(l,firstMaxIndex))){
+                firstMaxIndex = i;
+                l.getChildAt(firstMaxIndex).getGlobalVisibleRect(firstMaxRectangle);
+            }
+        }
+        return firstMaxIndex;
+
+    }
+
 
     /**
      * Method for initialize the scrollListener to do the effect.
@@ -153,13 +209,13 @@ public abstract class AbstractGradientRecyclerView {
                     }
                     changeColorFromView(l.getChildAt(nearest),centerColor);
                     selectedView = l.getChildAt(nearest);
+                    selectedViewIndex = nearest;
                 }
             }
         });
 
     }
 
-    //Métodos para cambiar los colores en funcion de las distancias al centro
 
     /**
      * Method that iterates over the current visible items and changes alpha values of the items,
@@ -190,6 +246,7 @@ public abstract class AbstractGradientRecyclerView {
         }
     }
 
+
     /**
      * Method that returns the current center of the linearLayoutManager in coordinates
      * of the screen.
@@ -209,29 +266,6 @@ public abstract class AbstractGradientRecyclerView {
 
     }
 
-    /**
-     * Method that iterates over the current visible views of the LinearLayoutManager and
-     * returns which is the closest.
-     * @param l
-     * @return
-     */
-    private static int nearestView(LinearLayoutManager l){
-
-        int firstMaxIndex = 0;
-        Rect auxRectangle = new Rect();
-        Rect firstMaxRectangle = new Rect();
-        l.getChildAt(firstMaxIndex).getGlobalVisibleRect(firstMaxRectangle);
-
-        for(int i=0;i<l.getChildCount();i++){
-            l.getChildAt(i).getGlobalVisibleRect(auxRectangle);
-            if(Math.abs(getDistanceFromCenter(l,i))<=Math.abs(getDistanceFromCenter(l,firstMaxIndex))){
-                firstMaxIndex = i;
-                l.getChildAt(firstMaxIndex).getGlobalVisibleRect(firstMaxRectangle);
-            }
-        }
-        return firstMaxIndex;
-
-    }
 
     /**
      * Method that returns a value of color between fromColor and toColor, depending of the variation
@@ -267,6 +301,7 @@ public abstract class AbstractGradientRecyclerView {
 
     }
 
+
     /**
      * Method used in generateGradientColor, it receives two integers and a changeRate value,
      * which needs to be between 0 and 1, and return a value between firs and second, depending
@@ -285,6 +320,7 @@ public abstract class AbstractGradientRecyclerView {
         }
 
     }
+
 
     /**
      * Method that returns the distance between an item of the linearLayoutManager and the center
@@ -309,20 +345,6 @@ public abstract class AbstractGradientRecyclerView {
 
     }
 
-    /**
-     * Method that returns the needed offset to do an scroll of one item
-     * @param rv
-     * @return
-     */
-    public static int getOffsetForOneMovement(RecyclerView rv){
-
-        LinearLayoutManager l = (LinearLayoutManager) rv.getLayoutManager();
-        int nearest = nearestView(l);
-        Rect auxiliar = new Rect();
-        l.getChildAt(nearest).getGlobalVisibleRect(auxiliar);
-        return auxiliar.right-auxiliar.left;
-
-    }
 
     /**
      * Method that receives a view and returns his visible width
@@ -335,6 +357,7 @@ public abstract class AbstractGradientRecyclerView {
         return aux.width();
     }
 
+
     /**
      * Method that receives a view and returns his visible height
      * @param v
@@ -346,6 +369,7 @@ public abstract class AbstractGradientRecyclerView {
         return aux.height();
     }
 
+    //Custom classes
     public class AbstractGradientRecyclerViewHolder extends RecyclerView.ViewHolder{
 
         public AbstractGradientRecyclerViewHolder(View itemView) {
