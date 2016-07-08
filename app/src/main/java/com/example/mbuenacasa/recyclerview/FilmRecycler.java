@@ -88,7 +88,7 @@ public class FilmRecycler extends AbstractGradientRecyclerView {
 
         @Override
         public FilmHolder onCreateViewHolder(ViewGroup parent,int viewType){
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.film_format,parent,false);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.holder_film,parent,false);
             FilmHolder holder = new FilmHolder(v);
             return holder;
         }

@@ -1,7 +1,6 @@
 package com.example.mbuenacasa.recyclerview.HoursView;
 
 import android.content.Context;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -42,14 +41,14 @@ public class HoursView extends RelativeLayout{
     }
 
     private void init(){
-        inflater.inflate(R.layout.hours_view,this,true);
+        inflater.inflate(R.layout.view_hours_selector,this,true);
         hours = (RecyclerView) findViewById(R.id.hoursRecycler);
         minutes = (RecyclerView) findViewById(R.id.minutesRecycler);
 
         hoursV = new VerticalStringRecycler();
         minutesV = new VerticalStringRecycler();
         int centerColor = getResources().getColor(R.color.msa_dark_grey);
-        int sideColor = centerColor | 0x44000000;
+        int sideColor = (centerColor & 0x00FFFFFF) | 0x8F000000;
 
         List<String> list1 = hoursV.generateHoursNumbers();
         List<String> list2 = minutesV.generateMinutesNumbers();

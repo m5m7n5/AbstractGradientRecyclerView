@@ -209,7 +209,7 @@ public abstract class AbstractGradientRecyclerView {
                     }
                     changeColorFromView(l.getChildAt(nearest),centerColor);
                     selectedView = l.getChildAt(nearest);
-                    selectedViewIndex = nearest;
+                    selectedViewIndex = recyclerView.getChildAdapterPosition(l.getChildAt(nearest));;
                 }
             }
         });

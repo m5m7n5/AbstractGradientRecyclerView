@@ -25,7 +25,7 @@ public class VerticalStringRecycler extends AbstractGradientRecyclerView {
 
     public void initRecyclerAsVerticalNumberRecycler(@NonNull RecyclerView rv, @NonNull Context context,
                                                      int centerColor, int sideColor,List<String> stringList){
-        initCustomRecyclerView(rv,new VerticalNumberAdapter(stringList,context),context, LinearLayoutManager.VERTICAL,centerColor,sideColor);
+        initCustomRecyclerView(rv,new VerticalStringAdapter(stringList,context),context, LinearLayoutManager.VERTICAL,centerColor,sideColor);
         communicator = null;
 
     }
@@ -72,19 +72,19 @@ public class VerticalStringRecycler extends AbstractGradientRecyclerView {
         }
     }
 
-    public class VerticalNumberAdapter extends AbstractGradientRecyclerAdapter<NumberHolder> {
+    public class VerticalStringAdapter extends AbstractGradientRecyclerAdapter<NumberHolder> {
 
         List<String> list = Collections.emptyList();
         Context context;
 
-        public VerticalNumberAdapter(List<String> list, Context context) {
+        public VerticalStringAdapter(List<String> list, Context context) {
             this.list = list;
             this.context = context;
         }
 
         @Override
         public NumberHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.vertical_string_holder, parent, false);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.holder_vertical_string, parent, false);
             NumberHolder holder = new NumberHolder(v);
             return holder;
         }

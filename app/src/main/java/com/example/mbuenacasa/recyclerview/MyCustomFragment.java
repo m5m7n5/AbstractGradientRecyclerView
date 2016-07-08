@@ -22,7 +22,7 @@ public class MyCustomFragment extends Fragment implements View.OnClickListener{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater,container,savedInstanceState);
-        View view = inflater.inflate(R.layout.my_custom_fragment,container,false);
+        View view = inflater.inflate(R.layout.fragment_my_custom,container,false);
 
         clickCounter =0;
         holaButton = (Button) view.findViewById(R.id.holaButton);
