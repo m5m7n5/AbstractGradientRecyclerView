@@ -30,6 +30,10 @@ public class VerticalStringRecycler extends AbstractGradientRecyclerView {
 
     }
 
+    public void setAdapterItems(List<String> stringList){
+        recyclerView.setAdapter(new VerticalStringAdapter(stringList,recyclerView.getContext()));
+    }
+
     public void setCommunicator(Communicator communicator){
         this.communicator = communicator;
     }

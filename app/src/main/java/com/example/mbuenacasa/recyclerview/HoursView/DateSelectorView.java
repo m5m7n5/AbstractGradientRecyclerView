@@ -11,6 +11,7 @@ import com.example.mbuenacasa.recyclerview.AbstractGradientRecyclerView;
 import com.example.mbuenacasa.recyclerview.R;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -18,31 +19,47 @@ import java.util.List;
  */
 public class DateSelectorView extends RelativeLayout implements VerticalStringRecycler.Communicator {
 
+    final int monthPerYear = 12;
     private LayoutInflater inflater;
     private VerticalStringRecycler days;
     private VerticalStringRecycler months;
     private VerticalStringRecycler years;
-    private ArrayList<MonthInformation> monthsAndDays;
+    private ArrayList<List<String>> daysData;
+    private ArrayList<List<String>> monthsData;
+    private List<String> yearsData;
+    private int currentSelectedMonth;
+    private int currentSelectedYear;
+    private int startMonth;
+    private int endMonth;
+    private int yearsQuantity;
+
 
     public DateSelectorView(Context context) {
+
         super(context);
         inflater = LayoutInflater.from(context);
         init();
+
     }
 
     public DateSelectorView(Context context, AttributeSet attrs) {
+
         super(context, attrs);
         inflater = LayoutInflater.from(context);
         init();
+
     }
 
     public DateSelectorView(Context context, AttributeSet attrs, int defStyleAttr) {
+
         super(context, attrs, defStyleAttr);
         inflater = LayoutInflater.from(context);
         init();
+        
     }
 
     private void init(){
+
         inflater.inflate(R.layout.view_date_selector,this,true);
         RecyclerView daysRV = (RecyclerView) findViewById(R.id.date_selector_view_days_recycler);
         RecyclerView monthsRV = (RecyclerView) findViewById(R.id.date_selector_view_months_recycler);
@@ -51,103 +68,66 @@ public class DateSelectorView extends RelativeLayout implements VerticalStringRe
         int centerColor = getResources().getColor(R.color.msa_dark_grey);
         int sideColor = (centerColor & 0x00FFFFFF) | 0x8F000000;
 
-        monthsAndDays = new ArrayList<>();
-        for(MonthInformation m:MonthInformation.values()){
-            monthsAndDays.add(m);
-        }
-
         days = new VerticalStringRecycler();
         months = new VerticalStringRecycler();
         years = new VerticalStringRecycler();
-        //TODO cambiar harcoded
-        List<String> daysList = monthsAndDays.get(0).dayList;
-
-        List<String> monthsList = new ArrayList<>();
-        monthsList.add(" ");
-        for(int i=0;i<monthsAndDays.size()-1;i++){
-            monthsList.add(monthsAndDays.get(i).text);
-        }
-        monthsList.add(" ");
-
-        List<String> yearsList = new ArrayList<>();
-        yearsList.add(" ");
-        yearsList.add("2011");yearsList.add("2012");yearsList.add("2013");
-        yearsList.add("2014");yearsList.add("2015");yearsList.add("2016");
-        yearsList.add(" ");
-
+        //TODO Generar correctamente los meses
+        //initData(new Date(2016, 1, 1),new Date(2016, 3, 30));
+        initData(new Date(2016, 4, 1),new Date(2016, 6, 31));
         days.initRecyclerAsVerticalNumberRecycler(
-                daysRV,this.getContext(),centerColor,sideColor,daysList
+                daysRV,this.getContext(),centerColor,sideColor,daysData.get(0)
         );
         months.initRecyclerAsVerticalNumberRecycler(
-                monthsRV,this.getContext(),centerColor,sideColor,monthsList
+                monthsRV,this.getContext(),centerColor,sideColor,monthsData.get(0)
         );
         years.initRecyclerAsVerticalNumberRecycler(
-                yearsRV,this.getContext(),centerColor,sideColor,yearsList
+                yearsRV,this.getContext(),centerColor,sideColor,yearsData
         );
         days.setCommunicator(this);
         months.setCommunicator(this);
         years.setCommunicator(this);
-
+        currentSelectedMonth = 0;
+        currentSelectedYear = 0;
 
     }
 
     @Override
     public void selectionChanged(AbstractGradientRecyclerView aRecycler, View view, int index){
+
         if(days==aRecycler){
         }else if(months==aRecycler){
-            RecyclerView daysRecycler = days.getRecyclerView();
-            int currentDaysCount = daysRecycler.getAdapter().getItemCount()-2;
-            int destinyDaysCount = monthsAndDays.get(index-1).monthDays;
-            if(Integer.parseInt(years.getSelectedString())%4==0 && index == 2/*February*/) {
-                destinyDaysCount++;
+
+            if(currentSelectedYear==0) {
+                currentSelectedMonth = index-1;
+            }else if(currentSelectedYear == yearsQuantity){
+                currentSelectedMonth = daysData.size()-endMonth-1+(index-1);
+            }else{
+                currentSelectedMonth = (currentSelectedYear-1)*monthPerYear+index+startMonth-1;
             }
-            changeAdapter(currentDaysCount,destinyDaysCount,daysRecycler);
-            centerDays();
+            days.setAdapterItems(daysData.get(currentSelectedMonth));
+            days.getRecyclerView().getAdapter().notifyDataSetChanged();
+
 
         }else if(years==aRecycler){
-            RecyclerView daysRecycler = days.getRecyclerView();
-            int currentDaysCount = daysRecycler.getAdapter().getItemCount()-2;
-            //Esto indica que es bisiesto (no compruebo la condicion de 400)
-            if(Integer.parseInt(years.getSelectedString())%4==0){
-                if(months.getSelectedString()==MonthInformation.FEBRUARY.text) {
-                    changeAdapter(currentDaysCount,MonthInformation.FEBRUARY2.monthDays,daysRecycler);
-                    centerDays();
-                }
+            currentSelectedYear = index-1;
+            if(currentSelectedYear==0) {
+                currentSelectedMonth = 0;
+            }else if(currentSelectedYear == yearsQuantity){
+                //TODO Shitty
+                currentSelectedMonth = daysData.size()-endMonth-1;
             }else{
-                if(months.getSelectedString()==MonthInformation.FEBRUARY.text) {
-                    changeAdapter(currentDaysCount,MonthInformation.FEBRUARY.monthDays,daysRecycler);
-                    centerDays();
-                }
+                currentSelectedMonth = (currentSelectedYear-1)*monthPerYear+startMonth-1;
             }
+            days.setAdapterItems(daysData.get(currentSelectedMonth));
+            days.getRecyclerView().getAdapter().notifyDataSetChanged();
+            months.setAdapterItems(monthsData.get(currentSelectedYear));
+            months.getRecyclerView().getAdapter().notifyDataSetChanged();
         }
-    }
 
-    private void changeAdapter(int currentDaysCount,int destinyDaysCount,RecyclerView daysRecycler){
-        if(currentDaysCount!=destinyDaysCount) {
-            List<String> list = ((VerticalStringRecycler.VerticalStringAdapter) daysRecycler.getAdapter()).list;
-            if (currentDaysCount > destinyDaysCount) {
-                for (int i = 0; i < (currentDaysCount - destinyDaysCount); i++) {
-                    list.remove(list.size() - 2);
-                    daysRecycler.getAdapter().notifyItemRemoved(list.size() - 2);
-                    daysRecycler.getAdapter().notifyItemRangeChanged(list.size() - 2, list.size());
-                }
-
-            } else {
-                for (int i = 0; i < (destinyDaysCount - currentDaysCount); i++) {
-                    list.add(list.size() - 1, Integer.toString(list.size() - 1));
-                    daysRecycler.getAdapter().notifyItemInserted(list.size() - 1);
-                }
-            }
-        }
-    }
-
-    private void centerDays(){
-        if(Integer.parseInt(days.getSelectedString())>25||Integer.parseInt(days.getSelectedString())<5) {
-            days.getRecyclerView().smoothScrollToPosition(15);
-        }
     }
 
     private enum MonthInformation{
+
         JANUARY("JAN",31),
         FEBRUARY("FEB",28),
         MARCH("MAR",31),
@@ -176,6 +156,122 @@ public class DateSelectorView extends RelativeLayout implements VerticalStringRe
             }
             dayList.add(" ");
         }
+    }
+
+    private void fillDaysData(Date startDate,Date endDate){
+
+        int startYear = startDate.getYear();
+        int startMonth = startDate.getMonth();
+        int startDay = startDate.getDate();
+        int endYear = endDate.getYear();
+        int endMonth = endDate.getMonth();
+        int endDay = endDate.getDate();
+
+        int quantityOfMonths = (monthPerYear-startMonth)+endMonth+monthPerYear*(endYear-startYear-1);
+
+        ArrayList<Integer> months = new ArrayList<>();
+        for(MonthInformation m:MonthInformation.values()){
+            months.add(m.monthDays);
+        }
+
+        daysData = new ArrayList<>();
+        List<String> auxList = new ArrayList<>();
+        auxList.add(" ");
+        for(int i=startDay;i<=months.get((startMonth)%monthPerYear);i++){
+            auxList.add(Integer.toString(i));
+        }
+        auxList.add(" ");
+        daysData.add(auxList);
+        for(int i=1;i<quantityOfMonths;i++){
+            auxList = new ArrayList<>();
+            auxList.add(" ");
+            for(int j=1;j<=months.get((i+startMonth)%monthPerYear);j++){
+                auxList.add(Integer.toString(j));
+            }
+            auxList.add(" ");
+            daysData.add(auxList);
+        }
+        auxList = new ArrayList<>();
+        auxList.add(" ");
+        for(int i=1;i<=endDay;i++){
+            auxList.add(Integer.toString(i));
+        }
+        auxList.add(" ");
+        daysData.add(auxList);
+    }
+
+    private void fillMonthsData(Date startDate,Date endDate){
+
+        int startYear = startDate.getYear();
+        int startMonth = startDate.getMonth();
+        int endYear = endDate.getYear();
+        int endMonth = endDate.getMonth();
+        this.startMonth = startMonth;
+        this.endMonth = endMonth;
+        int quantityOfYears = endYear-startYear-1;
+
+        ArrayList<String> months = new ArrayList<>();
+        for(MonthInformation m:MonthInformation.values()){
+            months.add(m.text);
+        }
+        monthsData = new ArrayList<>();
+        List<String> auxList = new ArrayList<>();
+        if(quantityOfYears!=-1){
+            auxList.add(" ");
+            for(int i=startMonth;i<monthPerYear;i++){
+                auxList.add(months.get(i));
+            }
+            auxList.add(" ");
+        }else{
+            auxList.add(" ");
+            for(int i=startMonth;i<=endMonth;i++){
+                auxList.add(months.get(i));
+            }
+            auxList.add(" ");
+        }
+
+        monthsData.add(auxList);
+        for(int i=0;i<quantityOfYears;i++){
+            auxList = new ArrayList<>();
+            auxList.add(" ");
+            for(int j=0;j<monthPerYear;j++){
+                auxList.add(months.get(j));
+            }
+            auxList.add(" ");
+            monthsData.add(auxList);
+        }
+
+        auxList = new ArrayList<>();
+
+        auxList.add(" ");
+        for(int i=0;i<=endMonth;i++){
+            auxList.add(months.get(i));
+        }
+        auxList.add(" ");
+
+        monthsData.add(auxList);
+    }
+
+    private void fillYearsData(Date startDate,Date endDate){
+
+        int startYear = startDate.getYear();
+        int endYear = endDate.getYear();
+        this.yearsQuantity = endYear - startYear;
+        yearsData = new ArrayList<>();
+        yearsData.add(" ");
+        for(int i=startYear;i<=endYear;i++){
+            yearsData.add(Integer.toString(i));
+        }
+        yearsData.add(" ");
+
+    }
+
+    private void initData(Date startDate,Date endDate){
+
+        fillYearsData(startDate,endDate);
+        fillMonthsData(startDate,endDate);
+        fillDaysData(startDate,endDate);
+
     }
 
 }
