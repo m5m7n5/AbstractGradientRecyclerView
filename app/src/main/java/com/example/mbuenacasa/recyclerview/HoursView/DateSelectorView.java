@@ -12,14 +12,16 @@ import com.example.mbuenacasa.recyclerview.R;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by mbuenacasa on 7/07/16.
  */
 public class DateSelectorView extends RelativeLayout implements VerticalStringRecycler.Communicator {
 
-    final int monthPerYear = 12;
+    final int monthsPerYear = 12;
     private LayoutInflater inflater;
     private VerticalStringRecycler days;
     private VerticalStringRecycler months;
@@ -32,7 +34,7 @@ public class DateSelectorView extends RelativeLayout implements VerticalStringRe
     private int startMonth;
     private int endMonth;
     private int yearsQuantity;
-
+    private List<String> indexes;
 
     public DateSelectorView(Context context) {
 
@@ -55,7 +57,7 @@ public class DateSelectorView extends RelativeLayout implements VerticalStringRe
         super(context, attrs, defStyleAttr);
         inflater = LayoutInflater.from(context);
         init();
-        
+
     }
 
     private void init(){
@@ -64,6 +66,23 @@ public class DateSelectorView extends RelativeLayout implements VerticalStringRe
         RecyclerView daysRV = (RecyclerView) findViewById(R.id.date_selector_view_days_recycler);
         RecyclerView monthsRV = (RecyclerView) findViewById(R.id.date_selector_view_months_recycler);
         RecyclerView yearsRV = (RecyclerView) findViewById(R.id.date_selector_view_years_recycler);
+
+        Map<String,Integer> monthsDayMap = new LinkedHashMap<>();
+
+        monthsDayMap.put("JAN",31);
+        monthsDayMap.put("FEB",28);
+        monthsDayMap.put("MAR",31);
+        monthsDayMap.put("APR",30);
+        monthsDayMap.put("MAY",31);
+        monthsDayMap.put("JUN",30);
+        monthsDayMap.put("JUL",31);
+        monthsDayMap.put("AUG",31);
+        monthsDayMap.put("SEP",30);
+        monthsDayMap.put("OCT",31);
+        monthsDayMap.put("NOV",30);
+        monthsDayMap.put("DEC",31);
+
+        indexes = new ArrayList<>(monthsDayMap.keySet());
 
         int centerColor = getResources().getColor(R.color.msa_dark_grey);
         int sideColor = (centerColor & 0x00FFFFFF) | 0x8F000000;
@@ -102,7 +121,7 @@ public class DateSelectorView extends RelativeLayout implements VerticalStringRe
             }else if(currentSelectedYear == yearsQuantity){
                 currentSelectedMonth = daysData.size()-endMonth-1+(index-1);
             }else{
-                currentSelectedMonth = (currentSelectedYear-1)*monthPerYear+index+startMonth-1;
+                currentSelectedMonth = (currentSelectedYear-1)* monthsPerYear +index+startMonth-1;
             }
             days.setAdapterItems(daysData.get(currentSelectedMonth));
             days.getRecyclerView().getAdapter().notifyDataSetChanged();
@@ -116,7 +135,7 @@ public class DateSelectorView extends RelativeLayout implements VerticalStringRe
                 //TODO Shitty
                 currentSelectedMonth = daysData.size()-endMonth-1;
             }else{
-                currentSelectedMonth = (currentSelectedYear-1)*monthPerYear+startMonth-1;
+                currentSelectedMonth = (currentSelectedYear-1)* monthsPerYear +startMonth-1;
             }
             days.setAdapterItems(daysData.get(currentSelectedMonth));
             days.getRecyclerView().getAdapter().notifyDataSetChanged();
@@ -167,7 +186,7 @@ public class DateSelectorView extends RelativeLayout implements VerticalStringRe
         int endMonth = endDate.getMonth();
         int endDay = endDate.getDate();
 
-        int quantityOfMonths = (monthPerYear-startMonth)+endMonth+monthPerYear*(endYear-startYear-1);
+        int quantityOfMonths = (monthsPerYear -startMonth)+endMonth+ monthsPerYear *(endYear-startYear-1);
 
         ArrayList<Integer> months = new ArrayList<>();
         for(MonthInformation m:MonthInformation.values()){
@@ -177,7 +196,7 @@ public class DateSelectorView extends RelativeLayout implements VerticalStringRe
         daysData = new ArrayList<>();
         List<String> auxList = new ArrayList<>();
         auxList.add(" ");
-        for(int i=startDay;i<=months.get((startMonth)%monthPerYear);i++){
+        for(int i = startDay; i<=months.get((startMonth)% monthsPerYear); i++){
             auxList.add(Integer.toString(i));
         }
         auxList.add(" ");
@@ -185,7 +204,7 @@ public class DateSelectorView extends RelativeLayout implements VerticalStringRe
         for(int i=1;i<quantityOfMonths;i++){
             auxList = new ArrayList<>();
             auxList.add(" ");
-            for(int j=1;j<=months.get((i+startMonth)%monthPerYear);j++){
+            for(int j = 1; j<=months.get((i+startMonth)% monthsPerYear); j++){
                 auxList.add(Integer.toString(j));
             }
             auxList.add(" ");
@@ -218,7 +237,7 @@ public class DateSelectorView extends RelativeLayout implements VerticalStringRe
         List<String> auxList = new ArrayList<>();
         if(quantityOfYears!=-1){
             auxList.add(" ");
-            for(int i=startMonth;i<monthPerYear;i++){
+            for(int i = startMonth; i< monthsPerYear; i++){
                 auxList.add(months.get(i));
             }
             auxList.add(" ");
@@ -234,7 +253,7 @@ public class DateSelectorView extends RelativeLayout implements VerticalStringRe
         for(int i=0;i<quantityOfYears;i++){
             auxList = new ArrayList<>();
             auxList.add(" ");
-            for(int j=0;j<monthPerYear;j++){
+            for(int j = 0; j< monthsPerYear; j++){
                 auxList.add(months.get(j));
             }
             auxList.add(" ");
@@ -272,6 +291,10 @@ public class DateSelectorView extends RelativeLayout implements VerticalStringRe
         fillMonthsData(startDate,endDate);
         fillDaysData(startDate,endDate);
 
+    }
+    // DD/MM/YYYY
+    public String getDateAsFormatedString(){
+        return days.getSelectedString()+"/"+Integer.toString(indexes.indexOf(months.getSelectedString()))+"/"+years.getSelectedString();
     }
 
 }

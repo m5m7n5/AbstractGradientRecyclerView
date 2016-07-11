@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.mbuenacasa.recyclerview.HoursView.DateSelectorView;
 import com.example.mbuenacasa.recyclerview.HoursView.HoursView;
 
 public class MainActivity extends AppCompatActivity {
@@ -77,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
                 }else{
                     ((Button)view).setText("Decrementing");
                 }
+                textForDebug.setText(((DateSelectorView)findViewById(R.id.date_selector_view)).getDateAsFormatedString());
                 decrementing=!decrementing;
             }
         });
