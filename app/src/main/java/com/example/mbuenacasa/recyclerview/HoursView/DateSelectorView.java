@@ -149,11 +149,9 @@ public class DateSelectorView extends RelativeLayout implements VerticalStringRe
         ArrayList<ArrayList<String>> aux = new ArrayList<>();
         for(int i=0;i<monthQuantity.size();i++){
             ArrayList<String> aux2 = new ArrayList<>();
-            aux2.add(" ");
             for(int j=1;j<=monthQuantity.get(i);j++){
                 aux2.add(Integer.toString(j));
             }
-            aux2.add(" ");
             aux.add(aux2);
         }
 
@@ -169,28 +167,22 @@ public class DateSelectorView extends RelativeLayout implements VerticalStringRe
         if(quantityOfMonths==0){
             //Genero la lista de dias para el mes y año correspondiente
             ArrayList<String> aux2 = new ArrayList<>();
-            aux2.add(" ");
             for(int i=startDay;i<=endDay;i++){
                 aux2.add(Integer.toString(i));
             }
-            aux2.add(" ");
             //Añado la lista de dias al mes y año correspondiente
             daysDataMap.put(indexes.get(startMonth)+Integer.toString(startYear),aux2);
             //Genero la lista de meses para el año
             aux2=new ArrayList<>();
-            aux2.add(" ");
             aux2.add(indexes.get(startMonth));
-            aux2.add(" ");
             //Añado la lista de meses
             monthsDataMap.put(Integer.toString(startYear),aux2);
         }else if((endYear-startYear)==0){
             //Genero los dias del mes inicial
             ArrayList<String> aux2 = new ArrayList<>();
-            aux2.add(" ");
             for(int i=startDay;i<=monthQuantity.get(monthsDays.get(startMonth));i++){
                 aux2.add(Integer.toString(i));
             }
-            aux2.add(" ");
             //Añado los dias del mes inicial en funcion del mes y el año
             daysDataMap.put(indexes.get(startMonth)+Integer.toString(startYear),aux2);
 
@@ -200,30 +192,24 @@ public class DateSelectorView extends RelativeLayout implements VerticalStringRe
             }
             //Genero los dias del mes final
             aux2 = new ArrayList<>();
-            aux2.add(" ");
             for(int i=1;i<=endDay;i++){
                 aux2.add(Integer.toString(i));
             }
-            aux2.add(" ");
             //Añado los dias del mes final en funcion del mes y el año.
             daysDataMap.put(indexes.get(endMonth)+Integer.toString(startYear),aux2);
             //Genero los meses del año correspondiente.
             aux2 =  new ArrayList<>();
-            aux2.add(" ");
             for(int i=startMonth;i<=endMonth;i++){
                 aux2.add(indexes.get(i));
             }
-            aux2.add(" ");
             //Añado la lista de los meses correspondientes al año.
             monthsDataMap.put(Integer.toString(startYear),aux2);
         }else{
             //Generlo la lista de dias del primer mes.
             ArrayList<String> aux2 = new ArrayList<>();
-            aux2.add(" ");
             for(int i=startDay;i<=monthQuantity.get(monthsDays.get(startMonth));i++){
                 aux2.add(Integer.toString(i));
             }
-            aux2.add(" ");
             //Añado la lista de dias del primer mes al mes y año correspondientes.
             daysDataMap.put(indexes.get(startMonth)+Integer.toString(startYear),aux2);
             //Añado la lista de dias de los meses siguientes hasta terminar el año.
@@ -242,47 +228,37 @@ public class DateSelectorView extends RelativeLayout implements VerticalStringRe
             }
             //Añado el último mes
             aux2 = new ArrayList<>();
-            aux2.add(" ");
             for(int i=1;i<=endDay;i++){
                 aux2.add(Integer.toString(i));
             }
-            aux2.add(" ");
             daysDataMap.put(indexes.get(endMonth)+Integer.toString(endYear),aux2);
             //Genero los meses para todos los años excepto el inicial y el final
             aux2 = new ArrayList<>();
-            aux2.add(" ");
             for(int i=1;i<=endDay;i++){
                 aux2.add(indexes.get(i));
             }
-            aux2.add(" ");
             for(int i=(startYear+1);i<endYear;i++){
                 monthsDataMap.put(Integer.toString(i),aux2);
             }
             //Genero los meses del año inicial
             aux2 =  new ArrayList<>();
-            aux2.add(" ");
             for(int i=startMonth;i<monthsPerYear;i++){
                 aux2.add(indexes.get(i));
             }
-            aux2.add(" ");
             monthsDataMap.put(Integer.toString(startYear),aux2);
             //Genero los meses del año final
             aux2 =  new ArrayList<>();
-            aux2.add(" ");
             for(int i=0;i<=endMonth;i++){
                 aux2.add(indexes.get(i));
             }
-            aux2.add(" ");
             monthsDataMap.put(Integer.toString(endYear),aux2);
 
         }
 
         yearsData = new ArrayList<>();
-        yearsData.add(" ");
         for(int i=startYear;i<=endYear;i++){
             yearsData.add(Integer.toString(i));
         }
-        yearsData.add(" ");
         //TODO comprobar si es bisiesto y ver en febrero
     }
 

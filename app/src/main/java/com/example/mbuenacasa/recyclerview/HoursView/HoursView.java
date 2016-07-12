@@ -52,13 +52,7 @@ public class HoursView extends RelativeLayout{
 
         List<String> list1 = hoursV.generateHoursNumbers();
         List<String> list2 = minutesV.generateMinutesNumbers();
-        /*
-        list1.add(0," ");
-        list1.add(" ");
 
-        list2.add(0," ");
-        list2.add(" ");
-        */
         hoursV.initRecyclerAsVerticalNumberRecycler(hours,this.getContext(),centerColor,sideColor,list1);
         minutesV.initRecyclerAsVerticalNumberRecycler(minutes,this.getContext(),centerColor,sideColor,list2);
 

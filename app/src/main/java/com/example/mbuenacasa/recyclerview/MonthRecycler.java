@@ -101,7 +101,7 @@ public class MonthRecycler extends AbstractGradientRecyclerView {
 
     public String getSelectedMonth(){
             LinearLayoutManager lm = (LinearLayoutManager) recyclerView.getLayoutManager();
-            return ((TextView)lm.getChildAt(nearestView(lm)).findViewById(R.id.monthname)).getText().toString();
+            return ((TextView)lm.getChildAt(nearestView(recyclerView)).findViewById(R.id.monthname)).getText().toString();
     }
 
 

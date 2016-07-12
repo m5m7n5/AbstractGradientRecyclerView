@@ -106,7 +106,7 @@ public class VerticalStringRecycler extends AbstractGradientRecyclerView {
 
     public String getSelectedString(){
         LinearLayoutManager lm = (LinearLayoutManager) recyclerView.getLayoutManager();
-        return ((TextView)lm.getChildAt(nearestView(lm)).findViewById(R.id.vertical_recycler_view_text)).getText().toString();
+        return ((TextView)lm.getChildAt(nearestView(recyclerView)).findViewById(R.id.vertical_recycler_view_text)).getText().toString();
     }
 
     public interface Communicator {

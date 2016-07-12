@@ -45,7 +45,7 @@ public abstract class AbstractGradientRecyclerView {
     public static int getOffsetForOneMovement(RecyclerView rv){
 
         LinearLayoutManager l = (LinearLayoutManager) rv.getLayoutManager();
-        int nearest = nearestView(l);
+        int nearest = nearestView(rv);
         Rect auxiliar = new Rect();
         l.getChildAt(nearest).getGlobalVisibleRect(auxiliar);
         if(l.getOrientation()==LinearLayoutManager.HORIZONTAL){
@@ -113,11 +113,12 @@ public abstract class AbstractGradientRecyclerView {
     /**
      * Method that iterates over the current visible views of the LinearLayoutManager and
      * returns which is the closest.
-     * @param l
+     * @param recyclerView
      * @return
      */
-    protected static int nearestView(LinearLayoutManager l){
+    protected static int nearestView(RecyclerView recyclerView){
 
+        LinearLayoutManager l = (LinearLayoutManager) recyclerView.getLayoutManager();
         int firstMaxIndex = 0;
         Rect auxRectangle = new Rect();
         Rect firstMaxRectangle = new Rect();
@@ -125,7 +126,7 @@ public abstract class AbstractGradientRecyclerView {
 
         for(int i=0;i<l.getChildCount();i++){
             l.getChildAt(i).getGlobalVisibleRect(auxRectangle);
-            if(Math.abs(getDistanceFromCenter(l,i))<=Math.abs(getDistanceFromCenter(l,firstMaxIndex))){
+            if(Math.abs(getDistanceFromCenter(recyclerView,i))<=Math.abs(getDistanceFromCenter(recyclerView,firstMaxIndex))){
                 firstMaxIndex = i;
                 l.getChildAt(firstMaxIndex).getGlobalVisibleRect(firstMaxRectangle);
             }
@@ -166,7 +167,7 @@ public abstract class AbstractGradientRecyclerView {
                 LinearLayoutManager l = (LinearLayoutManager) recyclerView.getLayoutManager();
                 int length = l.getChildCount();
                 int firstMaxIndex = 0;
-                firstMaxIndex = nearestView(l);
+                firstMaxIndex = nearestView(recyclerView);
                 for (int i = 0; i < length - 1; i++) {
                     if(i!=firstMaxIndex) {
                         changeColorFromView(l.getChildAt(i), sideColor);
@@ -181,20 +182,20 @@ public abstract class AbstractGradientRecyclerView {
                 int secondMaxIndex = 0;
 
                 for(int i=0;i<length;i++){
-                    if(Math.abs(getDistanceFromCenter(l,i))<=Math.abs(getDistanceFromCenter(l,secondMaxIndex)) && i!=firstMaxIndex){
+                    if(Math.abs(getDistanceFromCenter(recyclerView,i))<=Math.abs(getDistanceFromCenter(recyclerView,secondMaxIndex)) && i!=firstMaxIndex){
                         secondMaxIndex = i;
                     }
                 }
 
                 if(l.getOrientation() == LinearLayoutManager.HORIZONTAL){
-                    double getChangeValue = Math.abs(getDistanceFromCenter(l, firstMaxIndex) / (double) l.getChildAt(firstMaxIndex).getWidth());
+                    double getChangeValue = Math.abs(getDistanceFromCenter(recyclerView, firstMaxIndex) / (double) l.getChildAt(firstMaxIndex).getWidth());
                     changeColorFromView(l.getChildAt(firstMaxIndex), generateGradientColor(centerColor, sideColor, (float) (getChangeValue)));
-                    getChangeValue = Math.abs(getDistanceFromCenter(l, secondMaxIndex) / (double) l.getChildAt(firstMaxIndex).getWidth());
+                    getChangeValue = Math.abs(getDistanceFromCenter(recyclerView, secondMaxIndex) / (double) l.getChildAt(firstMaxIndex).getWidth());
                     changeColorFromView(l.getChildAt(secondMaxIndex), generateGradientColor(centerColor, sideColor, (float) (getChangeValue)));
                 }else{
-                    double getChangeValue = Math.abs(getDistanceFromCenter(l, firstMaxIndex) / (double) l.getChildAt(firstMaxIndex).getHeight());
+                    double getChangeValue = Math.abs(getDistanceFromCenter(recyclerView, firstMaxIndex) / (double) l.getChildAt(firstMaxIndex).getHeight());
                     changeColorFromView(l.getChildAt(firstMaxIndex), generateGradientColor(centerColor, sideColor, (float) (getChangeValue)));
-                    getChangeValue = Math.abs(getDistanceFromCenter(l, secondMaxIndex) / (double) l.getChildAt(firstMaxIndex).getHeight());
+                    getChangeValue = Math.abs(getDistanceFromCenter(recyclerView, secondMaxIndex) / (double) l.getChildAt(firstMaxIndex).getHeight());
                     changeColorFromView(l.getChildAt(secondMaxIndex), generateGradientColor(centerColor, sideColor, (float) (getChangeValue)));
                 }
 
@@ -213,8 +214,8 @@ public abstract class AbstractGradientRecyclerView {
                 if(newState == RecyclerView.SCROLL_STATE_IDLE){
                     LinearLayoutManager l = (LinearLayoutManager) recyclerView.getLayoutManager();
                     timer.start();
-                    int nearest = nearestView(l);
-                    int offset = getDistanceFromCenter(l,nearest);
+                    int nearest = nearestView(recyclerView);
+                    int offset = getDistanceFromCenter(recyclerView,nearest);
                     if(l.getOrientation() == LinearLayoutManager.HORIZONTAL){
                         recyclerView.smoothScrollBy(offset,0);
                     }else{
@@ -343,22 +344,24 @@ public abstract class AbstractGradientRecyclerView {
     /**
      * Method that returns the distance between an item of the linearLayoutManager and the center
      * of it. (Can be negative)
-     * @param lm
+     * @param rv
      * @param index
      * @return
      */
-    private static int getDistanceFromCenter(LinearLayoutManager lm,int index){
-
+    private static int getDistanceFromCenter(RecyclerView rv,int index){
+        LinearLayoutManager lm = (LinearLayoutManager) rv.getLayoutManager();
         if(lm.getOrientation() == LinearLayoutManager.HORIZONTAL){
             Rect aux = new Rect();
             lm.getChildAt(index).getGlobalVisibleRect(aux);
-            int [] center = getAbsoluteCenter(lm);
-            return aux.centerX()-center[0];
+            Rect recyclerRectangle = new Rect();
+            rv.getGlobalVisibleRect(recyclerRectangle);
+            return aux.centerX()-recyclerRectangle.centerX();
         }else{
             Rect aux = new Rect();
             lm.getChildAt(index).getGlobalVisibleRect(aux);
-            int [] center = getAbsoluteCenter(lm);
-            return aux.centerY()-center[1];
+            Rect recyclerRectangle = new Rect();
+            rv.getGlobalVisibleRect(recyclerRectangle);
+            return aux.centerX()-recyclerRectangle.centerX();
         }
 
     }
