@@ -23,11 +23,9 @@ public class MonthRecycler extends AbstractGradientRecyclerView {
             int centerColor,int sideColor
     ){
         List<String> list = new ArrayList<>();
-        list.add("");
         for(Months m:Months.values()){
             list.add(m.month);
         }
-        list.add("");
         initCustomRecyclerView(rv,new MonthViewAdapter(list,context),context, LinearLayoutManager.HORIZONTAL,centerColor,sideColor);
     }
 

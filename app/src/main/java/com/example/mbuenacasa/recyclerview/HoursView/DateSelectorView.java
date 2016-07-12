@@ -80,7 +80,9 @@ public class DateSelectorView extends RelativeLayout implements VerticalStringRe
         monthsStrings.add("NOV");
         monthsStrings.add("DEC");
 
-        generateTablesAndValues(monthsStrings,new Date(2016, 6, 10),new Date(2017, 4, 9));
+        Date start = new Date(2016, 6, 10);
+        Date end = new Date(2017, 4, 9);
+        generateTablesAndValues(monthsStrings,start,end);
 
         int centerColor = getResources().getColor(R.color.msa_dark_grey);
         int sideColor = (centerColor & 0x00FFFFFF) | 0x8F000000;
@@ -88,13 +90,12 @@ public class DateSelectorView extends RelativeLayout implements VerticalStringRe
         days = new VerticalStringRecycler();
         months = new VerticalStringRecycler();
         years = new VerticalStringRecycler();
-        //TODO Generar correctamente los meses
 
         days.initRecyclerAsVerticalNumberRecycler(
-                daysRV,this.getContext(),centerColor,sideColor,daysDataMap.get("JUL"+Integer.toString(2016))
+                daysRV,this.getContext(),centerColor,sideColor,daysDataMap.get(indexes.get(start.getMonth())+Integer.toString(start.getYear()))
         );
         months.initRecyclerAsVerticalNumberRecycler(
-                monthsRV,this.getContext(),centerColor,sideColor,monthsDataMap.get(Integer.toString(2016))
+                monthsRV,this.getContext(),centerColor,sideColor,monthsDataMap.get(Integer.toString(start.getYear()))
         );
         years.initRecyclerAsVerticalNumberRecycler(
                 yearsRV,this.getContext(),centerColor,sideColor,yearsData
@@ -293,7 +294,7 @@ public class DateSelectorView extends RelativeLayout implements VerticalStringRe
 
             days.setAdapterItems(daysDataMap.get(months.getSelectedString()+years.getSelectedString()));
             days.getRecyclerView().getAdapter().notifyDataSetChanged();
-
+            days.getRecyclerView().smoothScrollBy(1,1);
         }else if(years==aRecycler){
 
             months.setAdapterItems(monthsDataMap.get(years.getSelectedString()));

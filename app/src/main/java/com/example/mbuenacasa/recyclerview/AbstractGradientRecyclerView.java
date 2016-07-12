@@ -1,6 +1,7 @@
 package com.example.mbuenacasa.recyclerview;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
@@ -19,6 +20,8 @@ public abstract class AbstractGradientRecyclerView {
     protected int selectedViewIndex;
     protected RecyclerView recyclerView;
     protected View selectedView;
+    private boolean flag;
+    private int orientation;
 
     protected abstract void whenSelected(View v);
 
@@ -78,6 +81,7 @@ public abstract class AbstractGradientRecyclerView {
         llm.setOrientation(orientation);
         recyclerView.setLayoutManager(llm);
         settingCustomListeners();
+        this.orientation = orientation;
         //Timer que ejecutará el método whenSelected(selectedView) cuando pase un tiempo determinado seleccionado.
         timer = new CountDownTimer(200,200) {
             @Override
@@ -90,6 +94,7 @@ public abstract class AbstractGradientRecyclerView {
                 whenSelected(selectedView);
             }
         };
+        flag = true;
 
     }
 
@@ -138,7 +143,20 @@ public abstract class AbstractGradientRecyclerView {
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-
+                if(flag){
+                    int startOffset;
+                    if(orientation == LinearLayoutManager.HORIZONTAL){
+                        int viewWidth = recyclerView.getWidth();
+                        View first = recyclerView.getChildViewHolder(recyclerView.getChildAt(0)).itemView;
+                        startOffset = (viewWidth-first.getWidth())/2;
+                    }else{
+                        int viewHeight = recyclerView.getHeight();
+                        View first = recyclerView.getChildViewHolder(recyclerView.getChildAt(0)).itemView;
+                        startOffset = (viewHeight-first.getHeight())/2;
+                    }
+                    recyclerView.addItemDecoration(new OffsetOfTheRecycler(startOffset,startOffset,orientation));
+                    flag = false;
+                }
                 /*
                 Para el correcto funcionamiento de este método supongo que en la vista siempre se ve un elemento completo,
                 es decir, que por lo menos hay un elemento entero en el layout.
@@ -389,4 +407,47 @@ public abstract class AbstractGradientRecyclerView {
         }
         return false;
     }
+
+    public class OffsetOfTheRecycler extends RecyclerView.ItemDecoration{
+
+        private int startOffset;
+        private int endOffset;
+        private int orientation;
+
+        public OffsetOfTheRecycler(int startOffset,int endOffset, int orientation){
+            this.startOffset = startOffset;
+            this.orientation = orientation;
+            this.endOffset = endOffset;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+            super.getItemOffsets(outRect, view, parent, state);
+
+            int itemCount = state.getItemCount();
+            if (parent.getChildAdapterPosition(view) == itemCount - 1) {
+                if (orientation == LinearLayoutManager.HORIZONTAL) {
+                    if (endOffset > 0) {
+                        outRect.right = endOffset;
+                    }
+                } else if (orientation == LinearLayoutManager.VERTICAL) {
+                    if (endOffset > 0) {
+                        outRect.bottom = endOffset;
+                    }
+                }
+            }else if(parent.getChildAdapterPosition(view) == 0){
+                if (orientation == LinearLayoutManager.HORIZONTAL) {
+                    if (startOffset > 0) {
+                        outRect.left = startOffset;
+                    }
+                } else if (orientation == LinearLayoutManager.VERTICAL) {
+                    if (startOffset > 0) {
+                        outRect.top = startOffset;
+                    }
+                }
+            }
+        }
+
+    }
+
 }
