@@ -382,4 +382,11 @@ public abstract class AbstractGradientRecyclerView {
 
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if(o instanceof AbstractGradientRecyclerView){
+            return ((AbstractGradientRecyclerView) o).getRecyclerView() == recyclerView;
+        }
+        return false;
+    }
 }
