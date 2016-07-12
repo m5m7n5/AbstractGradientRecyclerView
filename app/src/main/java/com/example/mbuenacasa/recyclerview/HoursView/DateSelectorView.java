@@ -67,6 +67,7 @@ public class DateSelectorView extends RelativeLayout implements VerticalStringRe
 
         List<String> monthsStrings =  new ArrayList<>();
 
+        //TODO Quitar hardcoded strings
         monthsStrings.add("JAN");
         monthsStrings.add("FEB");
         monthsStrings.add("MAR");
@@ -270,13 +271,13 @@ public class DateSelectorView extends RelativeLayout implements VerticalStringRe
 
             days.setAdapterItems(daysDataMap.get(months.getSelectedString()+years.getSelectedString()));
             days.getRecyclerView().getAdapter().notifyDataSetChanged();
-            days.getRecyclerView().smoothScrollBy(1,1);
         }else if(years==aRecycler){
 
             months.setAdapterItems(monthsDataMap.get(years.getSelectedString()));
             months.getRecyclerView().getAdapter().notifyDataSetChanged();
-            //Hago un scroll para que se actualize el recycler de months y así, se actualize el de dias al mismo tiempo
-            months.getRecyclerView().smoothScrollBy(1,1);
+
+            days.setAdapterItems(daysDataMap.get(monthsDataMap.get(years.getSelectedString()).get(0)+years.getSelectedString()));
+            days.getRecyclerView().getAdapter().notifyDataSetChanged();
 
         }
 

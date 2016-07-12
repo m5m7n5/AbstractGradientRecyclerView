@@ -1,7 +1,6 @@
 package com.example.mbuenacasa.recyclerview;
 
 import android.content.Context;
-import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
@@ -144,6 +143,7 @@ public abstract class AbstractGradientRecyclerView {
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
                 if(flag){
                     int startOffset;
                     if(orientation == LinearLayoutManager.HORIZONTAL){
@@ -155,19 +155,16 @@ public abstract class AbstractGradientRecyclerView {
                         View first = recyclerView.getChildViewHolder(recyclerView.getChildAt(0)).itemView;
                         startOffset = (viewHeight-first.getHeight())/2;
                     }
-                    recyclerView.addItemDecoration(new OffsetOfTheRecycler(startOffset,startOffset,orientation));
-                    flag = false;
+                    recyclerView.addItemDecoration(new OffsetStartEndItemDecorator(startOffset,startOffset,orientation));
                 }
                 /*
                 Para el correcto funcionamiento de este método supongo que en la vista siempre se ve un elemento completo,
                 es decir, que por lo menos hay un elemento entero en el layout.
                  */
-                super.onScrolled(recyclerView, dx, dy);
                 timer.cancel();
                 LinearLayoutManager l = (LinearLayoutManager) recyclerView.getLayoutManager();
                 int length = l.getChildCount();
-                int firstMaxIndex = 0;
-                firstMaxIndex = nearestView(recyclerView);
+                int firstMaxIndex = nearestView(recyclerView);
                 for (int i = 0; i < length - 1; i++) {
                     if(i!=firstMaxIndex) {
                         changeColorFromView(l.getChildAt(i), sideColor);
@@ -185,6 +182,10 @@ public abstract class AbstractGradientRecyclerView {
                     if(Math.abs(getDistanceFromCenter(recyclerView,i))<=Math.abs(getDistanceFromCenter(recyclerView,secondMaxIndex)) && i!=firstMaxIndex){
                         secondMaxIndex = i;
                     }
+                }
+
+                if(secondMaxIndex == firstMaxIndex && firstMaxIndex == 0){
+                    secondMaxIndex = 1;
                 }
 
                 if(l.getOrientation() == LinearLayoutManager.HORIZONTAL){
@@ -205,6 +206,10 @@ public abstract class AbstractGradientRecyclerView {
                 Utilizando el elemento mas cercano al centro calculo el valor alfa de cambio y lo aplico a los extremos
                  */
                 applyAlpha(l);
+                if(flag) {
+                    onScrollStateChanged(recyclerView, RecyclerView.SCROLL_STATE_IDLE);
+                    flag = false;
+                }
 
             }
 
@@ -361,7 +366,7 @@ public abstract class AbstractGradientRecyclerView {
             lm.getChildAt(index).getGlobalVisibleRect(aux);
             Rect recyclerRectangle = new Rect();
             rv.getGlobalVisibleRect(recyclerRectangle);
-            return aux.centerX()-recyclerRectangle.centerX();
+            return aux.centerY()-recyclerRectangle.centerY();
         }
 
     }
@@ -411,13 +416,13 @@ public abstract class AbstractGradientRecyclerView {
         return false;
     }
 
-    public class OffsetOfTheRecycler extends RecyclerView.ItemDecoration{
+    public class OffsetStartEndItemDecorator extends RecyclerView.ItemDecoration{
 
         private int startOffset;
         private int endOffset;
         private int orientation;
 
-        public OffsetOfTheRecycler(int startOffset,int endOffset, int orientation){
+        public OffsetStartEndItemDecorator(int startOffset, int endOffset, int orientation){
             this.startOffset = startOffset;
             this.orientation = orientation;
             this.endOffset = endOffset;
