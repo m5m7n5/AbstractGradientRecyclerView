@@ -25,6 +25,7 @@ public abstract class AbstractGradientRecyclerView2 extends RecyclerView{
     protected RecyclerView recyclerView;
     protected View selectedView;
     private int orientation;
+    private AbstractGradientRecyclerCommunicator communicator;
 
     public AbstractGradientRecyclerView2(Context context) {
         super(context);
@@ -44,28 +45,32 @@ public abstract class AbstractGradientRecyclerView2 extends RecyclerView{
 
     protected abstract void changeColorFromView(View v, int c);
 
+    public void setCommunicator(AbstractGradientRecyclerCommunicator communicator){
+        this.communicator = communicator;
+    }
+
     private void init(@Nullable AttributeSet attrs){
         if(attrs!=null){
-            TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.MonthRecyclerView, 0, 0);
-            String center = a.getString(R.styleable.MonthRecyclerView_center_color);
+            TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.AbstractGradientRecyclerView, 0, 0);
+            String center = a.getString(R.styleable.AbstractGradientRecyclerView_center_color);
             if(center!=null){
                 centerColor = Color.parseColor(center);
             }else{
                 centerColor = 0xFF000000;
             }
-            String side = a.getString(R.styleable.MonthRecyclerView_side_color);
+            String side = a.getString(R.styleable.AbstractGradientRecyclerView_side_color);
             if(side!=null){
                 sideColor = Color.parseColor(side);
             }else{
                 sideColor = 0xFFFFFFFF;
             }
-            String whenSelected = a.getString(R.styleable.MonthRecyclerView_when_selected_color);
+            String whenSelected = a.getString(R.styleable.AbstractGradientRecyclerView_when_selected_color);
             if(whenSelected!=null){
                 whenSelectedColor = Color.parseColor(whenSelected);
             }else{
                 whenSelectedColor = centerColor;
             }
-            String or = a.getString(R.styleable.MonthRecyclerView_orientation);
+            String or = a.getString(R.styleable.AbstractGradientRecyclerView_orientation);
             if(or!=null) {
                 orientation = Integer.parseInt(or);
             }else{
@@ -88,6 +93,9 @@ public abstract class AbstractGradientRecyclerView2 extends RecyclerView{
                     changeColorFromView(selectedView, whenSelectedColor);
                 }
                 whenSelected(selectedView);
+                if(communicator!=null){
+                    communicator.whenSelected(selectedView,selectedViewIndex);
+                }
             }
         };
         getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -426,7 +434,10 @@ public abstract class AbstractGradientRecyclerView2 extends RecyclerView{
                 }
             }
         }
+    }
 
+    public interface AbstractGradientRecyclerCommunicator {
+        void whenSelected(View selectedView,int selectedViewIndex);
     }
 }
 
