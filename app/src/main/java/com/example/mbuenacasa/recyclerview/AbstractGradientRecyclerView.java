@@ -10,6 +10,7 @@ import android.view.View;
 
 /**
  * Created by mbuenacasa on 1/07/16.
+ * For the correct working of this class, all the views of the recyclerView should have the same size
  */
 public abstract class AbstractGradientRecyclerView {
 
@@ -29,7 +30,7 @@ public abstract class AbstractGradientRecyclerView {
 
     /**
      * Method that returns the current recyclerView
-     * @return
+     * @return the RecyclerView of the current custom view
      */
     public RecyclerView getRecyclerView(){
         return recyclerView;
@@ -38,8 +39,8 @@ public abstract class AbstractGradientRecyclerView {
 
     /**
      * Method that returns the needed offset to do an scroll of one item
-     * @param rv
-     * @return
+     * @param rv recyclerView of the current view
+     * @return returns the offset for a scroll of one item
      */
     public static int getOffsetForOneMovement(RecyclerView rv){
 
@@ -58,19 +59,19 @@ public abstract class AbstractGradientRecyclerView {
     /**
      * Method that initializes the recyclerView passed as argument with the adapter, and other needed variables
      * such as orientation of the recyclerView and colors for the effects.
-     * @param rv
-     * @param adapter
-     * @param context
-     * @param orientation
-     * @param centerColor
-     * @param sideColor
+     * @param rv recyclerView where we are going to put the content
+     * @param adapter an adapter extending AbstractGradient recycler
+     * @param context context for initialize the layout manager
+     * @param orientation orientation of the layoutManager
+     * @param centerColor color of the item in center
+     * @param sideColor color of the other elements
      */
     protected void initCustomRecyclerView(@NonNull RecyclerView rv,
-                                @NonNull AbstractGradientRecyclerAdapter adapter,
-                                @NonNull Context context,
-                                int orientation,
-                                int centerColor,
-                                int sideColor){
+                                          @NonNull AbstractGradientRecyclerAdapter adapter,
+                                          @NonNull Context context,
+                                          int orientation,
+                                          int centerColor,
+                                          int sideColor){
 
         recyclerView = rv;
         this.centerColor = centerColor;
@@ -100,7 +101,7 @@ public abstract class AbstractGradientRecyclerView {
 
     /**
      * Method to change the layoutManager of the current recyclerView
-     * @param lm
+     * @param lm changes the layoutManager of the recyclerView
      */
     protected void changeLayoutManager(RecyclerView.LayoutManager lm){
 
@@ -112,8 +113,8 @@ public abstract class AbstractGradientRecyclerView {
     /**
      * Method that iterates over the current visible views of the LinearLayoutManager and
      * returns which is the closest.
-     * @param recyclerView
-     * @return
+     * @param recyclerView recyclerView to search the nearest view
+     * @return returns the index of the current visible nearest view
      */
     protected static int nearestView(RecyclerView recyclerView){
 
@@ -233,7 +234,7 @@ public abstract class AbstractGradientRecyclerView {
                     }
                     changeColorFromView(l.getChildAt(nearest),centerColor);
                     selectedView = l.getChildAt(nearest);
-                    selectedViewIndex = recyclerView.getChildAdapterPosition(l.getChildAt(nearest));;
+                    selectedViewIndex = recyclerView.getChildAdapterPosition(l.getChildAt(nearest));
                 }
             }
         });
@@ -244,26 +245,26 @@ public abstract class AbstractGradientRecyclerView {
     /**
      * Method that iterates over the current visible items and changes alpha values of the items,
      * depending of the current visible portion.
-     * @param l
+     * @param l LinearLayoutManager to apply alpha
      */
     private static void applyAlpha(LinearLayoutManager l){
         int length = l.getChildCount();
-        float alphavalue;
+        float alpha;
         if(l.getOrientation()==LinearLayoutManager.HORIZONTAL) {
             for (int i = 0; i < length; i++) {
                 if(l.getChildAt(i).getWidth()>0) {
-                    alphavalue = (float) getVisibleWidth(l.getChildAt(i)) / l.getChildAt(i).getWidth();
-                    if (alphavalue < 1) {
-                        l.getChildAt(i).setAlpha(alphavalue * alphavalue);
+                    alpha = (float) getVisibleWidth(l.getChildAt(i)) / l.getChildAt(i).getWidth();
+                    if (alpha < 1) {
+                        l.getChildAt(i).setAlpha(alpha * alpha);
                     }
                 }
             }
         }else{
             for (int i = 0; i < length; i++) {
                 if(l.getChildAt(i).getWidth()>0) {
-                    alphavalue = (float) getVisibleHeight(l.getChildAt(i)) / l.getChildAt(i).getHeight();
-                    if (alphavalue < 1) {
-                        l.getChildAt(i).setAlpha(alphavalue * alphavalue);
+                    alpha = (float) getVisibleHeight(l.getChildAt(i)) / l.getChildAt(i).getHeight();
+                    if (alpha < 1) {
+                        l.getChildAt(i).setAlpha(alpha * alpha);
                     }
                 }
             }
@@ -274,8 +275,8 @@ public abstract class AbstractGradientRecyclerView {
     /**
      * Method that returns the current center of the linearLayoutManager in coordinates
      * of the screen.
-     * @param lm
-     * @return
+     * @param lm layoutManager to find the absolute center
+     * @return a pair of ints, one for the center x and other for the center y
      */
     private static int [] getAbsoluteCenter(LinearLayoutManager lm){
 
@@ -294,10 +295,10 @@ public abstract class AbstractGradientRecyclerView {
     /**
      * Method that returns a value of color between fromColor and toColor, depending of the variation
      * value, if variation is greater than 1, it returns toColor value (this method uses alpha value too)
-     * @param fromColor
-     * @param toColor
-     * @param variation
-     * @return
+     * @param fromColor start color of the gradient
+     * @param toColor end color of the gradient
+     * @param variation percentage of the first color
+     * @return a color between fromcolor and tocolor
      */
     private int generateGradientColor(int fromColor,int toColor, float variation){
 
@@ -308,11 +309,11 @@ public abstract class AbstractGradientRecyclerView {
         int A0 = (fromColor & 0xFF000000)>>24;
         int R0 = (fromColor & 0x00FF0000)>>16;
         int G0 = (fromColor & 0x0000FF00)>>8;
-        int B0 = (fromColor & 0x000000FF)>>0;
+        int B0 = fromColor & 0x000000FF;
         int A1 = (toColor & 0xFF000000)>>24;
         int R1 = (toColor & 0x00FF0000)>>16;
         int G1 = (toColor & 0x0000FF00)>>8;
-        int B1 = (toColor & 0x000000FF)>>0;
+        int B1 = toColor & 0x000000FF;
 
 
         int totalChangeA = interpolate(A0,A1,variation);
@@ -330,10 +331,10 @@ public abstract class AbstractGradientRecyclerView {
      * Method used in generateGradientColor, it receives two integers and a changeRate value,
      * which needs to be between 0 and 1, and return a value between firs and second, depending
      * of the changeRate.
-     * @param first
-     * @param second
-     * @param changeRate
-     * @return
+     * @param first start value
+     * @param second end value
+     * @param changeRate portion of the first respect the second
+     * @return a value between first and second
      */
     private int interpolate(int first,int second,float changeRate){
 
@@ -349,9 +350,9 @@ public abstract class AbstractGradientRecyclerView {
     /**
      * Method that returns the distance between an item of the linearLayoutManager and the center
      * of it. (Can be negative)
-     * @param rv
-     * @param index
-     * @return
+     * @param rv recycler view container of the view selected by the index
+     * @param index index of the item in the recycler view
+     * @return distance from the center
      */
     private static int getDistanceFromCenter(RecyclerView rv,int index){
         LinearLayoutManager lm = (LinearLayoutManager) rv.getLayoutManager();
@@ -374,8 +375,8 @@ public abstract class AbstractGradientRecyclerView {
 
     /**
      * Method that receives a view and returns his visible width
-     * @param v
-     * @return
+     * @param v selected view
+     * @return visible width of the view
      */
     private static int getVisibleWidth(View v){
         Rect aux = new Rect();
@@ -386,8 +387,8 @@ public abstract class AbstractGradientRecyclerView {
 
     /**
      * Method that receives a view and returns his visible height
-     * @param v
-     * @return
+     * @param v selected view
+     * @return visible height of the view
      */
     private static int getVisibleHeight(View v){
         Rect aux = new Rect();

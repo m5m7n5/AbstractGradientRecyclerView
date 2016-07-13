@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             public void onFinish() {
-                textForDebug.setText(Integer.toString(hoursView.getSelectedHour()));
+                //textForDebug.setText(Integer.toString(hoursView.getSelectedHour()));
                 counting = false;
                 ((Button)(findViewById(R.id.buttonCountdown))).setText("Start counting");
             }

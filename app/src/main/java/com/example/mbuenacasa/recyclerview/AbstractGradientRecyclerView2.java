@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewTreeObserver;
 
 /**
  * Created by mbuenacasa on 13/07/16.
@@ -21,19 +22,10 @@ public abstract class AbstractGradientRecyclerView2 extends RecyclerView{
     protected int selectedViewIndex;
     protected RecyclerView recyclerView;
     protected View selectedView;
-    private boolean flag;
     private int orientation;
-
-    public void setAdapter(AbstractGradientRecyclerView.AbstractGradientRecyclerAdapter adapter){
-        super.setAdapter(adapter);
-    }
 
     public AbstractGradientRecyclerView2(Context context) {
         super(context);
-        this.orientation = orientation;
-        //Timer que ejecutará el método whenSelected(selectedView) cuando pase un tiempo determinado seleccionado.
-
-        flag = true;
     }
 
     public AbstractGradientRecyclerView2(Context context, @Nullable AttributeSet attrs) {
@@ -48,7 +40,7 @@ public abstract class AbstractGradientRecyclerView2 extends RecyclerView{
 
     protected abstract void changeColorFromView(View v, int c);
 
-    protected void onCreateCall(@NonNull Context context,@NonNull AbstractGradientRecyclerView2.AbstractGradientRecyclerAdapter adapter, int orientation, int sideColor,int centerColor){
+    protected void onCreateCall(@NonNull Context context,@NonNull AbstractGradientRecyclerView2.AbstractGradientRecyclerAdapter adapter, int orientation, int centerColor,int sideColor){
         this.setAdapter(adapter);
         LinearLayoutManager llm = new LinearLayoutManager(context);
         llm.setOrientation(orientation);
@@ -57,6 +49,7 @@ public abstract class AbstractGradientRecyclerView2 extends RecyclerView{
         this.orientation = orientation;
         this.sideColor = sideColor;
         this.centerColor = centerColor;
+        recyclerView = this;
         timer = new CountDownTimer(200,200) {
             @Override
             public void onTick(long l) {
@@ -68,79 +61,32 @@ public abstract class AbstractGradientRecyclerView2 extends RecyclerView{
                 whenSelected(selectedView);
             }
         };
+        getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                offset(recyclerView);
+                onStartRecycler(recyclerView);
+                recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
+            }
+        });
     }
 
-    /**
-     * Method that returns the current recyclerView
-     * @return the RecyclerView of the current custom view
-     */
-    public RecyclerView getRecyclerView(){
-        return recyclerView;
-    }
 
 
-    /**
-     * Method that returns the needed offset to do an scroll of one item
-     * @param rv recyclerView of the current view
-     * @return returns the offset for a scroll of one item
-     */
-    public static int getOffsetForOneMovement(RecyclerView rv){
-
-        LinearLayoutManager l = (LinearLayoutManager) rv.getLayoutManager();
-        int nearest = nearestView(rv);
-        Rect auxiliar = new Rect();
-        l.getChildAt(nearest).getGlobalVisibleRect(auxiliar);
-        if(l.getOrientation()==LinearLayoutManager.HORIZONTAL){
-            return auxiliar.width();
-        }else {
-            return auxiliar.height();
+    protected void offset(RecyclerView recyclerView){
+        int startOffset;
+        if(orientation == LinearLayoutManager.HORIZONTAL){
+            int viewWidth = recyclerView.getWidth();
+            View first = recyclerView.getChildViewHolder(recyclerView.getChildAt(0)).itemView;
+            startOffset = (viewWidth-first.getWidth())/2;
+        }else{
+            int viewHeight = recyclerView.getHeight();
+            View first = recyclerView.getChildViewHolder(recyclerView.getChildAt(0)).itemView;
+            startOffset = (viewHeight-first.getHeight())/2;
         }
+        recyclerView.addItemDecoration(new OffsetStartEndItemDecorator(startOffset,startOffset,orientation));
     }
-
-
-    /**
-     * Method that initializes the recyclerView passed as argument with the adapter, and other needed variables
-     * such as orientation of the recyclerView and colors for the effects.
-     * @param rv recyclerView where we are going to put the content
-     * @param adapter an adapter extending AbstractGradient recycler
-     * @param context context for initialize the layout manager
-     * @param orientation orientation of the layoutManager
-     * @param centerColor color of the item in center
-     * @param sideColor color of the other elements
-     */
-    protected void initCustomRecyclerView(@NonNull RecyclerView rv,
-                                          @NonNull AbstractGradientRecyclerAdapter adapter,
-                                          @NonNull Context context,
-                                          int orientation,
-                                          int centerColor,
-                                          int sideColor){
-
-        recyclerView = rv;
-        this.centerColor = centerColor;
-        this.sideColor = sideColor;
-        recyclerView.setAdapter(adapter);
-        LinearLayoutManager llm = new LinearLayoutManager(context);
-        llm.setOrientation(orientation);
-        recyclerView.setLayoutManager(llm);
-        settingCustomListeners();
-        this.orientation = orientation;
-        //Timer que ejecutará el método whenSelected(selectedView) cuando pase un tiempo determinado seleccionado.
-        timer = new CountDownTimer(200,200) {
-            @Override
-            public void onTick(long l) {
-
-            }
-
-            @Override
-            public void onFinish() {
-                whenSelected(selectedView);
-            }
-        };
-        flag = true;
-
-    }
-
-
     /**
      * Method to change the layoutManager of the current recyclerView
      * @param lm changes the layoutManager of the recyclerView
@@ -187,19 +133,6 @@ public abstract class AbstractGradientRecyclerView2 extends RecyclerView{
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if(flag){
-                    int startOffset;
-                    if(orientation == LinearLayoutManager.HORIZONTAL){
-                        int viewWidth = recyclerView.getWidth();
-                        View first = recyclerView.getChildViewHolder(recyclerView.getChildAt(0)).itemView;
-                        startOffset = (viewWidth-first.getWidth())/2;
-                    }else{
-                        int viewHeight = recyclerView.getHeight();
-                        View first = recyclerView.getChildViewHolder(recyclerView.getChildAt(0)).itemView;
-                        startOffset = (viewHeight-first.getHeight())/2;
-                    }
-                    recyclerView.addItemDecoration(new OffsetStartEndItemDecorator(startOffset,startOffset,orientation));
-                }
                 /*
                 Para el correcto funcionamiento de este método supongo que en la vista siempre se ve un elemento completo,
                 es decir, que por lo menos hay un elemento entero en el layout.
@@ -218,7 +151,6 @@ public abstract class AbstractGradientRecyclerView2 extends RecyclerView{
                 Aplico la degradación de color a los 2 elementos mas cercanos al centro, para ello calculo el máximo y un segundo máximo,
                 como en pantalla no habrán muchos objetos, éste cálculo no sera muy costoso.
                  */
-
                 int secondMaxIndex = 0;
 
                 for(int i=0;i<length;i++){
@@ -249,11 +181,6 @@ public abstract class AbstractGradientRecyclerView2 extends RecyclerView{
                 Utilizando el elemento mas cercano al centro calculo el valor alfa de cambio y lo aplico a los extremos
                  */
                 applyAlpha(l);
-                if(flag) {
-                    onScrollStateChanged(recyclerView, RecyclerView.SCROLL_STATE_IDLE);
-                    flag = false;
-                }
-
             }
 
             @Override
@@ -261,7 +188,6 @@ public abstract class AbstractGradientRecyclerView2 extends RecyclerView{
                 super.onScrollStateChanged(recyclerView, newState);
                 if(newState == RecyclerView.SCROLL_STATE_IDLE){
                     LinearLayoutManager l = (LinearLayoutManager) recyclerView.getLayoutManager();
-                    timer.start();
                     int nearest = nearestView(recyclerView);
                     int offset = getDistanceFromCenter(recyclerView,nearest);
                     if(l.getOrientation() == LinearLayoutManager.HORIZONTAL){
@@ -277,10 +203,25 @@ public abstract class AbstractGradientRecyclerView2 extends RecyclerView{
                     changeColorFromView(l.getChildAt(nearest),centerColor);
                     selectedView = l.getChildAt(nearest);
                     selectedViewIndex = recyclerView.getChildAdapterPosition(l.getChildAt(nearest));
+                    timer.start();
                 }
             }
         });
 
+    }
+
+
+    private void onStartRecycler(RecyclerView recyclerView){
+        LinearLayoutManager l = (LinearLayoutManager) recyclerView.getLayoutManager();
+        recyclerView.scrollTo(0,0);
+        int nearest = 0;
+        for(int i=1;i<l.getChildCount();i++){
+            changeColorFromView(l.getChildAt(i), sideColor);
+        }
+        changeColorFromView(l.getChildAt(nearest),centerColor);
+        selectedView = l.getChildAt(nearest);
+        selectedViewIndex = recyclerView.getChildAdapterPosition(l.getChildAt(nearest));
+        timer.start();
     }
 
 
@@ -298,6 +239,8 @@ public abstract class AbstractGradientRecyclerView2 extends RecyclerView{
                     alpha = (float) getVisibleWidth(l.getChildAt(i)) / l.getChildAt(i).getWidth();
                     if (alpha < 1) {
                         l.getChildAt(i).setAlpha(alpha * alpha);
+                    }else{
+                        l.getChildAt(i).setAlpha(1);
                     }
                 }
             }
@@ -307,30 +250,12 @@ public abstract class AbstractGradientRecyclerView2 extends RecyclerView{
                     alpha = (float) getVisibleHeight(l.getChildAt(i)) / l.getChildAt(i).getHeight();
                     if (alpha < 1) {
                         l.getChildAt(i).setAlpha(alpha * alpha);
+                    }else{
+                        l.getChildAt(i).setAlpha(1);
                     }
                 }
             }
         }
-    }
-
-
-    /**
-     * Method that returns the current center of the linearLayoutManager in coordinates
-     * of the screen.
-     * @param lm layoutManager to find the absolute center
-     * @return a pair of ints, one for the center x and other for the center y
-     */
-    private static int [] getAbsoluteCenter(LinearLayoutManager lm){
-
-        int width = lm.getWidth();
-        int height = lm.getHeight();
-        int [] values = {0,0};
-        Rect first = new Rect();
-        lm.getChildAt(0).getGlobalVisibleRect(first);
-        values[0] = first.left+width/2;
-        values[1] = first.top+height/2;
-        return values;
-
     }
 
 
@@ -466,7 +391,7 @@ public abstract class AbstractGradientRecyclerView2 extends RecyclerView{
         private int orientation;
 
         public OffsetStartEndItemDecorator(int startOffset, int endOffset, int orientation){
-            this.startOffset = startOffset;
+            this.startOffset = startOffset+1;
             this.orientation = orientation;
             this.endOffset = endOffset;
         }
@@ -500,6 +425,5 @@ public abstract class AbstractGradientRecyclerView2 extends RecyclerView{
         }
 
     }
-
 }
 

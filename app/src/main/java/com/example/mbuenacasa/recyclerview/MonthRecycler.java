@@ -31,12 +31,12 @@ public class MonthRecycler extends AbstractGradientRecyclerView {
 
     @Override
     public void whenSelected(View v){
-        ((TextView)v.findViewById(R.id.monthname)).setTextColor(0xFFDABB55);
+        ((TextView)v.findViewById(R.id.month_holder_textview)).setTextColor(0xFFDABB55);
     }
 
     @Override
     protected void changeColorFromView(View v, int c) {
-        TextView tv = (TextView) v.findViewById(R.id.monthname);
+        TextView tv = (TextView) v.findViewById(R.id.month_holder_textview);
         tv.setTextColor(c);
     }
 
@@ -67,7 +67,7 @@ public class MonthRecycler extends AbstractGradientRecyclerView {
 
         public MonthHolder(View itemView) {
             super(itemView);
-            month = (TextView) itemView.findViewById(R.id.monthname);
+            month = (TextView) itemView.findViewById(R.id.month_holder_textview);
         }
     }
 
@@ -101,7 +101,7 @@ public class MonthRecycler extends AbstractGradientRecyclerView {
 
     public String getSelectedMonth(){
             LinearLayoutManager lm = (LinearLayoutManager) recyclerView.getLayoutManager();
-            return ((TextView)lm.getChildAt(nearestView(recyclerView)).findViewById(R.id.monthname)).getText().toString();
+            return ((TextView)lm.getChildAt(nearestView(recyclerView)).findViewById(R.id.month_holder_textview)).getText().toString();
     }
 
 
