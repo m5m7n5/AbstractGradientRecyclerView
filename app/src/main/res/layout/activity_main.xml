@@ -76,8 +76,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/buttonContainer"
         app:center_color="@color/seatRed"
-        app:orientation="horizontal"
-        app:side_color="@color/white">
+        app:side_color="@color/white"
+        app:orientation="horizontal">
 
     </com.example.mbuenacasa.recyclerview.MonthRecyclerView>
 

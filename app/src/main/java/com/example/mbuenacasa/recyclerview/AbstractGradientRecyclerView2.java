@@ -1,9 +1,10 @@
 package com.example.mbuenacasa.recyclerview;
 
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.CountDownTimer;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +19,7 @@ public abstract class AbstractGradientRecyclerView2 extends RecyclerView{
 
     private int centerColor;
     private int sideColor;
+    private int whenSelectedColor;
     private CountDownTimer timer;
     protected int selectedViewIndex;
     protected RecyclerView recyclerView;
@@ -30,34 +32,61 @@ public abstract class AbstractGradientRecyclerView2 extends RecyclerView{
 
     public AbstractGradientRecyclerView2(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        init(attrs);
     }
 
     public AbstractGradientRecyclerView2(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        init(attrs);
     }
 
     protected abstract void whenSelected(View v);
 
     protected abstract void changeColorFromView(View v, int c);
 
-    protected void onCreateCall(@NonNull Context context,@NonNull AbstractGradientRecyclerView2.AbstractGradientRecyclerAdapter adapter, int orientation, int centerColor,int sideColor){
-        this.setAdapter(adapter);
-        LinearLayoutManager llm = new LinearLayoutManager(context);
+    private void init(@Nullable AttributeSet attrs){
+        if(attrs!=null){
+            TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.MonthRecyclerView, 0, 0);
+            String center = a.getString(R.styleable.MonthRecyclerView_center_color);
+            if(center!=null){
+                centerColor = Color.parseColor(center);
+            }else{
+                centerColor = 0xFF000000;
+            }
+            String side = a.getString(R.styleable.MonthRecyclerView_side_color);
+            if(side!=null){
+                sideColor = Color.parseColor(side);
+            }else{
+                sideColor = 0xFFFFFFFF;
+            }
+            String whenSelected = a.getString(R.styleable.MonthRecyclerView_when_selected_color);
+            if(whenSelected!=null){
+                whenSelectedColor = Color.parseColor(whenSelected);
+            }else{
+                whenSelectedColor = centerColor;
+            }
+            String or = a.getString(R.styleable.MonthRecyclerView_orientation);
+            if(or!=null) {
+                orientation = Integer.parseInt(or);
+            }else{
+                orientation = 0;
+            }
+            a.recycle();
+        }
+        LinearLayoutManager llm = new LinearLayoutManager(getContext());
         llm.setOrientation(orientation);
         setLayoutManager(llm);
         settingCustomListeners();
-        this.orientation = orientation;
-        this.sideColor = sideColor;
-        this.centerColor = centerColor;
         recyclerView = this;
         timer = new CountDownTimer(200,200) {
             @Override
             public void onTick(long l) {
-
             }
-
             @Override
             public void onFinish() {
+                if(selectedView!=null) {
+                    changeColorFromView(selectedView, whenSelectedColor);
+                }
                 whenSelected(selectedView);
             }
         };
@@ -67,12 +96,9 @@ public abstract class AbstractGradientRecyclerView2 extends RecyclerView{
                 offset(recyclerView);
                 onStartRecycler(recyclerView);
                 recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-
             }
         });
     }
-
-
 
     protected void offset(RecyclerView recyclerView){
         int startOffset;
@@ -87,16 +113,6 @@ public abstract class AbstractGradientRecyclerView2 extends RecyclerView{
         }
         recyclerView.addItemDecoration(new OffsetStartEndItemDecorator(startOffset,startOffset,orientation));
     }
-    /**
-     * Method to change the layoutManager of the current recyclerView
-     * @param lm changes the layoutManager of the recyclerView
-     */
-    protected void changeLayoutManager(RecyclerView.LayoutManager lm){
-
-        recyclerView.setLayoutManager(lm);
-
-    }
-
 
     /**
      * Method that iterates over the current visible views of the LinearLayoutManager and
@@ -361,19 +377,6 @@ public abstract class AbstractGradientRecyclerView2 extends RecyclerView{
         Rect aux = new Rect();
         v.getGlobalVisibleRect(aux);
         return aux.height();
-    }
-
-    //Custom classes
-    public class AbstractGradientRecyclerViewHolder extends RecyclerView.ViewHolder{
-
-        public AbstractGradientRecyclerViewHolder(View itemView) {
-            super(itemView);
-        }
-
-    }
-
-    public abstract class AbstractGradientRecyclerAdapter<VH extends AbstractGradientRecyclerViewHolder> extends RecyclerView.Adapter<VH>{
-
     }
 
     @Override

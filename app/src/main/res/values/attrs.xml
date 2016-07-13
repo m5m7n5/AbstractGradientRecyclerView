@@ -3,6 +3,7 @@
     <declare-styleable name="MonthRecyclerView">
         <attr name="center_color" format="color" />
         <attr name="side_color" format="color" />
+        <attr name="when_selected_color" format="color"/>
         <attr name="orientation" format="enum">
             <enum name="horizontal" value="0"/>
             <enum name="vertical" value="1"/>
