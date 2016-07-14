@@ -250,11 +250,15 @@ public class DatePickerView extends RelativeLayout implements AbstractGradientRe
     @Override
     public void whenSelected(AbstractGradientRecyclerView aRecycler, View view, int index){
 
+        ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager)days.getLayoutManager()).setCanScroll(true);
+        ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager)months.getLayoutManager()).setCanScroll(true);
+        ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager)years.getLayoutManager()).setCanScroll(true);
         if(days==aRecycler){
         }else if(months==aRecycler){
 
             days.resetAdapter(daysDataMap.get(months.getSelectedString()+years.getSelectedString()));
             days.getAdapter().notifyDataSetChanged();
+
         }else if(years==aRecycler){
 
             months.resetAdapter(monthsDataMap.get(years.getSelectedString()));
@@ -262,12 +266,24 @@ public class DatePickerView extends RelativeLayout implements AbstractGradientRe
 
             days.resetAdapter(daysDataMap.get(monthsDataMap.get(years.getSelectedString()).get(0)+years.getSelectedString()));
             days.getAdapter().notifyDataSetChanged();
-
         }
 
     }
 
-    // DD/MM/YYYY
+    @Override
+    public void whenScrolled(AbstractGradientRecyclerView recyclerView) {
+        if(days==recyclerView){
+            ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager)months.getLayoutManager()).setCanScroll(false);
+            ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager)years.getLayoutManager()).setCanScroll(false);
+        }else if(months==recyclerView){
+            ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager)days.getLayoutManager()).setCanScroll(false);
+            ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager)years.getLayoutManager()).setCanScroll(false);
+        }else if(years==recyclerView){
+            ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager)days.getLayoutManager()).setCanScroll(false);
+            ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager)months.getLayoutManager()).setCanScroll(false);
+        }
+    }
+
     public String getDateAsFormatedString(){
         return days.getSelectedString()+"/"+Integer.toString(indexes.indexOf(months.getSelectedString()))+"/"+years.getSelectedString();
     }

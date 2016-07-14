@@ -83,9 +83,11 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView{
             }
             a.recycle();
         }
-        LinearLayoutManager llm = new LinearLayoutManager(getContext());
-        llm.setOrientation(orientation);
-        setLayoutManager(llm);
+        DynamicPosibleScrollLinearLayoutManager dynamicLLM = new DynamicPosibleScrollLinearLayoutManager(getContext());
+        dynamicLLM.setOrientation(orientation);
+        //TODO change this to come from the attr from xml
+        dynamicLLM.setCanScroll(true);
+        setLayoutManager(dynamicLLM);
         settingCustomListeners();
         recyclerView = this;
         timer = new CountDownTimer(200,200) {
@@ -233,6 +235,11 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView{
                     selectedView = l.getChildAt(nearest);
                     selectedViewIndex = recyclerView.getChildAdapterPosition(l.getChildAt(nearest));
                     timer.start();
+                }else{
+                    //It enters here when the scroll is not stopping
+                    if(communicator!=null){
+                        communicator.whenScrolled((AbstractGradientRecyclerView)recyclerView);
+                    }
                 }
             }
         });
@@ -443,6 +450,34 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView{
 
     public interface AbstractGradientRecyclerCommunicator {
         void whenSelected(AbstractGradientRecyclerView recyclerView, View selectedView, int selectedViewIndex);
+        void whenScrolled(AbstractGradientRecyclerView recyclerView);
     }
+
+    protected class DynamicPosibleScrollLinearLayoutManager extends LinearLayoutManager{
+
+        private boolean canScroll;
+
+        public DynamicPosibleScrollLinearLayoutManager(Context context) {
+            super(context);
+        }
+
+        public DynamicPosibleScrollLinearLayoutManager(Context context, int orientation, boolean reverseLayout) {
+            super(context, orientation, reverseLayout);
+        }
+
+        public DynamicPosibleScrollLinearLayoutManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+            super(context, attrs, defStyleAttr, defStyleRes);
+        }
+
+        @Override
+        public boolean canScrollVertically() {
+            return canScroll;
+        }
+
+        public void setCanScroll(boolean b){
+            canScroll = b;
+        }
+    }
+
 }
 
