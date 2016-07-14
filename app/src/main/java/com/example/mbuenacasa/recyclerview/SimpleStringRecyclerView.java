@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Created by mbuenacasa on 14/07/16.
  */
-public class SimpleStringRecyclerView extends AbstractGradientRecyclerView2{
+public class SimpleStringRecyclerView extends AbstractGradientRecyclerView {
 
     public SimpleStringRecyclerView(Context context) {
         super(context);
@@ -32,7 +32,7 @@ public class SimpleStringRecyclerView extends AbstractGradientRecyclerView2{
     }
 
     public void initAdapter(List<String> list) {
-        this.setAdapter(new VerticalStringAdapter(list,this.context));
+        this.setAdapter(new SimpleStringAdapter(list,this.context));
     }
 
     @Override
@@ -71,12 +71,12 @@ public class SimpleStringRecyclerView extends AbstractGradientRecyclerView2{
         }
     }
 
-    public class VerticalStringAdapter extends RecyclerView.Adapter<NumberHolder> {
+    public class SimpleStringAdapter extends RecyclerView.Adapter<NumberHolder> {
 
         List<String> list = Collections.emptyList();
         Context context;
 
-        public VerticalStringAdapter(List<String> list, Context context) {
+        public SimpleStringAdapter(List<String> list, Context context) {
             this.list = list;
             this.context = context;
         }
@@ -102,6 +102,10 @@ public class SimpleStringRecyclerView extends AbstractGradientRecyclerView2{
     public String getSelectedString(){
         LinearLayoutManager lm = (LinearLayoutManager) recyclerView.getLayoutManager();
         return ((TextView)lm.getChildAt(nearestView(recyclerView)).findViewById(R.id.hour_recycler_view_text_view)).getText().toString();
+    }
+
+    public void resetAdapter(List<String> list){
+        this.setAdapter(new SimpleStringAdapter(list,context));
     }
 
 }

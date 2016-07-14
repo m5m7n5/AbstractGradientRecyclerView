@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by mbuenacasa on 13/07/16.
  */
-public class MonthRecyclerView extends AbstractGradientRecyclerView2{
+public class MonthRecyclerView extends AbstractGradientRecyclerView {
 
     public MonthRecyclerView(Context context) {
         super(context);

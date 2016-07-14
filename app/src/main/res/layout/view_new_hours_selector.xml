@@ -5,7 +5,7 @@
     android:layout_width="300dp"
     android:layout_height="120dp">
 
-    <com.example.mbuenacasa.recyclerview.HourRecyclerView
+    <com.example.mbuenacasa.recyclerview.SimpleStringRecyclerView
         android:layout_width="90dp"
         android:layout_height="wrap_content"
         android:id="@+id/new_hours_view_hours_recycler"
@@ -22,7 +22,7 @@
         android:id="@+id/customViewHours"
         android:layout_toRightOf="@+id/new_hours_view_hours_recycler"/>
 
-    <com.example.mbuenacasa.recyclerview.HourRecyclerView
+    <com.example.mbuenacasa.recyclerview.SimpleStringRecyclerView
         android:layout_width="90dp"
         android:layout_height="wrap_content"
         android:id="@+id/new_hours_view_minutes_recycler"

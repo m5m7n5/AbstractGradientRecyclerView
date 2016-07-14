@@ -34,19 +34,17 @@
 
     </com.example.mbuenacasa.recyclerview.TimePickerView>
 
-    <com.example.mbuenacasa.recyclerview.HoursView.DateSelectorView
+    <com.example.mbuenacasa.recyclerview.DatePickerView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/date_selector_view"
-        android:layout_below="@+id/hoursView"
-        android:layout_centerHorizontal="true">
-
-    </com.example.mbuenacasa.recyclerview.HoursView.DateSelectorView>
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/hoursView"
+        android:id="@+id/date_picker"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/date_selector_view"
+        android:layout_below="@+id/date_picker"
         android:id="@+id/textForDebug"
         android:text="Hi!"/>
 

@@ -7,8 +7,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.mbuenacasa.recyclerview.HoursView.DateSelectorView;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,9 +20,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        android.app.FragmentManager fragmentManager = getFragmentManager();
-        android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
+        //android.app.FragmentManager fragmentManager = getFragmentManager();
+        //android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         //MyCustomFragment myCustomFragment = new MyCustomFragment();
         //fragmentTransaction.add(R.id.fragmentlayout,myCustomFragment);
         //fragmentTransaction.commit();
@@ -40,10 +38,6 @@ public class MainActivity extends AppCompatActivity {
         }
         m.initAdapter(list);
 
-        /*
-        HourRecyclerView hrv = (HourRecyclerView) findViewById(R.id.hour_recycler_view);
-        hrv.initAdapter(hrv.generateHoursNumbers());
-        */
         countDown = new CountDownTimer(10000,1000) {
 
             public void onTick(long millisUntilFinished) {
@@ -84,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
                 }else{
                     ((Button)view).setText("Decrementing");
                 }
-                textForDebug.setText(((DateSelectorView)findViewById(R.id.date_selector_view)).getDateAsFormatedString());
+                textForDebug.setText(((DatePickerView)findViewById(R.id.date_picker)).getDateAsFormatedString());
                 decrementing=!decrementing;
             }
         });

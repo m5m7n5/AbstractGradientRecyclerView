@@ -1,14 +1,10 @@
-package com.example.mbuenacasa.recyclerview.HoursView;
+package com.example.mbuenacasa.recyclerview;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RelativeLayout;
-
-import com.example.mbuenacasa.recyclerview.AbstractGradientRecyclerView;
-import com.example.mbuenacasa.recyclerview.R;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,15 +14,15 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by mbuenacasa on 7/07/16.
+ * Created by mbuenacasa on 14/07/16.
  */
-public class DateSelectorView extends RelativeLayout implements VerticalStringRecycler.Communicator {
+public class DatePickerView extends RelativeLayout implements AbstractGradientRecyclerView.AbstractGradientRecyclerCommunicator{
 
     final int monthsPerYear = 12;
     private LayoutInflater inflater;
-    private VerticalStringRecycler days;
-    private VerticalStringRecycler months;
-    private VerticalStringRecycler years;
+    private SimpleStringRecyclerView days;
+    private SimpleStringRecyclerView months;
+    private SimpleStringRecyclerView years;
     private List<String> yearsData;
     private List<String> indexes;
     private Map<String,ArrayList<String>> daysInMonthMap;
@@ -34,7 +30,7 @@ public class DateSelectorView extends RelativeLayout implements VerticalStringRe
     private Map<String,ArrayList<String>> daysDataMap;
 
 
-    public DateSelectorView(Context context) {
+    public DatePickerView(Context context) {
 
         super(context);
         inflater = LayoutInflater.from(context);
@@ -42,7 +38,7 @@ public class DateSelectorView extends RelativeLayout implements VerticalStringRe
 
     }
 
-    public DateSelectorView(Context context, AttributeSet attrs) {
+    public DatePickerView(Context context, AttributeSet attrs) {
 
         super(context, attrs);
         inflater = LayoutInflater.from(context);
@@ -50,7 +46,7 @@ public class DateSelectorView extends RelativeLayout implements VerticalStringRe
 
     }
 
-    public DateSelectorView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public DatePickerView(Context context, AttributeSet attrs, int defStyleAttr) {
 
         super(context, attrs, defStyleAttr);
         inflater = LayoutInflater.from(context);
@@ -60,10 +56,10 @@ public class DateSelectorView extends RelativeLayout implements VerticalStringRe
 
     private void init(){
 
-        inflater.inflate(R.layout.view_date_selector,this,true);
-        RecyclerView daysRV = (RecyclerView) findViewById(R.id.date_selector_view_days_recycler);
-        RecyclerView monthsRV = (RecyclerView) findViewById(R.id.date_selector_view_months_recycler);
-        RecyclerView yearsRV = (RecyclerView) findViewById(R.id.date_selector_view_years_recycler);
+        inflater.inflate(R.layout.view_date_picker,this,true);
+        days = (SimpleStringRecyclerView) findViewById(R.id.date_picker_days_recycler);
+        months = (SimpleStringRecyclerView) findViewById(R.id.date_picker_months_recycler);
+        years = (SimpleStringRecyclerView) findViewById(R.id.date_picker_years_recycler);
 
         List<String> monthsStrings =  new ArrayList<>();
 
@@ -85,22 +81,10 @@ public class DateSelectorView extends RelativeLayout implements VerticalStringRe
         Date end = new Date(2017, 4, 9);
         generateTablesAndValues(monthsStrings,start,end);
 
-        int centerColor = getResources().getColor(R.color.msa_dark_grey);
-        int sideColor = (centerColor & 0x00FFFFFF) | 0x8F000000;
+        days.initAdapter(daysDataMap.get(indexes.get(start.getMonth())+Integer.toString(start.getYear())));
+        months.initAdapter(monthsDataMap.get(Integer.toString(start.getYear())));
+        years.initAdapter(yearsData);
 
-        days = new VerticalStringRecycler();
-        months = new VerticalStringRecycler();
-        years = new VerticalStringRecycler();
-
-        days.initRecyclerAsVerticalNumberRecycler(
-                daysRV,this.getContext(),centerColor,sideColor,daysDataMap.get(indexes.get(start.getMonth())+Integer.toString(start.getYear()))
-        );
-        months.initRecyclerAsVerticalNumberRecycler(
-                monthsRV,this.getContext(),centerColor,sideColor,monthsDataMap.get(Integer.toString(start.getYear()))
-        );
-        years.initRecyclerAsVerticalNumberRecycler(
-                yearsRV,this.getContext(),centerColor,sideColor,yearsData
-        );
         days.setCommunicator(this);
         months.setCommunicator(this);
         years.setCommunicator(this);
@@ -264,20 +248,20 @@ public class DateSelectorView extends RelativeLayout implements VerticalStringRe
     }
 
     @Override
-    public void selectionChanged(AbstractGradientRecyclerView aRecycler, View view, int index){
+    public void whenSelected(AbstractGradientRecyclerView aRecycler, View view, int index){
 
         if(days==aRecycler){
         }else if(months==aRecycler){
 
-            days.setAdapterItems(daysDataMap.get(months.getSelectedString()+years.getSelectedString()));
-            days.getRecyclerView().getAdapter().notifyDataSetChanged();
+            days.resetAdapter(daysDataMap.get(months.getSelectedString()+years.getSelectedString()));
+            days.getAdapter().notifyDataSetChanged();
         }else if(years==aRecycler){
 
-            months.setAdapterItems(monthsDataMap.get(years.getSelectedString()));
-            months.getRecyclerView().getAdapter().notifyDataSetChanged();
+            months.resetAdapter(monthsDataMap.get(years.getSelectedString()));
+            months.getAdapter().notifyDataSetChanged();
 
-            days.setAdapterItems(daysDataMap.get(monthsDataMap.get(years.getSelectedString()).get(0)+years.getSelectedString()));
-            days.getRecyclerView().getAdapter().notifyDataSetChanged();
+            days.resetAdapter(daysDataMap.get(monthsDataMap.get(years.getSelectedString()).get(0)+years.getSelectedString()));
+            days.getAdapter().notifyDataSetChanged();
 
         }
 
