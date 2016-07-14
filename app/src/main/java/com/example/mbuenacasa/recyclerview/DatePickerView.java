@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -77,8 +78,9 @@ public class DatePickerView extends RelativeLayout implements AbstractGradientRe
         monthsStrings.add("NOV");
         monthsStrings.add("DEC");
 
-        Date start = new Date(2016, 6, 10);
-        Date end = new Date(2017, 4, 9);
+        Calendar calendarInstance = Calendar.getInstance();
+        Date start = new Date(calendarInstance.get(Calendar.YEAR),calendarInstance.get(Calendar.MONTH),calendarInstance.get(Calendar.DAY_OF_MONTH));
+        Date end = new Date(calendarInstance.get(Calendar.YEAR)+1,calendarInstance.get(Calendar.MONTH),calendarInstance.get(Calendar.DAY_OF_MONTH));
         generateTablesAndValues(monthsStrings,start,end);
 
         days.initAdapter(daysDataMap.get(indexes.get(start.getMonth())+Integer.toString(start.getYear())));
@@ -219,7 +221,7 @@ public class DatePickerView extends RelativeLayout implements AbstractGradientRe
             daysDataMap.put(indexes.get(endMonth)+Integer.toString(endYear),aux2);
             //Genero los meses para todos los años excepto el inicial y el final
             aux2 = new ArrayList<>();
-            for(int i=1;i<=endDay;i++){
+            for(int i=0;i<monthsPerYear;i++){
                 aux2.add(indexes.get(i));
             }
             for(int i=(startYear+1);i<endYear;i++){

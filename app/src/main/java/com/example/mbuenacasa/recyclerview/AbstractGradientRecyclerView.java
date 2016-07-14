@@ -416,7 +416,7 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView{
         public OffsetStartEndItemDecorator(int startOffset, int endOffset, int orientation){
             this.startOffset = startOffset+1;
             this.orientation = orientation;
-            this.endOffset = endOffset;
+            this.endOffset = endOffset+1;
         }
 
         @Override
