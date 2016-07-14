@@ -22,22 +22,27 @@ public abstract class AbstractGradientRecyclerView2 extends RecyclerView{
     private int whenSelectedColor;
     private CountDownTimer timer;
     protected int selectedViewIndex;
-    protected RecyclerView recyclerView;
+    protected AbstractGradientRecyclerView2 recyclerView;
     protected View selectedView;
+    protected Context context;
     private int orientation;
     private AbstractGradientRecyclerCommunicator communicator;
 
     public AbstractGradientRecyclerView2(Context context) {
         super(context);
+        this.context = context;
     }
 
     public AbstractGradientRecyclerView2(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        this.context = context;
         init(attrs);
     }
 
     public AbstractGradientRecyclerView2(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        this.context = context;
+
         init(attrs);
     }
 
@@ -94,7 +99,7 @@ public abstract class AbstractGradientRecyclerView2 extends RecyclerView{
                 }
                 whenSelected(selectedView);
                 if(communicator!=null){
-                    communicator.whenSelected(selectedView,selectedViewIndex);
+                    communicator.whenSelected(recyclerView,selectedView,selectedViewIndex);
                 }
             }
         };
@@ -437,7 +442,7 @@ public abstract class AbstractGradientRecyclerView2 extends RecyclerView{
     }
 
     public interface AbstractGradientRecyclerCommunicator {
-        void whenSelected(View selectedView,int selectedViewIndex);
+        void whenSelected(AbstractGradientRecyclerView2 recyclerView,View selectedView,int selectedViewIndex);
     }
 }
 

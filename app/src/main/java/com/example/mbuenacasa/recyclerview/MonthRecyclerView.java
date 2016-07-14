@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,32 +20,19 @@ public class MonthRecyclerView extends AbstractGradientRecyclerView2{
 
     public MonthRecyclerView(Context context) {
         super(context);
-
-        List<String> list = new ArrayList<>();
-        for(Months m:Months.values()){
-            list.add(m.month);
-        }
-        this.setAdapter(new MonthViewAdapter(list,context));
     }
 
     public MonthRecyclerView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-
-        List<String> list = new ArrayList<>();
-        for(Months m:Months.values()){
-            list.add(m.month);
-        }
-        this.setAdapter(new MonthViewAdapter(list,context));
     }
 
     public MonthRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+    }
 
-        List<String> list = new ArrayList<>();
-        for(Months m:Months.values()){
-            list.add(m.month);
-        }
-        this.setAdapter(new MonthViewAdapter(list,context));
+
+    public void initAdapter(List<String> monthList) {
+        this.setAdapter(new MonthViewAdapter(monthList,this.context));
     }
 
     @Override

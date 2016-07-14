@@ -12,5 +12,6 @@
     <color name="green">#4CA64C</color>
     <color name="yellow">#DABB55</color>
     <color name="msa_dark_grey">#333333</color>
+    <color name="msa_dark_grey_side">#8F333333</color>
     <color name="seatRed">#D71C23</color>
 </resources>

@@ -3,20 +3,19 @@ package com.example.mbuenacasa.recyclerview;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.mbuenacasa.recyclerview.HoursView.DateSelectorView;
-import com.example.mbuenacasa.recyclerview.HoursView.HoursView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    HoursView hoursView;
     TextView textForDebug;
     CountDownTimer countDown;
-    MonthRecycler ms;
     boolean counting;
     boolean decrementing;
     @Override
@@ -26,25 +25,32 @@ public class MainActivity extends AppCompatActivity {
         android.app.FragmentManager fragmentManager = getFragmentManager();
         android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        MyCustomFragment myCustomFragment = new MyCustomFragment();
-        fragmentTransaction.add(R.id.fragmentlayout,myCustomFragment);
-        fragmentTransaction.commit();
+        //MyCustomFragment myCustomFragment = new MyCustomFragment();
+        //fragmentTransaction.add(R.id.fragmentlayout,myCustomFragment);
+        //fragmentTransaction.commit();
 
-        RecyclerView rsm = (RecyclerView) findViewById(R.id.seatMonthRecyclerView);
-        ms = new MonthRecycler();
-        ms.initRecyclerAsMonthRecycler(rsm,this,getResources().getColor(R.color.seatRed),getResources().getColor(R.color.white));
-
-        hoursView = (HoursView) findViewById(R.id.hoursView);
         textForDebug = (TextView) findViewById(R.id.textForDebug);
         counting = false;
         decrementing = true;
+
+        MonthRecyclerView m = (MonthRecyclerView) findViewById(R.id.new_month_recycler);
+        List<String> list = new ArrayList<>();
+        for(MonthRecyclerView.Months mo: MonthRecyclerView.Months.values()){
+            list.add(mo.month);
+        }
+        m.initAdapter(list);
+
+        /*
+        HourRecyclerView hrv = (HourRecyclerView) findViewById(R.id.hour_recycler_view);
+        hrv.initAdapter(hrv.generateHoursNumbers());
+        */
         countDown = new CountDownTimer(10000,1000) {
 
             public void onTick(long millisUntilFinished) {
                 if(decrementing) {
-                    hoursView.softMinutesDecrement();
+                    //hoursView.softMinutesDecrement();
                 }else{
-                    hoursView.softMinutesIncrement();
+                    //hoursView.softMinutesIncrement();
                 }
             }
 

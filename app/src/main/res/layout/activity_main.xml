@@ -5,30 +5,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.mbuenacasa.recyclerview.MainActivity">
-
+<!--
     <LinearLayout
         android:id="@+id/fragmentlayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_centerHorizontal="true"/>
-
-    <android.support.v7.widget.RecyclerView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/seatMonthRecyclerView"
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
         android:layout_below="@+id/fragmentlayout"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/seat_gradient" />
+-->
 
-    <com.example.mbuenacasa.recyclerview.HoursView.HoursView
+    <com.example.mbuenacasa.recyclerview.MonthRecyclerView
+        android:background="@drawable/seat_gradient"
+        android:layout_centerHorizontal="true"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:id="@+id/new_month_recycler"
+        app:center_color="@color/seatRed"
+        app:side_color="@color/white"
+        app:orientation="horizontal"/>
+
+    <com.example.mbuenacasa.recyclerview.TimePickerView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
         android:id="@+id/hoursView"
-        android:layout_below="@+id/seatMonthRecyclerView"
-        android:layout_centerHorizontal="true">
-        </com.example.mbuenacasa.recyclerview.HoursView.HoursView>
+        android:layout_below="@+id/new_month_recycler">
+
+    </com.example.mbuenacasa.recyclerview.TimePickerView>
 
     <com.example.mbuenacasa.recyclerview.HoursView.DateSelectorView
         android:layout_width="wrap_content"
@@ -68,18 +72,5 @@
             android:layout_centerHorizontal="true"
             />
     </LinearLayout>
-
-    <com.example.mbuenacasa.recyclerview.MonthRecyclerView
-        android:background="@drawable/seat_gradient"
-        android:layout_centerHorizontal="true"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/buttonContainer"
-        app:center_color="@color/seatRed"
-        app:side_color="@color/white"
-        app:orientation="horizontal">
-
-    </com.example.mbuenacasa.recyclerview.MonthRecyclerView>
-
 
 </RelativeLayout>

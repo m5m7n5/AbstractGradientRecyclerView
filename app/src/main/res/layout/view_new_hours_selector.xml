@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="300dp"
+    android:layout_height="120dp">
+
+    <com.example.mbuenacasa.recyclerview.HourRecyclerView
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/new_hours_view_hours_recycler"
+        app:orientation="vertical"
+        app:center_color="@color/msa_dark_grey"
+        app:side_color="@color/msa_dark_grey_side"/>
+
+    <TextView
+        style="@style/SeatFontType11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="h."
+        android:layout_centerVertical="true"
+        android:id="@+id/customViewHours"
+        android:layout_toRightOf="@+id/new_hours_view_hours_recycler"/>
+
+    <com.example.mbuenacasa.recyclerview.HourRecyclerView
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/new_hours_view_minutes_recycler"
+        android:layout_toRightOf="@+id/customViewHours"
+        app:orientation="vertical"
+        app:center_color="@color/msa_dark_grey"
+        app:side_color="@color/msa_dark_grey_side"/>
+
+    <TextView
+        style="@style/SeatFontType11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="min."
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:id="@+id/customViewMinutes" />
+
+</RelativeLayout>
