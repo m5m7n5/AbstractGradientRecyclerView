@@ -42,4 +42,27 @@ public class TimePickerView extends RelativeLayout{
 
     }
 
+    /**
+     * Returns the current time with hh:mm format
+     * @return
+     */
+    public String getCurrentTimeAsString(){
+        return hours.getSelectedString() +":"+ minutes.getSelectedString();
+    }
+
+    public int getSelectedHour(){
+        return Integer.parseInt(hours.getSelectedString());
+    }
+
+    public int getSelectedMinute(){
+        return Integer.parseInt(minutes.getSelectedString());
+    }
+
+    public int getTimestampSeconds(){
+        return getSelectedHour()*3600+getSelectedMinute()*60;
+    }
+
+    public int getTimeStampMiliSeconds(){
+        return getTimestampSeconds()*1000;
+    }
 }

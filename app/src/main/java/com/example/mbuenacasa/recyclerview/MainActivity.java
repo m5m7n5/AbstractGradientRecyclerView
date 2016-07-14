@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
                 }else{
                     ((Button)view).setText("Decrementing");
                 }
-                textForDebug.setText(((DatePickerView)findViewById(R.id.date_picker)).getDateAsFormatedString());
+                textForDebug.setText(((DatePickerView)findViewById(R.id.date_picker)).getDateAsFormatedString()+" "+((TimePickerView)findViewById(R.id.hoursView)).getCurrentTimeAsString());
                 decrementing=!decrementing;
             }
         });

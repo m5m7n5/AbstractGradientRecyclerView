@@ -285,7 +285,7 @@ public class DatePickerView extends RelativeLayout implements AbstractGradientRe
     }
 
     public String getDateAsFormatedString(){
-        return days.getSelectedString()+"/"+Integer.toString(indexes.indexOf(months.getSelectedString()))+"/"+years.getSelectedString();
+        return days.getSelectedString()+"/"+Integer.toString(indexes.indexOf(months.getSelectedString())+1)+"/"+years.getSelectedString();
     }
 
 }

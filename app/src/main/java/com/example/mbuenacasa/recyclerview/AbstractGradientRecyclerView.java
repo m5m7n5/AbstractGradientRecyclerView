@@ -453,7 +453,7 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView{
         void whenScrolled(AbstractGradientRecyclerView recyclerView);
     }
 
-    protected class DynamicPosibleScrollLinearLayoutManager extends LinearLayoutManager{
+    public class DynamicPosibleScrollLinearLayoutManager extends LinearLayoutManager{
 
         private boolean canScroll;
 
