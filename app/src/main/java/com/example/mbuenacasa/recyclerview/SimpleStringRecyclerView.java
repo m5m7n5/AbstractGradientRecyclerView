@@ -17,17 +17,17 @@ import java.util.List;
 /**
  * Created by mbuenacasa on 14/07/16.
  */
-public class HourRecyclerView extends AbstractGradientRecyclerView2{
+public class SimpleStringRecyclerView extends AbstractGradientRecyclerView2{
 
-    public HourRecyclerView(Context context) {
+    public SimpleStringRecyclerView(Context context) {
         super(context);
     }
 
-    public HourRecyclerView(Context context, @Nullable AttributeSet attrs) {
+    public SimpleStringRecyclerView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public HourRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
+    public SimpleStringRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
