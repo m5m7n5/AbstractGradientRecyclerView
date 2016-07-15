@@ -14,6 +14,9 @@ import android.view.ViewTreeObserver;
 
 /**
  * Created by mbuenacasa on 13/07/16.
+ * This class adds to the RecyclerView items a gradient effect when they enter the view,
+ * and it centers the items on the view, the selected item has a center color, and the side items
+ * his respective side color.
  */
 public abstract class AbstractGradientRecyclerView extends RecyclerView{
 
@@ -28,46 +31,80 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView{
     private int orientation;
     private AbstractGradientRecyclerCommunicator communicator;
 
+    /**
+     * Default constructor of the class
+     * @param context
+     */
     public AbstractGradientRecyclerView(Context context) {
         super(context);
         this.context = context;
     }
 
+    /**
+     * Default constructor of the class
+     * @param context
+     * @param attrs
+     */
     public AbstractGradientRecyclerView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
         init(attrs);
     }
 
+    /**
+     * Default constructor of the class
+     * @param context
+     * @param attrs
+     * @param defStyle
+     */
     public AbstractGradientRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         this.context = context;
-
         init(attrs);
     }
 
+    /**
+     * Abstract method called when the countdown timer stops counting, you can use this to call some
+     * or whatever you want do here.
+     * @param v Current view on the center of the recyclerView
+     */
     protected abstract void whenSelected(View v);
 
+    /**
+     * This method is one of the main class methods, it changes the color of the view, but only the
+     * parts that you want to change.
+     * @param v View that is currently going to change his color
+     * @param c Color to apply on the desired elements
+     */
     protected abstract void changeColorFromView(View v, int c);
 
+    /**
+     * Method to set the communicator.
+     * @param communicator
+     */
     public void setCommunicator(AbstractGradientRecyclerCommunicator communicator){
         this.communicator = communicator;
     }
 
+    /**
+     * Init method that initializes all the variables and listeners needed.
+     * @param attrs
+     */
     private void init(@Nullable AttributeSet attrs){
+        recyclerView = this;
         if(attrs!=null){
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.AbstractGradientRecyclerView, 0, 0);
             String center = a.getString(R.styleable.AbstractGradientRecyclerView_center_color);
             if(center!=null){
                 centerColor = Color.parseColor(center);
             }else{
-                centerColor = 0xFF000000;
+                centerColor = 0xFF000000;//Black
             }
             String side = a.getString(R.styleable.AbstractGradientRecyclerView_side_color);
             if(side!=null){
                 sideColor = Color.parseColor(side);
             }else{
-                sideColor = 0xFFFFFFFF;
+                sideColor = 0xFFFFFFFF;//White
             }
             String whenSelected = a.getString(R.styleable.AbstractGradientRecyclerView_when_selected_color);
             if(whenSelected!=null){
@@ -79,17 +116,16 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView{
             if(or!=null) {
                 orientation = Integer.parseInt(or);
             }else{
-                orientation = 0;
+                orientation = LinearLayoutManager.HORIZONTAL;
             }
             a.recycle();
         }
         DynamicPosibleScrollLinearLayoutManager dynamicLLM = new DynamicPosibleScrollLinearLayoutManager(getContext());
         dynamicLLM.setOrientation(orientation);
-        //TODO change this to come from the attr from xml
+        //TODO Change this to come from the attr from xml
         dynamicLLM.setCanScroll(true);
         setLayoutManager(dynamicLLM);
         settingCustomListeners();
-        recyclerView = this;
         timer = new CountDownTimer(200,200) {
             @Override
             public void onTick(long l) {
@@ -105,16 +141,25 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView{
                 }
             }
         };
-        getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+
+        getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
-            public void onGlobalLayout() {
+            public boolean onPreDraw() {
                 offset(recyclerView);
                 onStartRecycler(recyclerView);
-                recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                recyclerView.getViewTreeObserver().removeOnPreDrawListener(this);
+                return false;
             }
         });
+
     }
 
+    /**
+     * This method is called when the TreeViewObserver initialized in the init function is called, an is called once, it
+     * calculates the offset for the OffsetStartEndItemDecorator, to make the fist and end items scroll a little more,
+     * to let them center in the view. TODO Can be improved changing the current calculation and making it fit better the sides.
+     * @param recyclerView
+     */
     protected void offset(RecyclerView recyclerView){
         int startOffset;
         if(orientation == LinearLayoutManager.HORIZONTAL){
@@ -127,6 +172,24 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView{
             startOffset = (viewHeight-first.getHeight())/2;
         }
         recyclerView.addItemDecoration(new OffsetStartEndItemDecorator(startOffset,startOffset,orientation));
+    }
+
+    /**
+     * This method is called when the TreeViewObserver initialized in the init function is called, an is called once, it
+     * makes a init of the variables and a scroll to the startPosition.
+     * @param recyclerView
+     */
+    private void onStartRecycler(RecyclerView recyclerView){
+        LinearLayoutManager l = (LinearLayoutManager) recyclerView.getLayoutManager();
+        recyclerView.scrollTo(0,0);
+        int nearest = 0;
+        for(int i=1;i<l.getChildCount();i++){
+            changeColorFromView(l.getChildAt(i), sideColor);
+        }
+        changeColorFromView(l.getChildAt(nearest),centerColor);
+        selectedView = l.getChildAt(nearest);
+        selectedViewIndex = recyclerView.getChildAdapterPosition(l.getChildAt(nearest));
+        timer.start();
     }
 
     /**
@@ -161,12 +224,18 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView{
     private void settingCustomListeners(){
 
         addOnScrollListener(new RecyclerView.OnScrollListener() {
+            /**
+             * This method changes the color and the alpha value of  the visible views to make
+             * the desired effect.
+             * @param recyclerView
+             * @param dx
+             * @param dy
+             */
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 /*
-                Para el correcto funcionamiento de este método supongo que en la vista siempre se ve un elemento completo,
-                es decir, que por lo menos hay un elemento entero en el layout.
+                For the correct working of this method, always should be a full element on the view.
                  */
                 timer.cancel();
                 LinearLayoutManager l = (LinearLayoutManager) recyclerView.getLayoutManager();
@@ -179,8 +248,8 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView{
                     l.getChildAt(i).setAlpha(1);
                 }
                 /*
-                Aplico la degradación de color a los 2 elementos mas cercanos al centro, para ello calculo el máximo y un segundo máximo,
-                como en pantalla no habrán muchos objetos, éste cálculo no sera muy costoso.
+                Apply the gradient of color to the nearest two elements to center, for this, i calculate the two elements with less distance to the center,
+                this has low cost because of low quantity of items.
                  */
                 int secondMaxIndex = 0;
 
@@ -208,12 +277,18 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView{
 
 
                 /*
-                Aplico el degradado al primero y al último elemento visible
-                Utilizando el elemento mas cercano al centro calculo el valor alfa de cambio y lo aplico a los extremos
+                Apply the gradient to the first and the las visible element
                  */
                 applyAlpha(l);
             }
 
+            /**
+             * Method that manages the behaviour of the recycler when the user stops scrolling,
+             * basically it centers the item and changes the color of the designed views, and starts
+             * the timer for whenSelected method.
+             * @param recyclerView
+             * @param newState
+             */
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -245,21 +320,6 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView{
         });
 
     }
-
-
-    private void onStartRecycler(RecyclerView recyclerView){
-        LinearLayoutManager l = (LinearLayoutManager) recyclerView.getLayoutManager();
-        recyclerView.scrollTo(0,0);
-        int nearest = 0;
-        for(int i=1;i<l.getChildCount();i++){
-            changeColorFromView(l.getChildAt(i), sideColor);
-        }
-        changeColorFromView(l.getChildAt(nearest),centerColor);
-        selectedView = l.getChildAt(nearest);
-        selectedViewIndex = recyclerView.getChildAdapterPosition(l.getChildAt(nearest));
-        timer.start();
-    }
-
 
     /**
      * Method that iterates over the current visible items and changes alpha values of the items,
@@ -308,7 +368,7 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView{
         if(variation>=1){
             return toColor;
         }
-        //Calculo las componentes de cada color para calcular la tasa de cambio total
+        //Split of the components into A R G B variables for both colors
         int A0 = (fromColor & 0xFF000000)>>24;
         int R0 = (fromColor & 0x00FF0000)>>16;
         int G0 = (fromColor & 0x0000FF00)>>8;
@@ -318,7 +378,7 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView{
         int G1 = (toColor & 0x0000FF00)>>8;
         int B1 = toColor & 0x000000FF;
 
-
+        //Getting the color values for the target gradient color
         int totalChangeA = interpolate(A0,A1,variation);
         int totalChangeR = interpolate(R0,R1,variation);
         int totalChangeG = interpolate(G0,G1,variation);
@@ -399,6 +459,11 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView{
         return aux.height();
     }
 
+    /**
+     * Method equals for the abstractGradientRecyclerView
+     * @param o
+     * @return
+     */
     @Override
     public boolean equals(Object o) {
         if(o instanceof AbstractGradientRecyclerView){
@@ -407,18 +472,35 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView{
         return false;
     }
 
+    /**
+     * This class is the reponsible of the scroll limit over the recyclers
+     */
     public class OffsetStartEndItemDecorator extends RecyclerView.ItemDecoration{
 
         private int startOffset;
         private int endOffset;
         private int orientation;
 
+        /**
+         * Constructor of the class
+         * @param startOffset
+         * @param endOffset
+         * @param orientation
+         */
         public OffsetStartEndItemDecorator(int startOffset, int endOffset, int orientation){
-            this.startOffset = startOffset+1;
+            this.startOffset = startOffset;
             this.orientation = orientation;
-            this.endOffset = endOffset+1;
+            this.endOffset = endOffset;
         }
 
+        /**
+         * Method that let's the first and the last view scroll a little more than the size of the list
+         * it depends on the orientation of the recyclerView
+         * @param outRect
+         * @param view
+         * @param parent
+         * @param state
+         */
         @Override
         public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
             super.getItemOffsets(outRect, view, parent, state);
@@ -448,32 +530,74 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView{
         }
     }
 
+    /**
+     * Implement this interface if you want to communicate some view between them and when you want to call
+     * a method that goes only when scrolled.
+     */
     public interface AbstractGradientRecyclerCommunicator {
         void whenSelected(AbstractGradientRecyclerView recyclerView, View selectedView, int selectedViewIndex);
         void whenScrolled(AbstractGradientRecyclerView recyclerView);
     }
 
+    /**
+     * This class is used to lock some of the scrolls, is a linearLayoutManager where you can
+     * change the value canScroll for make it scroll o for don't let it scroll.
+     */
     public class DynamicPosibleScrollLinearLayoutManager extends LinearLayoutManager{
 
         private boolean canScroll;
 
+        /**
+         * Default constructor
+         * @param context
+         */
         public DynamicPosibleScrollLinearLayoutManager(Context context) {
             super(context);
         }
 
+        /**
+         * Default constructor
+         * @param context
+         * @param orientation
+         * @param reverseLayout
+         */
         public DynamicPosibleScrollLinearLayoutManager(Context context, int orientation, boolean reverseLayout) {
             super(context, orientation, reverseLayout);
         }
 
+        /**
+         * Default constructor
+         * @param context
+         * @param attrs
+         * @param defStyleAttr
+         * @param defStyleRes
+         */
         public DynamicPosibleScrollLinearLayoutManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
             super(context, attrs, defStyleAttr, defStyleRes);
         }
 
+        /**
+         * Method that is checked when the vertical scroll event is called
+         * @return
+         */
         @Override
         public boolean canScrollVertically() {
-            return canScroll;
+            return canScroll && this.getOrientation() == LinearLayoutManager.VERTICAL;
         }
 
+        /**
+         * Method that is checked when the horizontal scroll event is called
+         * @return
+         */
+        @Override
+        public boolean canScrollHorizontally(){
+            return canScroll && this.getOrientation() == LinearLayoutManager.HORIZONTAL;
+        }
+
+        /**
+         * Changes the value of canScroll variable to your b variable
+         * @param b
+         */
         public void setCanScroll(boolean b){
             canScroll = b;
         }
