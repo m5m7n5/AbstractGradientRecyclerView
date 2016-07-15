@@ -83,9 +83,9 @@ public class DatePickerView extends RelativeLayout implements AbstractGradientRe
         Date end = new Date(calendarInstance.get(Calendar.YEAR)+1,calendarInstance.get(Calendar.MONTH),calendarInstance.get(Calendar.DAY_OF_MONTH));
         generateTablesAndValues(monthsStrings,start,end);
 
-        days.initAdapter(daysDataMap.get(indexes.get(start.getMonth())+Integer.toString(start.getYear())));
-        months.initAdapter(monthsDataMap.get(Integer.toString(start.getYear())));
-        years.initAdapter(yearsData);
+        days.setAdapterList(daysDataMap.get(indexes.get(start.getMonth())+Integer.toString(start.getYear())));
+        months.setAdapterList(monthsDataMap.get(Integer.toString(start.getYear())));
+        years.setAdapterList(yearsData);
 
         days.setCommunicator(this);
         months.setCommunicator(this);
@@ -258,15 +258,15 @@ public class DatePickerView extends RelativeLayout implements AbstractGradientRe
         if(days==aRecycler){
         }else if(months==aRecycler){
 
-            days.resetAdapter(daysDataMap.get(months.getSelectedString()+years.getSelectedString()));
+            days.setAdapterList(daysDataMap.get(months.getSelectedString()+years.getSelectedString()));
             days.getAdapter().notifyDataSetChanged();
 
         }else if(years==aRecycler){
 
-            months.resetAdapter(monthsDataMap.get(years.getSelectedString()));
+            months.setAdapterList(monthsDataMap.get(years.getSelectedString()));
             months.getAdapter().notifyDataSetChanged();
 
-            days.resetAdapter(daysDataMap.get(monthsDataMap.get(years.getSelectedString()).get(0)+years.getSelectedString()));
+            days.setAdapterList(daysDataMap.get(monthsDataMap.get(years.getSelectedString()).get(0)+years.getSelectedString()));
             days.getAdapter().notifyDataSetChanged();
         }
 

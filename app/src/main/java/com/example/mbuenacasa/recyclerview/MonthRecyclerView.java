@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -20,18 +21,36 @@ public class MonthRecyclerView extends AbstractGradientRecyclerView {
 
     public MonthRecyclerView(Context context) {
         super(context);
+        init();
     }
 
     public MonthRecyclerView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        init();
     }
 
     public MonthRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        init();
     }
 
+    /**
+     * Method that initializes the view and his components, in this case it sets a default monthList
+     */
+    private void init(){
+        List<String> list = new ArrayList<>();
+        for(MonthRecyclerView.Months mo: MonthRecyclerView.Months.values()){
+            list.add(mo.month);
+        }
+        this.setAdapterList(list);
+    }
 
-    public void initAdapter(List<String> monthList) {
+    /**
+     * Method that changes the current adapter for a new adapter with the list passed as an argument,
+     * a call to notifyDataSetChanged should be made.
+     * @param monthList
+     */
+    public void setAdapterList(List<String> monthList) {
         this.setAdapter(new MonthViewAdapter(monthList,this.context));
     }
 
@@ -39,12 +58,20 @@ public class MonthRecyclerView extends AbstractGradientRecyclerView {
     public void whenSelected(View v){
     }
 
+    /**
+     * Method that changes the desired views of the view with the color passed as an argument
+     * @param v View that is currently going to change his color
+     * @param c Color to apply on the desired elements
+     */
     @Override
     protected void changeColorFromView(View v, int c) {
         TextView tv = (TextView) v.findViewById(R.id.month_holder_textview);
         tv.setTextColor(c);
     }
 
+    /**
+     * Public enum with the name of the months
+     */
     public enum Months{
         JANUARY("January"),
         FEBRUARY("February"),
@@ -67,6 +94,9 @@ public class MonthRecyclerView extends AbstractGradientRecyclerView {
 
     }
 
+    /**
+     * Custom holder for the adapter
+     */
     public class MonthHolder extends RecyclerView.ViewHolder {
         TextView month;
 
@@ -76,6 +106,9 @@ public class MonthRecyclerView extends AbstractGradientRecyclerView {
         }
     }
 
+    /**
+     * Custom adapter
+     */
     public class MonthViewAdapter extends RecyclerView.Adapter<MonthHolder> {
 
         List<String> list = Collections.emptyList();
@@ -104,6 +137,10 @@ public class MonthRecyclerView extends AbstractGradientRecyclerView {
         }
     }
 
+    /**
+     * Method that returns the selected month as an string
+     * @return
+     */
     public String getSelectedMonth(){
         LinearLayoutManager lm = (LinearLayoutManager) recyclerView.getLayoutManager();
         return ((TextView)lm.getChildAt(nearestView(recyclerView)).findViewById(R.id.month_holder_textview)).getText().toString();

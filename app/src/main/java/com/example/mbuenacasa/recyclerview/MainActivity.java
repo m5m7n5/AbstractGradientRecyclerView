@@ -32,11 +32,6 @@ public class MainActivity extends AppCompatActivity {
         decrementing = true;
 
         MonthRecyclerView m = (MonthRecyclerView) findViewById(R.id.new_month_recycler);
-        List<String> list = new ArrayList<>();
-        for(MonthRecyclerView.Months mo: MonthRecyclerView.Months.values()){
-            list.add(mo.month);
-        }
-        m.initAdapter(list);
 
         countDown = new CountDownTimer(10000,1000) {
 
