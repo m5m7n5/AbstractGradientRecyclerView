@@ -152,74 +152,74 @@ public class DatePickerView extends RelativeLayout implements AbstractGradientRe
         monthsDataMap = new HashMap<>();
 
         if(quantityOfMonths==0){
-            //Genero la lista de dias para el mes y año correspondiente
+            //Produces the list of days for the corresponding month and year
             ArrayList<String> aux2 = new ArrayList<>();
             for(int i=startDay;i<=endDay;i++){
                 aux2.add(Integer.toString(i));
             }
-            //Añado la lista de dias al mes y año correspondiente
+            //Adds the list of days to the corresponding month and year
             daysDataMap.put(indexes.get(startMonth)+Integer.toString(startYear),aux2);
-            //Genero la lista de meses para el año
+            //Produces the list of months for the year
             aux2=new ArrayList<>();
             aux2.add(indexes.get(startMonth));
-            //Añado la lista de meses
+            //Adds month list
             monthsDataMap.put(Integer.toString(startYear),aux2);
         }else if((endYear-startYear)==0){
-            //Genero los dias del mes inicial
+            //Produces the days for the initial month
             ArrayList<String> aux2 = new ArrayList<>();
             for(int i=startDay;i<=monthQuantity.get(monthsDays.get(startMonth));i++){
                 aux2.add(Integer.toString(i));
             }
-            //Añado los dias del mes inicial en funcion del mes y el año
+            //Adds the days of the initial month depending on the month and the year
             daysDataMap.put(indexes.get(startMonth)+Integer.toString(startYear),aux2);
 
-            //Voy añadiendo el resto de meses completos
+            //Adding the rest of the months
             for(int i=(startMonth+1);i<endMonth;i++){
                 daysDataMap.put(indexes.get(i)+Integer.toString(startYear),daysInMonthMap.get(indexes.get(i)));
             }
-            //Genero los dias del mes final
+            //Produces the days of the last month
             aux2 = new ArrayList<>();
             for(int i=1;i<=endDay;i++){
                 aux2.add(Integer.toString(i));
             }
-            //Añado los dias del mes final en funcion del mes y el año.
+            //Adds the days of the last month depending on the last month and the year
             daysDataMap.put(indexes.get(endMonth)+Integer.toString(startYear),aux2);
-            //Genero los meses del año correspondiente.
+            //Produces the months of the corresponding year
             aux2 =  new ArrayList<>();
             for(int i=startMonth;i<=endMonth;i++){
                 aux2.add(indexes.get(i));
             }
-            //Añado la lista de los meses correspondientes al año.
+            //Adds the list of the months to his year
             monthsDataMap.put(Integer.toString(startYear),aux2);
         }else{
-            //Generlo la lista de dias del primer mes.
+            //Produces the list of days of the first month
             ArrayList<String> aux2 = new ArrayList<>();
             for(int i=startDay;i<=monthQuantity.get(monthsDays.get(startMonth));i++){
                 aux2.add(Integer.toString(i));
             }
-            //Añado la lista de dias del primer mes al mes y año correspondientes.
+            //Adds this list to the first month and his corresponding year
             daysDataMap.put(indexes.get(startMonth)+Integer.toString(startYear),aux2);
-            //Añado la lista de dias de los meses siguientes hasta terminar el año.
+            //Adds the list of days of the next months until the year ends
             for(int i=(startMonth+1);i<monthsPerYear;i++){
                 daysDataMap.put(indexes.get(i)+Integer.toString(startYear),daysInMonthMap.get(indexes.get(i)));
             }
-            // i recorre los años y j recorre los meses.
+            // i goes over the years and j goes over the months
             for(int i=(startYear+1);i<endYear;i++){
                 for(int j=0;j<monthsPerYear;j++){
                     daysDataMap.put(indexes.get(j)+Integer.toString(i),daysInMonthMap.get(indexes.get(j)));
                 }
             }
-            //Añado los meses que faltan exceptuando el ultimo ya que puede tener una cantidad de dias menor.
+            //Adds the needed months before the last because it can have less days
             for(int i=0;i<endMonth;i++){
                 daysDataMap.put(indexes.get(i)+Integer.toString(endYear),daysInMonthMap.get(indexes.get(i)));
             }
-            //Añado el último mes
+            //Adds the last month
             aux2 = new ArrayList<>();
             for(int i=1;i<=endDay;i++){
                 aux2.add(Integer.toString(i));
             }
             daysDataMap.put(indexes.get(endMonth)+Integer.toString(endYear),aux2);
-            //Genero los meses para todos los años excepto el inicial y el final
+            //Produces the months for all the years except the first and the last
             aux2 = new ArrayList<>();
             for(int i=0;i<monthsPerYear;i++){
                 aux2.add(indexes.get(i));
@@ -227,13 +227,13 @@ public class DatePickerView extends RelativeLayout implements AbstractGradientRe
             for(int i=(startYear+1);i<endYear;i++){
                 monthsDataMap.put(Integer.toString(i),aux2);
             }
-            //Genero los meses del año inicial
+            //Produces the months of the first year
             aux2 =  new ArrayList<>();
             for(int i=startMonth;i<monthsPerYear;i++){
                 aux2.add(indexes.get(i));
             }
             monthsDataMap.put(Integer.toString(startYear),aux2);
-            //Genero los meses del año final
+            //Produces the months of the last year
             aux2 =  new ArrayList<>();
             for(int i=0;i<=endMonth;i++){
                 aux2.add(indexes.get(i));
