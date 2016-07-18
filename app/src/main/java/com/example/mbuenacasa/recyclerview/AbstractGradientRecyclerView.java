@@ -124,6 +124,7 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView{
         dynamicLLM.setOrientation(orientation);
         //TODO Change this to come from the attr from xml
         dynamicLLM.setCanScroll(true);
+        dynamicLLM.setAutoMeasureEnabled(false);
         setLayoutManager(dynamicLLM);
         settingCustomListeners();
         timer = new CountDownTimer(200,200) {

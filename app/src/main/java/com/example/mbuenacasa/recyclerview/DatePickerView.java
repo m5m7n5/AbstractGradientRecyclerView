@@ -255,21 +255,21 @@ public class DatePickerView extends RelativeLayout implements AbstractGradientRe
         ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager)days.getLayoutManager()).setCanScroll(true);
         ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager)months.getLayoutManager()).setCanScroll(true);
         ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager)years.getLayoutManager()).setCanScroll(true);
+        SimpleStringRecyclerView.SimpleStringAdapter daysAdapter = (SimpleStringRecyclerView.SimpleStringAdapter) days.getAdapter();
+        SimpleStringRecyclerView.SimpleStringAdapter monthsAdapter = (SimpleStringRecyclerView.SimpleStringAdapter) months.getAdapter();
         if(days==aRecycler){
         }else if(months==aRecycler){
-
-            days.setAdapterList(daysDataMap.get(months.getSelectedString()+years.getSelectedString()));
-            days.getAdapter().notifyDataSetChanged();
-
+            daysAdapter.setList(daysDataMap.get(months.getSelectedString()+years.getSelectedString()));
+            daysAdapter.notifyDataSetChanged();
+            days.smoothScrollToPosition(0);
         }else if(years==aRecycler){
-
-            months.setAdapterList(monthsDataMap.get(years.getSelectedString()));
-            months.getAdapter().notifyDataSetChanged();
-
-            days.setAdapterList(daysDataMap.get(monthsDataMap.get(years.getSelectedString()).get(0)+years.getSelectedString()));
-            days.getAdapter().notifyDataSetChanged();
+            monthsAdapter.setList(monthsDataMap.get(years.getSelectedString()));
+            monthsAdapter.notifyDataSetChanged();
+            daysAdapter.setList(daysDataMap.get(monthsDataMap.get(years.getSelectedString()).get(0)+years.getSelectedString()));
+            daysAdapter.notifyDataSetChanged();
+            months.smoothScrollToPosition(0);
+            days.smoothScrollToPosition(0);
         }
-
     }
 
     @Override
@@ -286,7 +286,7 @@ public class DatePickerView extends RelativeLayout implements AbstractGradientRe
         }
     }
 
-    public String getDateAsFormatedString(){
+    public String getDateAsFormattedString(){
         return days.getSelectedString()+"/"+Integer.toString(indexes.indexOf(months.getSelectedString())+1)+"/"+years.getSelectedString();
     }
 

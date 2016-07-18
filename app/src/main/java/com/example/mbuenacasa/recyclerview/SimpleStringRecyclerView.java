@@ -64,7 +64,8 @@ public class SimpleStringRecyclerView extends AbstractGradientRecyclerView {
      * @param list list for the adapter
      */
     public void setAdapterList(List<String> list) {
-        this.setAdapter(new SimpleStringAdapter(list,this.context));
+        this.setAdapter(new SimpleStringAdapter(this.context));
+        ((SimpleStringAdapter)this.getAdapter()).setList(list);
     }
 
     /**
@@ -131,8 +132,8 @@ public class SimpleStringRecyclerView extends AbstractGradientRecyclerView {
         List<String> list = Collections.emptyList();
         Context context;
 
-        public SimpleStringAdapter(List<String> list, Context context) {
-            this.list = list;
+        public SimpleStringAdapter(Context context) {
+            this.list = new ArrayList<>();
             this.context = context;
         }
 
@@ -151,6 +152,13 @@ public class SimpleStringRecyclerView extends AbstractGradientRecyclerView {
         @Override
         public int getItemCount() {
             return list.size();
+        }
+
+        public void setList(List<String> list){
+            this.list.clear();
+            for(int i=0;i<list.size();i++){
+                this.list.add(list.get(i));
+            }
         }
     }
 
