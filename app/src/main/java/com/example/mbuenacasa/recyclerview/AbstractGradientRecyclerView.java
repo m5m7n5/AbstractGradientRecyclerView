@@ -162,15 +162,19 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView{
      * @param recyclerView
      */
     protected void offset(RecyclerView recyclerView){
-        int startOffset;
+        int startOffset=0;
         if(orientation == LinearLayoutManager.HORIZONTAL){
             int viewWidth = recyclerView.getWidth();
-            View first = recyclerView.getChildViewHolder(recyclerView.getChildAt(0)).itemView;
-            startOffset = (viewWidth-first.getWidth())/2;
+            if(recyclerView.getChildAt(0) != null){
+                View first = recyclerView.getChildViewHolder(recyclerView.getChildAt(0)).itemView;
+                startOffset = (viewWidth-first.getWidth())/2;
+            }
         }else{
             int viewHeight = recyclerView.getHeight();
-            View first = recyclerView.getChildViewHolder(recyclerView.getChildAt(0)).itemView;
-            startOffset = (viewHeight-first.getHeight())/2;
+            if(recyclerView.getChildAt(0) != null){
+                View first = recyclerView.getChildViewHolder(recyclerView.getChildAt(0)).itemView;
+                startOffset = (viewHeight-first.getHeight())/2;
+            }
         }
         recyclerView.addItemDecoration(new OffsetStartEndItemDecorator(startOffset,startOffset,orientation));
     }
@@ -187,10 +191,12 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView{
         for(int i=1;i<l.getChildCount();i++){
             changeColorFromView(l.getChildAt(i), sideColor);
         }
-        changeColorFromView(l.getChildAt(nearest),centerColor);
-        selectedView = l.getChildAt(nearest);
-        selectedViewIndex = recyclerView.getChildAdapterPosition(l.getChildAt(nearest));
-        timer.start();
+        if(l.getChildAt(nearest)!=null){
+            changeColorFromView(l.getChildAt(nearest),centerColor);
+            selectedView = l.getChildAt(nearest);
+            selectedViewIndex = recyclerView.getChildAdapterPosition(l.getChildAt(nearest));
+            timer.start();
+        }
     }
 
     /**

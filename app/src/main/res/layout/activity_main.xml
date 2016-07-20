@@ -41,34 +41,31 @@
         android:layout_below="@id/hoursView"
         android:id="@+id/date_picker"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/date_picker"
-        android:id="@+id/textForDebug"
-        android:text="Hi!"/>
+    <com.example.mbuenacasa.recyclerview.DragView
+        android:id="@+id/drag_view"
+        android:layout_centerHorizontal="true"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_below="@id/date_picker">
+        <TextView
+            android:id="@+id/view_for_drag_button"
+            android:background="@color/pink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:padding="10dp"
+            android:text="click me" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textForDebug"
-        android:orientation="horizontal"
-        android:id="@+id/buttonContainer"
-        android:layout_centerHorizontal="true">
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/buttonCountdown"
-            android:text="Start counting"
-            android:layout_centerHorizontal="true"
-            />
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/buttonReverse"
-            android:text="Decrementing"
-            android:layout_centerHorizontal="true"
-            />
-    </LinearLayout>
+        <TextView
+            android:id="@+id/view_for_drag"
+            android:background="@color/green"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:padding="10dp"
+            android:text="wwaaaaawww"/>
+
+    </com.example.mbuenacasa.recyclerview.DragView>
 
 </RelativeLayout>

@@ -20,6 +20,7 @@ import java.util.List;
  */
 public class SimpleStringRecyclerView extends AbstractGradientRecyclerView {
 
+
     private final int HOURS_IN_A_DAY=24;
     private final int MINUTES_IN_AN_HOUR=60;
     /**
@@ -84,7 +85,7 @@ public class SimpleStringRecyclerView extends AbstractGradientRecyclerView {
      */
     @Override
     protected void changeColorFromView(View v, int c) {
-        TextView tv = (TextView) v.findViewById(R.id.hour_recycler_view_text_view);
+        TextView tv = (TextView) v.findViewById(R.id.vertical_recycler_view_text);
         tv.setTextColor(c);
     }
 
@@ -120,7 +121,7 @@ public class SimpleStringRecyclerView extends AbstractGradientRecyclerView {
 
         public NumberHolder(View itemView) {
             super(itemView);
-            numbers = (TextView) itemView.findViewById(R.id.hour_recycler_view_text_view);
+            numbers = (TextView) itemView.findViewById(R.id.vertical_recycler_view_text);
         }
     }
 
@@ -139,7 +140,7 @@ public class SimpleStringRecyclerView extends AbstractGradientRecyclerView {
 
         @Override
         public NumberHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.holder_hour_recycler_view, parent, false);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.holder_vertical_string, parent, false);
             NumberHolder holder = new NumberHolder(v);
             return holder;
         }
@@ -168,7 +169,7 @@ public class SimpleStringRecyclerView extends AbstractGradientRecyclerView {
      */
     public String getSelectedString(){
         LinearLayoutManager lm = (LinearLayoutManager) recyclerView.getLayoutManager();
-        return ((TextView)lm.getChildAt(nearestView(recyclerView)).findViewById(R.id.hour_recycler_view_text_view)).getText().toString();
+        return ((TextView)lm.getChildAt(nearestView(recyclerView)).findViewById(R.id.vertical_recycler_view_text)).getText().toString();
     }
-
 }
+
