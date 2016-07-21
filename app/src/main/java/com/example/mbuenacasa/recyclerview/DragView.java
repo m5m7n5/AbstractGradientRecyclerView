@@ -38,7 +38,7 @@ public class DragView extends RelativeLayout {
     protected void onFinishInflate() {
         mDragView = (TextView)findViewById(R.id.view_for_drag);
         mButtonView = (TextView)findViewById(R.id.view_for_drag_button);
-        //mButtonView.setOnClickListener(null);
+        mButtonView.setOnClickListener(null);
         buttonListener = new OnClickListener() {
             @Override
             public void onClick(View view) {

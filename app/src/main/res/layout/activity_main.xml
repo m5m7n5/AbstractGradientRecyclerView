@@ -5,48 +5,70 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.mbuenacasa.recyclerview.MainActivity">
-<!--
+
     <LinearLayout
-        android:id="@+id/fragmentlayout"
+        android:id="@+id/fragment_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_centerHorizontal="true"/>
-        android:layout_below="@+id/fragmentlayout"
--->
+
 
     <com.example.mbuenacasa.recyclerview.MonthRecyclerView
+        android:id="@+id/month_view"
         android:background="@drawable/seat_gradient"
         android:layout_centerHorizontal="true"
+        android:layout_below="@+id/fragment_layout"
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:id="@+id/new_month_recycler"
+        app:center_color="@color/seatRed"
+        app:side_color="@color/white"
+        app:orientation="horizontal"/>
+    <com.example.mbuenacasa.recyclerview.MonthRecyclerView
+        android:id="@+id/month_view2"
+        android:background="@drawable/seat_gradient"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/month_view"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        app:center_color="@color/seatRed"
+        app:side_color="@color/white"
+        app:orientation="horizontal"/>
+    <com.example.mbuenacasa.recyclerview.MonthRecyclerView
+        android:id="@+id/month_view3"
+        android:background="@drawable/seat_gradient"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/month_view2"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
         app:center_color="@color/seatRed"
         app:side_color="@color/white"
         app:orientation="horizontal"/>
 
-    <com.example.mbuenacasa.recyclerview.TimePickerView
+    <com.example.mbuenacasa.recyclerview.DatePickerView
+        android:id="@+id/date_picker_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:id="@+id/hoursView"
-        android:layout_below="@+id/new_month_recycler">
+        android:layout_below="@id/month_view3"/>
+
+
+    <com.example.mbuenacasa.recyclerview.TimePickerView
+        android:id="@+id/time_picker_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/date_picker_view">
 
     </com.example.mbuenacasa.recyclerview.TimePickerView>
 
-    <com.example.mbuenacasa.recyclerview.DatePickerView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/hoursView"
-        android:id="@+id/date_picker"/>
 
     <com.example.mbuenacasa.recyclerview.DragView
         android:id="@+id/drag_view"
         android:layout_centerHorizontal="true"
         android:layout_width="200dp"
         android:layout_height="50dp"
-        android:layout_below="@id/date_picker">
+        android:layout_below="@id/time_picker_view">
         <TextView
             android:id="@+id/view_for_drag_button"
             android:background="@color/pink"

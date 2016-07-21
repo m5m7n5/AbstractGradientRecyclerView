@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
@@ -17,6 +18,9 @@ import android.view.ViewTreeObserver;
  * This class adds to the RecyclerView items a gradient effect when they enter the view,
  * and it centers the items on the view, the selected item has a center color, and the side items
  * his respective side color.
+ *
+ * THIS CLASS NEEDS TO HAVE ON XML MATCH_PARENT OR A FIXED SIZE FOR HIS ORIENTATION, DON'T WRAP CONTENT
+ * THE SIZE OF HIS ORIENTATION
  */
 public abstract class AbstractGradientRecyclerView extends RecyclerView{
 
@@ -112,12 +116,28 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView{
             }else{
                 whenSelectedColor = centerColor;
             }
-            String or = a.getString(R.styleable.AbstractGradientRecyclerView_orientation);
-            if(or!=null) {
-                orientation = Integer.parseInt(or);
+            String orientation = a.getString(R.styleable.AbstractGradientRecyclerView_orientation);
+            if(orientation!=null) {
+                this.orientation = Integer.parseInt(orientation);
             }else{
-                orientation = LinearLayoutManager.HORIZONTAL;
+                this.orientation = LinearLayoutManager.HORIZONTAL;
             }
+            /*
+            String layoutWidth = a.getString(android.R.attr.layout_width);
+            String layoutHeight = a.getString(R.styleable.AbstractGradientRecyclerView_android_layout_height);
+            //This field should never be null
+            if(this.orientation==LinearLayoutManager.HORIZONTAL){
+                if(Integer.parseInt(layoutWidth)==0) {
+                    //throw new Exception("layout_width should be an exact value or match_parent");
+                    Log.e("AbstractGradientError","layout_width should be an exact value or match_parent");
+                }
+            }else{
+                if(Integer.parseInt(layoutHeight)==0){
+                    //throw new Exception("AbstractGradientError","layout_height should be an exact value or match_parent");
+                    Log.e("AbstractGradientError","layout_width should be an exact value or match_parent");
+                }
+            }
+            */
             a.recycle();
         }
         DynamicPosibleScrollLinearLayoutManager dynamicLLM = new DynamicPosibleScrollLinearLayoutManager(getContext());
@@ -142,7 +162,15 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView{
                 }
             }
         };
-
+        getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                offset(recyclerView);
+                onStartRecycler(recyclerView);
+                recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
+        /*
         getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
@@ -152,7 +180,7 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView{
                 return false;
             }
         });
-
+        */
     }
 
     /**
@@ -264,10 +292,6 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView{
                     if(Math.abs(getDistanceFromCenter(recyclerView,i))<=Math.abs(getDistanceFromCenter(recyclerView,secondMaxIndex)) && i!=firstMaxIndex){
                         secondMaxIndex = i;
                     }
-                }
-
-                if(secondMaxIndex == firstMaxIndex && firstMaxIndex == 0){
-                    secondMaxIndex = 1;
                 }
 
                 if(l.getOrientation() == LinearLayoutManager.HORIZONTAL){

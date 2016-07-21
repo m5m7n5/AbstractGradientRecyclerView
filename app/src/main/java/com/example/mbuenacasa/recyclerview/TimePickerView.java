@@ -52,13 +52,18 @@ public class TimePickerView extends RelativeLayout{
      * Method that initializes the view and his components
      */
     private void init(){
-        inflater.inflate(R.layout.view_new_hours_selector,this,true);
-        hours = (SimpleStringRecyclerView) findViewById(R.id.new_hours_view_hours_recycler);
+
+        inflater.inflate(R.layout.view_hours_selector,this,true);
+        hours = (SimpleStringRecyclerView) findViewById(R.id.hours_view_hours_recycler);
+        minutes = (SimpleStringRecyclerView) findViewById(R.id.hours_view_minutes_recycler);
+
+
+    }
+
+    @Override
+    protected void onFinishInflate() {
         hours.setAdapterList(hours.generateHoursNumbers());
-
-        minutes = (SimpleStringRecyclerView) findViewById(R.id.new_hours_view_minutes_recycler);
-        minutes.setAdapterList(minutes.generateMinutesNumbers());
-
+        super.onFinishInflate();
     }
 
     /**
@@ -99,5 +104,9 @@ public class TimePickerView extends RelativeLayout{
      */
     public int getTimeStampMiliSeconds(){
         return getTimestampSeconds()*1000;
+    }
+
+    public SimpleStringRecyclerView getHoursRecycler() {
+        return hours;
     }
 }

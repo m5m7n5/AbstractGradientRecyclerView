@@ -8,5 +8,15 @@
             <enum name="horizontal" value="0"/>
             <enum name="vertical" value="1"/>
         </attr>
+        <!--
+        <attr name="android:layout_width" format="enum|dimension">
+            <enum name="wrap_content" value="0"/>
+            <enum name="match_parent" value="1"/>
+        </attr>
+        <attr name="android:layout_height" format="enum|dimension">
+            <enum name="wrap_content" value="0"/>
+            <enum name="match_parent" value="1"/>
+        </attr>
+        -->
     </declare-styleable>
 </resources>
