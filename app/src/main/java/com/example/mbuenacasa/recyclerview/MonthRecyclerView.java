@@ -97,7 +97,7 @@ public class MonthRecyclerView extends AbstractGradientRecyclerView {
     /**
      * Custom holder for the adapter
      */
-    public class MonthHolder extends RecyclerView.ViewHolder {
+    public class MonthHolder extends AbstractGradientViewHolder {
         TextView month;
 
         public MonthHolder(View itemView) {
@@ -109,7 +109,7 @@ public class MonthRecyclerView extends AbstractGradientRecyclerView {
     /**
      * Custom adapter
      */
-    public class MonthViewAdapter extends RecyclerView.Adapter<MonthHolder> {
+    public class MonthViewAdapter extends AbstractGradientAdapter<MonthHolder> {
 
         List<String> list = Collections.emptyList();
         Context context;

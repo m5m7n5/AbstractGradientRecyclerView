@@ -116,7 +116,7 @@ public class SimpleStringRecyclerView extends AbstractGradientRecyclerView {
     /**
      * Custom ViewHolder for the adapter
      */
-    public class NumberHolder extends RecyclerView.ViewHolder {
+    public class NumberHolder extends AbstractGradientViewHolder {
         TextView numbers;
 
         public NumberHolder(View itemView) {
@@ -128,7 +128,7 @@ public class SimpleStringRecyclerView extends AbstractGradientRecyclerView {
     /**
      * Custom adapter for the recycler
      */
-    public class SimpleStringAdapter extends RecyclerView.Adapter<NumberHolder> {
+    public class SimpleStringAdapter extends AbstractGradientAdapter<NumberHolder> {
 
         List<String> list = Collections.emptyList();
         Context context;

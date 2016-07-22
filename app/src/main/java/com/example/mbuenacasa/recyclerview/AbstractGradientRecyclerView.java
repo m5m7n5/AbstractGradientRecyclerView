@@ -33,6 +33,7 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView{
     protected View selectedView;
     protected Context context;
     private int orientation;
+    private boolean decorated;
     private AbstractGradientRecyclerCommunicator communicator;
 
     /**
@@ -96,6 +97,7 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView{
      */
     private void init(@Nullable AttributeSet attrs){
         recyclerView = this;
+        decorated = false;
         if(attrs!=null){
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.AbstractGradientRecyclerView, 0, 0);
             String center = a.getString(R.styleable.AbstractGradientRecyclerView_center_color);
@@ -122,27 +124,10 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView{
             }else{
                 this.orientation = LinearLayoutManager.HORIZONTAL;
             }
-            /*
-            String layoutWidth = a.getString(android.R.attr.layout_width);
-            String layoutHeight = a.getString(R.styleable.AbstractGradientRecyclerView_android_layout_height);
-            //This field should never be null
-            if(this.orientation==LinearLayoutManager.HORIZONTAL){
-                if(Integer.parseInt(layoutWidth)==0) {
-                    //throw new Exception("layout_width should be an exact value or match_parent");
-                    Log.e("AbstractGradientError","layout_width should be an exact value or match_parent");
-                }
-            }else{
-                if(Integer.parseInt(layoutHeight)==0){
-                    //throw new Exception("AbstractGradientError","layout_height should be an exact value or match_parent");
-                    Log.e("AbstractGradientError","layout_width should be an exact value or match_parent");
-                }
-            }
-            */
             a.recycle();
         }
         DynamicPosibleScrollLinearLayoutManager dynamicLLM = new DynamicPosibleScrollLinearLayoutManager(getContext());
         dynamicLLM.setOrientation(orientation);
-        //TODO Change this to come from the attr from xml
         dynamicLLM.setCanScroll(true);
         dynamicLLM.setAutoMeasureEnabled(false);
         setLayoutManager(dynamicLLM);
@@ -162,49 +147,37 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView{
                 }
             }
         };
-        getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                offset(recyclerView);
-                onStartRecycler(recyclerView);
-                recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-            }
-        });
-        /*
-        getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                offset(recyclerView);
-                onStartRecycler(recyclerView);
-                recyclerView.getViewTreeObserver().removeOnPreDrawListener(this);
-                return false;
-            }
-        });
-        */
     }
 
     /**
      * This method is called when the TreeViewObserver initialized in the init function is called, an is called once, it
      * calculates the offset for the OffsetStartEndItemDecorator, to make the fist and end items scroll a little more,
-     * to let them center in the view. TODO Can be improved changing the current calculation and making it fit better the sides.
+     * to let them center in the view.
      * @param recyclerView
      */
     protected void offset(RecyclerView recyclerView){
-        int startOffset=0;
+        int startOffset;
+        int endOffset;
+
+        RecyclerView.Adapter adapter = getAdapter();
+        AbstractGradientViewHolder firstViewHolder = (AbstractGradientViewHolder) adapter.createViewHolder(this,0);
+        adapter.onBindViewHolder(firstViewHolder,0);
+        firstViewHolder.itemView.measure(MeasureSpec.UNSPECIFIED,MeasureSpec.UNSPECIFIED);
+
+        AbstractGradientViewHolder lastViewHolder = (AbstractGradientViewHolder) adapter.createViewHolder(this,0);
+        adapter.onBindViewHolder(lastViewHolder,adapter.getItemCount()-1);
+        lastViewHolder.itemView.measure(MeasureSpec.UNSPECIFIED,MeasureSpec.UNSPECIFIED);
+
         if(orientation == LinearLayoutManager.HORIZONTAL){
             int viewWidth = recyclerView.getWidth();
-            if(recyclerView.getChildAt(0) != null){
-                View first = recyclerView.getChildViewHolder(recyclerView.getChildAt(0)).itemView;
-                startOffset = (viewWidth-first.getWidth())/2;
-            }
+            startOffset = (viewWidth-firstViewHolder.itemView.getMeasuredWidth())/2;
+            endOffset = (viewWidth-lastViewHolder.itemView.getMeasuredWidth())/2;
         }else{
             int viewHeight = recyclerView.getHeight();
-            if(recyclerView.getChildAt(0) != null){
-                View first = recyclerView.getChildViewHolder(recyclerView.getChildAt(0)).itemView;
-                startOffset = (viewHeight-first.getHeight())/2;
-            }
+            startOffset = (viewHeight-firstViewHolder.itemView.getMeasuredHeight())/2;
+            endOffset = (viewHeight-lastViewHolder.itemView.getMeasuredHeight())/2;
         }
-        recyclerView.addItemDecoration(new OffsetStartEndItemDecorator(startOffset,startOffset,orientation));
+        recyclerView.addItemDecoration(new OffsetStartEndItemDecorator(startOffset,endOffset,orientation));
     }
 
     /**
@@ -214,7 +187,6 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView{
      */
     private void onStartRecycler(RecyclerView recyclerView){
         LinearLayoutManager l = (LinearLayoutManager) recyclerView.getLayoutManager();
-        recyclerView.scrollTo(0,0);
         int nearest = 0;
         for(int i=1;i<l.getChildCount();i++){
             changeColorFromView(l.getChildAt(i), sideColor);
@@ -292,6 +264,10 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView{
                     if(Math.abs(getDistanceFromCenter(recyclerView,i))<=Math.abs(getDistanceFromCenter(recyclerView,secondMaxIndex)) && i!=firstMaxIndex){
                         secondMaxIndex = i;
                     }
+                }
+
+                if(secondMaxIndex == firstMaxIndex && firstMaxIndex == 0){
+                    secondMaxIndex = 1;
                 }
 
                 if(l.getOrientation() == LinearLayoutManager.HORIZONTAL){
@@ -504,6 +480,29 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView{
     }
 
     /**
+     * Override the onMeasure to put a listener, this listener will set the offset decorator, and
+     * will apply an start color like an scroll.
+     * @param widthSpec
+     * @param heightSpec
+     */
+    @Override
+    protected void onMeasure(int widthSpec, int heightSpec) {
+        super.onMeasure(widthSpec, heightSpec);
+        if(!decorated) {
+            getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    offset(recyclerView);
+                    onStartRecycler(recyclerView);
+                    recyclerView.getViewTreeObserver().removeOnPreDrawListener(this);
+                    return false;
+                }
+            });
+            decorated = true;
+        }
+    }
+
+    /**
      * This class is the reponsible of the scroll limit over the recyclers
      */
     public class OffsetStartEndItemDecorator extends RecyclerView.ItemDecoration{
@@ -634,5 +633,36 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView{
         }
     }
 
+    /**
+     * Custom class for instantiate the viewHolder and, in he function offset, get the itemView
+     * and apply it to the items.
+     */
+    public class AbstractGradientViewHolder extends RecyclerView.ViewHolder{
+
+        public AbstractGradientViewHolder(View itemView) {
+            super(itemView);
+        }
+
+    }
+
+    /**
+     * This class is only to make sure that if you're using this gradient, you should use this custom
+     * view holder.
+     * @param <VH>
+     */
+    public static abstract class AbstractGradientAdapter<VH extends AbstractGradientViewHolder> extends RecyclerView.Adapter<VH>{}
+
+    /**
+     * Methods for force our classes to been used
+     * @param adapter
+     */
+    public void setAdapter(AbstractGradientAdapter adapter){
+        super.setAdapter(adapter);
+    }
+
+    @Override
+    public void setAdapter(Adapter adapter) {
+        this.setAdapter((AbstractGradientAdapter) adapter);
+    }
 }
 
