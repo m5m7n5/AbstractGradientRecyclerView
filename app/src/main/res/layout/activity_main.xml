@@ -24,23 +24,13 @@
         app:center_color="@color/seatRed"
         app:side_color="@color/white"
         app:orientation="horizontal"/>
-    <com.example.mbuenacasa.recyclerview.MonthRecyclerView
-        android:id="@+id/month_view2"
-        android:background="@drawable/seat_gradient"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/month_view"
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        app:center_color="@color/seatRed"
-        app:side_color="@color/white"
-        app:orientation="horizontal"/>
 
     <com.example.mbuenacasa.recyclerview.DatePickerView
         android:id="@+id/date_picker_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/month_view2"/>
+        android:layout_below="@id/month_view"/>
 
 
     <com.example.mbuenacasa.recyclerview.TimePickerView

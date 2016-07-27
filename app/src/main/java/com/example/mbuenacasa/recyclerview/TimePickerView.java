@@ -5,6 +5,8 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.RelativeLayout;
 
+import java.util.ArrayList;
+
 /**
  * Created by mbuenacasa on 14/07/16.
  * Custom class of the timePickerView that places SimpleStringRecycler
@@ -56,14 +58,12 @@ public class TimePickerView extends RelativeLayout{
         inflater.inflate(R.layout.view_hours_selector,this,true);
         hours = (SimpleStringRecyclerView) findViewById(R.id.hours_view_hours_recycler);
         minutes = (SimpleStringRecyclerView) findViewById(R.id.hours_view_minutes_recycler);
+        hours.setStringHolder(R.id.hour_recycler_view_text_view);
+        hours.setStringHolderContainerFilename(R.layout.holder_hour_recycler_view);
+        minutes.setStringHolder(R.id.hour_recycler_view_text_view);
+        minutes.setStringHolderContainerFilename(R.layout.holder_hour_recycler_view);
 
 
-    }
-
-    @Override
-    protected void onFinishInflate() {
-        hours.setAdapterList(hours.generateHoursNumbers());
-        super.onFinishInflate();
     }
 
     /**

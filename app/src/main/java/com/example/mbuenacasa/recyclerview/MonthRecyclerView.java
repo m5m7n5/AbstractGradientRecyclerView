@@ -109,12 +109,10 @@ public class MonthRecyclerView extends AbstractGradientRecyclerView {
     /**
      * Custom adapter
      */
-    public class MonthViewAdapter extends AbstractGradientAdapter<MonthHolder> {
-
-        List<String> list = Collections.emptyList();
-        Context context;
+    public class MonthViewAdapter extends AbstractGradientAdapter<MonthHolder,String> {
 
         public MonthViewAdapter(List<String> list,Context context){
+            super(context);
             this.list = list;
             this.context = context;
         }
@@ -129,11 +127,6 @@ public class MonthRecyclerView extends AbstractGradientRecyclerView {
         @Override
         public void onBindViewHolder(MonthHolder holder, int position) {
             holder.month.setText(list.get(position));
-        }
-
-        @Override
-        public int getItemCount() {
-            return list.size();
         }
     }
 

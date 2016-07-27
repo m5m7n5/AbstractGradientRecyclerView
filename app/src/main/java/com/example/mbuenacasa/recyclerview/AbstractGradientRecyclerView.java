@@ -11,7 +11,12 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by mbuenacasa on 13/07/16.
@@ -650,7 +655,28 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView{
      * view holder.
      * @param <VH>
      */
-    public static abstract class AbstractGradientAdapter<VH extends AbstractGradientViewHolder> extends RecyclerView.Adapter<VH>{}
+    public abstract class AbstractGradientAdapter<VH extends AbstractGradientViewHolder,ViewData> extends RecyclerView.Adapter<VH>{
+
+        protected List<ViewData> list = Collections.emptyList();
+        protected Context context;
+
+        public AbstractGradientAdapter(Context context){
+            this.context = context;
+        }
+
+        @Override
+        public final int getItemCount() {
+            return list.size();
+        }
+
+        public final void setList(List<ViewData> list){
+            this.list.clear();
+            for(int i=0;i<list.size();i++){
+                this.list.add(list.get(i));
+            }
+        }
+
+    }
 
     /**
      * Methods for force our classes to been used

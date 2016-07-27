@@ -1,9 +1,10 @@
 package com.example.mbuenacasa.recyclerview;
 
 import android.content.Context;
+import android.support.annotation.IdRes;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,43 +12,31 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
- * Created by mbuenacasa on 14/07/16.
- * This class consist in a textview recycler view
+ * Created by mbuenacasa on 27/07/16.
  */
 public class SimpleStringRecyclerView extends AbstractGradientRecyclerView {
 
+    //String holder needs to be inside stringHolderContainerFilename
+    @IdRes
+    private int stringHolder;
 
-    private final int HOURS_IN_A_DAY=24;
-    private final int MINUTES_IN_AN_HOUR=60;
-    /**
-     * Default constructor
-     * @param context
-     */
+    @LayoutRes
+    private int stringHolderContainerFilename;
+
+
     public SimpleStringRecyclerView(Context context) {
         super(context);
         init();
     }
 
-    /**
-     * Default constructor
-     * @param context
-     * @param attrs
-     */
     public SimpleStringRecyclerView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    /**
-     * Default constructor
-     * @param context
-     * @param attrs
-     * @param defStyle
-     */
     public SimpleStringRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init();
@@ -57,7 +46,14 @@ public class SimpleStringRecyclerView extends AbstractGradientRecyclerView {
      * Initializes the adapter with a default list
      */
     private void init(){
-        setAdapterList(generateHoursNumbers());
+        ArrayList<String> list = new ArrayList<>();
+        list.add("asdf1");
+        list.add("asdf2");
+        list.add("asdf3");
+        list.add("asdf4");
+        list.add("asdf5");
+
+        setAdapterList(list);
     }
 
     /**
@@ -65,111 +61,65 @@ public class SimpleStringRecyclerView extends AbstractGradientRecyclerView {
      * @param list list for the adapter
      */
     public void setAdapterList(List<String> list) {
-        this.setAdapter(new SimpleStringAdapter(this.context));
-        ((SimpleStringAdapter)this.getAdapter()).setList(list);
+        this.setAdapter(new StringAdapter(context));
+        ((StringAdapter)this.getAdapter()).setList(list);
     }
 
-    /**
-     * Method that does nothing but we need to implement it from the abstract class.
-     * @param v Current view on the center of the recyclerView
-     */
+    public void setStringHolder(@IdRes int res){
+        stringHolder = res;
+    }
+
+    public void setStringHolderContainerFilename(@LayoutRes int res){
+        stringHolderContainerFilename = res;
+    }
+
     @Override
     protected void whenSelected(View v) {
 
     }
 
-    /**
-     * Method overrided for changing the color of the text from the textView
-     * @param v View that is currently going to change his color
-     * @param c Color to apply on the desired elements
-     */
     @Override
     protected void changeColorFromView(View v, int c) {
-        TextView tv = (TextView) v.findViewById(R.id.vertical_recycler_view_text);
+        TextView tv = (TextView) v.findViewById(stringHolder);
         tv.setTextColor(c);
     }
 
-    /**
-     * Method that generates a list of numbers from HOURS_IN_A_DAY to 0
-     * @return
-     */
-    public List<String> generateHoursNumbers(){
-        List<String> aux = new ArrayList<>();
-        for(int i = HOURS_IN_A_DAY-1; i>=0;i--){
-            aux.add(Integer.toString(i));
-        }
-        return aux;
-    }
+    private class StringHolder extends AbstractGradientViewHolder{
 
-    /**
-     * Method that generates a list of numbers from MINUTES_IN_AN_HOUR to 0
-     * @return
-     */
-    public List<String> generateMinutesNumbers(){
-        List<String> aux = new ArrayList<>();
-        for(int i=MINUTES_IN_AN_HOUR-1;i>=0;i--){
-            aux.add(Integer.toString(i));
-        }
-        return aux;
-    }
+        TextView textView;
 
-    /**
-     * Custom ViewHolder for the adapter
-     */
-    public class NumberHolder extends AbstractGradientViewHolder {
-        TextView numbers;
-
-        public NumberHolder(View itemView) {
+        public StringHolder(View itemView) {
             super(itemView);
-            numbers = (TextView) itemView.findViewById(R.id.vertical_recycler_view_text);
+            textView = (TextView) itemView.findViewById(stringHolder);
         }
     }
 
-    /**
-     * Custom adapter for the recycler
-     */
-    public class SimpleStringAdapter extends AbstractGradientAdapter<NumberHolder> {
+    public class StringAdapter extends AbstractGradientAdapter<StringHolder,String>{
 
-        List<String> list = Collections.emptyList();
-        Context context;
-
-        public SimpleStringAdapter(Context context) {
+        public StringAdapter(Context context) {
+            super(context);
             this.list = new ArrayList<>();
             this.context = context;
         }
 
         @Override
-        public NumberHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.holder_vertical_string, parent, false);
-            NumberHolder holder = new NumberHolder(v);
+        public StringHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View v = LayoutInflater.from(parent.getContext()).inflate(stringHolderContainerFilename, parent, false);
+            StringHolder holder = new StringHolder(v);
             return holder;
         }
 
         @Override
-        public void onBindViewHolder(NumberHolder holder, int position) {
-            holder.numbers.setText(list.get(position));
-        }
-
-        @Override
-        public int getItemCount() {
-            return list.size();
-        }
-
-        public void setList(List<String> list){
-            this.list.clear();
-            for(int i=0;i<list.size();i++){
-                this.list.add(list.get(i));
+        public void onBindViewHolder(StringHolder holder, int position) {
+            if(position >= 0 && position < list.size()) {
+                holder.textView.setText(list.get(position));
             }
         }
     }
 
-    /**
-     * Method that returns the current selected string
-     * @return
-     */
     public String getSelectedString(){
         LinearLayoutManager lm = (LinearLayoutManager) recyclerView.getLayoutManager();
-        return ((TextView)lm.getChildAt(nearestView(recyclerView)).findViewById(R.id.vertical_recycler_view_text)).getText().toString();
+        return ((TextView)lm.getChildAt(nearestView(recyclerView)).findViewById(stringHolder)).getText().toString();
     }
-}
 
+}

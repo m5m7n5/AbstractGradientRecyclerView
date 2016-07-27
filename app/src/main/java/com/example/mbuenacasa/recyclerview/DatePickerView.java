@@ -61,8 +61,15 @@ public class DatePickerView extends RelativeLayout implements AbstractGradientRe
         days = (SimpleStringRecyclerView) findViewById(R.id.date_picker_days_recycler);
         months = (SimpleStringRecyclerView) findViewById(R.id.date_picker_months_recycler);
         years = (SimpleStringRecyclerView) findViewById(R.id.date_picker_years_recycler);
-
         List<String> monthsStrings =  new ArrayList<>();
+
+        days.setStringHolder(R.id.hour_recycler_view_text_view);
+        days.setStringHolderContainerFilename(R.layout.holder_hour_recycler_view);
+        months.setStringHolder(R.id.hour_recycler_view_text_view);
+        months.setStringHolderContainerFilename(R.layout.holder_hour_recycler_view);
+        years.setStringHolder(R.id.hour_recycler_view_text_view);
+        years.setStringHolderContainerFilename(R.layout.holder_hour_recycler_view);
+
 
         //TODO Quitar hardcoded strings
         monthsStrings.add("JAN");
@@ -255,8 +262,8 @@ public class DatePickerView extends RelativeLayout implements AbstractGradientRe
         ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager)days.getLayoutManager()).setCanScroll(true);
         ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager)months.getLayoutManager()).setCanScroll(true);
         ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager)years.getLayoutManager()).setCanScroll(true);
-        SimpleStringRecyclerView.SimpleStringAdapter daysAdapter = (SimpleStringRecyclerView.SimpleStringAdapter) days.getAdapter();
-        SimpleStringRecyclerView.SimpleStringAdapter monthsAdapter = (SimpleStringRecyclerView.SimpleStringAdapter) months.getAdapter();
+        SimpleStringRecyclerView.StringAdapter daysAdapter = (SimpleStringRecyclerView.StringAdapter) days.getAdapter();
+        SimpleStringRecyclerView.StringAdapter monthsAdapter = (SimpleStringRecyclerView.StringAdapter) months.getAdapter();
         if(days==aRecycler){
         }else if(months==aRecycler){
             daysAdapter.setList(daysDataMap.get(months.getSelectedString()+years.getSelectedString()));
