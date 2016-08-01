@@ -12,7 +12,7 @@ import android.widget.TextView;
 /**
  * Created by mbuenacasa on 30/06/16.
  */
-public class MyCustomFragment extends Fragment implements View.OnClickListener{
+public class MyCustomFragment extends Fragment implements View.OnClickListener {
 
     private Button holaButton;
     private TextView textView;
@@ -21,10 +21,10 @@ public class MyCustomFragment extends Fragment implements View.OnClickListener{
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreateView(inflater,container,savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_my_custom,container,false);
+        super.onCreateView(inflater, container, savedInstanceState);
+        View view = inflater.inflate(R.layout.fragment_my_custom, container, false);
 
-        clickCounter =0;
+        clickCounter = 0;
         holaButton = (Button) view.findViewById(R.id.holaButton);
         textView = (TextView) view.findViewById(R.id.textView);
 
@@ -32,7 +32,7 @@ public class MyCustomFragment extends Fragment implements View.OnClickListener{
         return view;
     }
 
-    private void setViews(){
+    private void setViews() {
         holaButton.setOnClickListener(this);
     }
 
@@ -43,9 +43,9 @@ public class MyCustomFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View view) {
-        if(view == holaButton){
+        if (view == holaButton) {
             clickCounter++;
-            textView.setText("Hola"+Integer.toString(clickCounter));
+            textView.setText("Hola" + Integer.toString(clickCounter));
         }
     }
 }

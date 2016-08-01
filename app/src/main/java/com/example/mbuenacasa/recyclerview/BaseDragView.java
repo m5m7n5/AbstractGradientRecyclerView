@@ -54,11 +54,11 @@ public class BaseDragView extends RelativeLayout {
         initHelper();
     }
 
-    private void initHelper(){
+    private void initHelper() {
         CallBackHelper cb = new CallBackHelper();
         cb.enableHorizontalDrag();
         cb.setDragDirection(CallBackHelper.RIGHT_LEFT_DRAG);
-        mDragHelper = ViewDragHelper.create((ViewGroup) this.getChildAt(0),cb);
+        mDragHelper = ViewDragHelper.create((ViewGroup) this.getChildAt(0), cb);
     }
 
 
@@ -74,37 +74,35 @@ public class BaseDragView extends RelativeLayout {
         public static final int TOP_BOTTOM_DRAG = 0x04;
         public static final int BOTTOM_TOP_DRAG = 0x08;
 
-        public void setDragDirection(int dir){
+        public void setDragDirection(int dir) {
             dragDirection = dir;
         }
 
-        public void enableVerticalDrag(){
+        public void enableVerticalDrag() {
             disableDrag();
             canDragVertical = true;
         }
 
-        public void enableHorizontalDrag(){
+        public void enableHorizontalDrag() {
             disableDrag();
             canDragHorizontal = true;
         }
 
-        public void disableDrag(){
+        public void disableDrag() {
             canDragVertical = false;
             canDragHorizontal = false;
         }
 
 
-
-
         @Override
         public int clampViewPositionHorizontal(View child, int left, int dx) {
-            if(canDragHorizontal){
-                if(dragDirection == LEFT_RIGHT_DRAG ){
+            if (canDragHorizontal) {
+                if (dragDirection == LEFT_RIGHT_DRAG) {
                     int leftBound = mBackView.getWidth();
                     int rightBound = getWidth() - mUpperView.getWidth();
                     int newLeft = Math.min(Math.max(left, leftBound), rightBound);
                     return newLeft;
-                }else if(dragDirection == RIGHT_LEFT_DRAG){
+                } else if (dragDirection == RIGHT_LEFT_DRAG) {
                     int leftBound = -mBackView.getWidth();
                     int rightBound = getWidth() - mUpperView.getWidth();
                     int newLeft = Math.min(Math.max(left, leftBound), rightBound);
@@ -116,13 +114,13 @@ public class BaseDragView extends RelativeLayout {
 
         @Override
         public int clampViewPositionVertical(View child, int top, int dy) {
-            if(canDragVertical){
-                if(dragDirection == TOP_BOTTOM_DRAG){
+            if (canDragVertical) {
+                if (dragDirection == TOP_BOTTOM_DRAG) {
                     int leftBound = mBackView.getHeight();
                     int rightBound = getWidth() - mUpperView.getWidth();
                     int newLeft = Math.min(Math.max(top, leftBound), rightBound);
                     return newLeft;
-                }else if(dragDirection == BOTTOM_TOP_DRAG){
+                } else if (dragDirection == BOTTOM_TOP_DRAG) {
                     int leftBound = -mBackView.getHeight();
                     int rightBound = getWidth() - mUpperView.getWidth();
                     int newLeft = Math.min(Math.max(top, leftBound), rightBound);
@@ -198,7 +196,7 @@ public class BaseDragView extends RelativeLayout {
     @Override
     public void computeScroll() {
         super.computeScroll();
-        if(mDragHelper.continueSettling(true)) {
+        if (mDragHelper.continueSettling(true)) {
             ViewCompat.postInvalidateOnAnimation(this);
         }
     }

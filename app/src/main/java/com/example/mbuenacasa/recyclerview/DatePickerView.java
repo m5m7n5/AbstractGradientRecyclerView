@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * Created by mbuenacasa on 14/07/16.
  */
-public class DatePickerView extends RelativeLayout implements AbstractGradientRecyclerView.AbstractGradientRecyclerCommunicator{
+public class DatePickerView extends RelativeLayout implements AbstractGradientRecyclerView.AbstractGradientRecyclerCommunicator {
 
     final int monthsPerYear = 12;
     private LayoutInflater inflater;
@@ -26,9 +26,9 @@ public class DatePickerView extends RelativeLayout implements AbstractGradientRe
     private SimpleStringRecyclerView years;
     private List<String> yearsData;
     private List<String> indexes;
-    private Map<String,ArrayList<String>> daysInMonthMap;
-    private Map<String,ArrayList<String>> monthsDataMap;
-    private Map<String,ArrayList<String>> daysDataMap;
+    private Map<String, ArrayList<String>> daysInMonthMap;
+    private Map<String, ArrayList<String>> monthsDataMap;
+    private Map<String, ArrayList<String>> daysDataMap;
 
 
     public DatePickerView(Context context) {
@@ -55,13 +55,13 @@ public class DatePickerView extends RelativeLayout implements AbstractGradientRe
 
     }
 
-    private void init(){
+    private void init() {
 
-        inflater.inflate(R.layout.view_date_picker,this,true);
+        inflater.inflate(R.layout.view_date_picker, this, true);
         days = (SimpleStringRecyclerView) findViewById(R.id.date_picker_days_recycler);
         months = (SimpleStringRecyclerView) findViewById(R.id.date_picker_months_recycler);
         years = (SimpleStringRecyclerView) findViewById(R.id.date_picker_years_recycler);
-        List<String> monthsStrings =  new ArrayList<>();
+        List<String> monthsStrings = new ArrayList<>();
 
         days.setStringHolder(R.id.hour_recycler_view_text_view);
         days.setStringHolderContainerFilename(R.layout.holder_hour_recycler_view);
@@ -86,11 +86,11 @@ public class DatePickerView extends RelativeLayout implements AbstractGradientRe
         monthsStrings.add("DEC");
 
         Calendar calendarInstance = Calendar.getInstance();
-        Date start = new Date(calendarInstance.get(Calendar.YEAR),calendarInstance.get(Calendar.MONTH),calendarInstance.get(Calendar.DAY_OF_MONTH));
-        Date end = new Date(calendarInstance.get(Calendar.YEAR)+1,calendarInstance.get(Calendar.MONTH),calendarInstance.get(Calendar.DAY_OF_MONTH));
-        generateTablesAndValues(monthsStrings,start,end);
+        Date start = new Date(calendarInstance.get(Calendar.YEAR), calendarInstance.get(Calendar.MONTH), calendarInstance.get(Calendar.DAY_OF_MONTH));
+        Date end = new Date(calendarInstance.get(Calendar.YEAR) + 1, calendarInstance.get(Calendar.MONTH), calendarInstance.get(Calendar.DAY_OF_MONTH));
+        generateTablesAndValues(monthsStrings, start, end);
 
-        days.setAdapterList(daysDataMap.get(indexes.get(start.getMonth())+Integer.toString(start.getYear())));
+        days.setAdapterList(daysDataMap.get(indexes.get(start.getMonth()) + Integer.toString(start.getYear())));
         months.setAdapterList(monthsDataMap.get(Integer.toString(start.getYear())));
         years.setAdapterList(yearsData);
 
@@ -100,7 +100,7 @@ public class DatePickerView extends RelativeLayout implements AbstractGradientRe
 
     }
 
-    private void generateTablesAndValues(List<String> monthsStrings,Date startDate, Date endDate) {
+    private void generateTablesAndValues(List<String> monthsStrings, Date startDate, Date endDate) {
 
         int startYear = startDate.getYear();
         int startMonth = startDate.getMonth();
@@ -109,7 +109,7 @@ public class DatePickerView extends RelativeLayout implements AbstractGradientRe
         int endMonth = endDate.getMonth();
         int endDay = endDate.getDate();
 
-        int quantityOfMonths = 12*(endYear-startYear)+endMonth-startMonth;
+        int quantityOfMonths = 12 * (endYear - startYear) + endMonth - startMonth;
 
         List<Integer> monthsDays = new ArrayList<>();
 
@@ -127,9 +127,9 @@ public class DatePickerView extends RelativeLayout implements AbstractGradientRe
         monthsDays.add(2);
         monthsDays.add(3);
 
-        Map<String,Integer> monthsDayIndexMap = new LinkedHashMap<>();
-        for(int i = 0;i<monthsStrings.size();i++){
-            monthsDayIndexMap.put(monthsStrings.get(i),monthsDays.get(i));
+        Map<String, Integer> monthsDayIndexMap = new LinkedHashMap<>();
+        for (int i = 0; i < monthsStrings.size(); i++) {
+            monthsDayIndexMap.put(monthsStrings.get(i), monthsDays.get(i));
         }
         indexes = new ArrayList<>(monthsDayIndexMap.keySet());
 
@@ -141,138 +141,138 @@ public class DatePickerView extends RelativeLayout implements AbstractGradientRe
         monthQuantity.add(31);
 
         ArrayList<ArrayList<String>> aux = new ArrayList<>();
-        for(int i=0;i<monthQuantity.size();i++){
+        for (int i = 0; i < monthQuantity.size(); i++) {
             ArrayList<String> aux2 = new ArrayList<>();
-            for(int j=1;j<=monthQuantity.get(i);j++){
+            for (int j = 1; j <= monthQuantity.get(i); j++) {
                 aux2.add(Integer.toString(j));
             }
             aux.add(aux2);
         }
 
         daysInMonthMap = new HashMap<>();
-        for(String s:monthsDayIndexMap.keySet()) {
-            daysInMonthMap.put(s,aux.get(monthsDayIndexMap.get(s)));
+        for (String s : monthsDayIndexMap.keySet()) {
+            daysInMonthMap.put(s, aux.get(monthsDayIndexMap.get(s)));
         }
 
 
-        daysDataMap =  new HashMap<>();
+        daysDataMap = new HashMap<>();
         monthsDataMap = new HashMap<>();
 
-        if(quantityOfMonths==0){
+        if (quantityOfMonths == 0) {
             //Produces the list of days for the corresponding month and year
             ArrayList<String> aux2 = new ArrayList<>();
-            for(int i=startDay;i<=endDay;i++){
+            for (int i = startDay; i <= endDay; i++) {
                 aux2.add(Integer.toString(i));
             }
             //Adds the list of days to the corresponding month and year
-            daysDataMap.put(indexes.get(startMonth)+Integer.toString(startYear),aux2);
+            daysDataMap.put(indexes.get(startMonth) + Integer.toString(startYear), aux2);
             //Produces the list of months for the year
-            aux2=new ArrayList<>();
+            aux2 = new ArrayList<>();
             aux2.add(indexes.get(startMonth));
             //Adds month list
-            monthsDataMap.put(Integer.toString(startYear),aux2);
-        }else if((endYear-startYear)==0){
+            monthsDataMap.put(Integer.toString(startYear), aux2);
+        } else if ((endYear - startYear) == 0) {
             //Produces the days for the initial month
             ArrayList<String> aux2 = new ArrayList<>();
-            for(int i=startDay;i<=monthQuantity.get(monthsDays.get(startMonth));i++){
+            for (int i = startDay; i <= monthQuantity.get(monthsDays.get(startMonth)); i++) {
                 aux2.add(Integer.toString(i));
             }
             //Adds the days of the initial month depending on the month and the year
-            daysDataMap.put(indexes.get(startMonth)+Integer.toString(startYear),aux2);
+            daysDataMap.put(indexes.get(startMonth) + Integer.toString(startYear), aux2);
 
             //Adding the rest of the months
-            for(int i=(startMonth+1);i<endMonth;i++){
-                daysDataMap.put(indexes.get(i)+Integer.toString(startYear),daysInMonthMap.get(indexes.get(i)));
+            for (int i = (startMonth + 1); i < endMonth; i++) {
+                daysDataMap.put(indexes.get(i) + Integer.toString(startYear), daysInMonthMap.get(indexes.get(i)));
             }
             //Produces the days of the last month
             aux2 = new ArrayList<>();
-            for(int i=1;i<=endDay;i++){
+            for (int i = 1; i <= endDay; i++) {
                 aux2.add(Integer.toString(i));
             }
             //Adds the days of the last month depending on the last month and the year
-            daysDataMap.put(indexes.get(endMonth)+Integer.toString(startYear),aux2);
+            daysDataMap.put(indexes.get(endMonth) + Integer.toString(startYear), aux2);
             //Produces the months of the corresponding year
-            aux2 =  new ArrayList<>();
-            for(int i=startMonth;i<=endMonth;i++){
+            aux2 = new ArrayList<>();
+            for (int i = startMonth; i <= endMonth; i++) {
                 aux2.add(indexes.get(i));
             }
             //Adds the list of the months to his year
-            monthsDataMap.put(Integer.toString(startYear),aux2);
-        }else{
+            monthsDataMap.put(Integer.toString(startYear), aux2);
+        } else {
             //Produces the list of days of the first month
             ArrayList<String> aux2 = new ArrayList<>();
-            for(int i=startDay;i<=monthQuantity.get(monthsDays.get(startMonth));i++){
+            for (int i = startDay; i <= monthQuantity.get(monthsDays.get(startMonth)); i++) {
                 aux2.add(Integer.toString(i));
             }
             //Adds this list to the first month and his corresponding year
-            daysDataMap.put(indexes.get(startMonth)+Integer.toString(startYear),aux2);
+            daysDataMap.put(indexes.get(startMonth) + Integer.toString(startYear), aux2);
             //Adds the list of days of the next months until the year ends
-            for(int i=(startMonth+1);i<monthsPerYear;i++){
-                daysDataMap.put(indexes.get(i)+Integer.toString(startYear),daysInMonthMap.get(indexes.get(i)));
+            for (int i = (startMonth + 1); i < monthsPerYear; i++) {
+                daysDataMap.put(indexes.get(i) + Integer.toString(startYear), daysInMonthMap.get(indexes.get(i)));
             }
             // i goes over the years and j goes over the months
-            for(int i=(startYear+1);i<endYear;i++){
-                for(int j=0;j<monthsPerYear;j++){
-                    daysDataMap.put(indexes.get(j)+Integer.toString(i),daysInMonthMap.get(indexes.get(j)));
+            for (int i = (startYear + 1); i < endYear; i++) {
+                for (int j = 0; j < monthsPerYear; j++) {
+                    daysDataMap.put(indexes.get(j) + Integer.toString(i), daysInMonthMap.get(indexes.get(j)));
                 }
             }
             //Adds the needed months before the last because it can have less days
-            for(int i=0;i<endMonth;i++){
-                daysDataMap.put(indexes.get(i)+Integer.toString(endYear),daysInMonthMap.get(indexes.get(i)));
+            for (int i = 0; i < endMonth; i++) {
+                daysDataMap.put(indexes.get(i) + Integer.toString(endYear), daysInMonthMap.get(indexes.get(i)));
             }
             //Adds the last month
             aux2 = new ArrayList<>();
-            for(int i=1;i<=endDay;i++){
+            for (int i = 1; i <= endDay; i++) {
                 aux2.add(Integer.toString(i));
             }
-            daysDataMap.put(indexes.get(endMonth)+Integer.toString(endYear),aux2);
+            daysDataMap.put(indexes.get(endMonth) + Integer.toString(endYear), aux2);
             //Produces the months for all the years except the first and the last
             aux2 = new ArrayList<>();
-            for(int i=0;i<monthsPerYear;i++){
+            for (int i = 0; i < monthsPerYear; i++) {
                 aux2.add(indexes.get(i));
             }
-            for(int i=(startYear+1);i<endYear;i++){
-                monthsDataMap.put(Integer.toString(i),aux2);
+            for (int i = (startYear + 1); i < endYear; i++) {
+                monthsDataMap.put(Integer.toString(i), aux2);
             }
             //Produces the months of the first year
-            aux2 =  new ArrayList<>();
-            for(int i=startMonth;i<monthsPerYear;i++){
+            aux2 = new ArrayList<>();
+            for (int i = startMonth; i < monthsPerYear; i++) {
                 aux2.add(indexes.get(i));
             }
-            monthsDataMap.put(Integer.toString(startYear),aux2);
+            monthsDataMap.put(Integer.toString(startYear), aux2);
             //Produces the months of the last year
-            aux2 =  new ArrayList<>();
-            for(int i=0;i<=endMonth;i++){
+            aux2 = new ArrayList<>();
+            for (int i = 0; i <= endMonth; i++) {
                 aux2.add(indexes.get(i));
             }
-            monthsDataMap.put(Integer.toString(endYear),aux2);
+            monthsDataMap.put(Integer.toString(endYear), aux2);
 
         }
 
         yearsData = new ArrayList<>();
-        for(int i=startYear;i<=endYear;i++){
+        for (int i = startYear; i <= endYear; i++) {
             yearsData.add(Integer.toString(i));
         }
         //TODO comprobar si es bisiesto y ver en febrero
     }
 
     @Override
-    public void whenSelected(AbstractGradientRecyclerView aRecycler, View view, int index){
+    public void whenSelected(AbstractGradientRecyclerView aRecycler, View view, int index) {
 
-        ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager)days.getLayoutManager()).setCanScroll(true);
-        ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager)months.getLayoutManager()).setCanScroll(true);
-        ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager)years.getLayoutManager()).setCanScroll(true);
+        ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager) days.getLayoutManager()).setCanScroll(true);
+        ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager) months.getLayoutManager()).setCanScroll(true);
+        ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager) years.getLayoutManager()).setCanScroll(true);
         SimpleStringRecyclerView.StringAdapter daysAdapter = (SimpleStringRecyclerView.StringAdapter) days.getAdapter();
         SimpleStringRecyclerView.StringAdapter monthsAdapter = (SimpleStringRecyclerView.StringAdapter) months.getAdapter();
-        if(days==aRecycler){
-        }else if(months==aRecycler){
-            daysAdapter.setList(daysDataMap.get(months.getSelectedString()+years.getSelectedString()));
+        if (days == aRecycler) {
+        } else if (months == aRecycler) {
+            daysAdapter.setList(daysDataMap.get(months.getSelectedString() + years.getSelectedString()));
             daysAdapter.notifyDataSetChanged();
             days.smoothScrollToPosition(0);
-        }else if(years==aRecycler){
+        } else if (years == aRecycler) {
             monthsAdapter.setList(monthsDataMap.get(years.getSelectedString()));
             monthsAdapter.notifyDataSetChanged();
-            daysAdapter.setList(daysDataMap.get(monthsDataMap.get(years.getSelectedString()).get(0)+years.getSelectedString()));
+            daysAdapter.setList(daysDataMap.get(monthsDataMap.get(years.getSelectedString()).get(0) + years.getSelectedString()));
             daysAdapter.notifyDataSetChanged();
             months.smoothScrollToPosition(0);
             days.smoothScrollToPosition(0);
@@ -281,20 +281,20 @@ public class DatePickerView extends RelativeLayout implements AbstractGradientRe
 
     @Override
     public void whenScrolled(AbstractGradientRecyclerView recyclerView) {
-        if(days==recyclerView){
-            ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager)months.getLayoutManager()).setCanScroll(false);
-            ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager)years.getLayoutManager()).setCanScroll(false);
-        }else if(months==recyclerView){
-            ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager)days.getLayoutManager()).setCanScroll(false);
-            ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager)years.getLayoutManager()).setCanScroll(false);
-        }else if(years==recyclerView){
-            ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager)days.getLayoutManager()).setCanScroll(false);
-            ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager)months.getLayoutManager()).setCanScroll(false);
+        if (days == recyclerView) {
+            ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager) months.getLayoutManager()).setCanScroll(false);
+            ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager) years.getLayoutManager()).setCanScroll(false);
+        } else if (months == recyclerView) {
+            ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager) days.getLayoutManager()).setCanScroll(false);
+            ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager) years.getLayoutManager()).setCanScroll(false);
+        } else if (years == recyclerView) {
+            ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager) days.getLayoutManager()).setCanScroll(false);
+            ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager) months.getLayoutManager()).setCanScroll(false);
         }
     }
 
-    public String getDateAsFormattedString(){
-        return days.getSelectedString()+"/"+Integer.toString(indexes.indexOf(months.getSelectedString())+1)+"/"+years.getSelectedString();
+    public String getDateAsFormattedString() {
+        return days.getSelectedString() + "/" + Integer.toString(indexes.indexOf(months.getSelectedString()) + 1) + "/" + years.getSelectedString();
     }
 
 }

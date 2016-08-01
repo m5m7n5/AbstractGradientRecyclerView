@@ -45,7 +45,7 @@ public class SimpleStringRecyclerView extends AbstractGradientRecyclerView {
     /**
      * Initializes the adapter with a default list
      */
-    private void init(){
+    private void init() {
         ArrayList<String> list = new ArrayList<>();
         list.add("asdf1");
         list.add("asdf2");
@@ -58,18 +58,19 @@ public class SimpleStringRecyclerView extends AbstractGradientRecyclerView {
 
     /**
      * Changes the adapter list, a call to notifyDataSetChanged should be done after this method
+     *
      * @param list list for the adapter
      */
     public void setAdapterList(List<String> list) {
         this.setAdapter(new StringAdapter(context));
-        ((StringAdapter)this.getAdapter()).setList(list);
+        ((StringAdapter) this.getAdapter()).setList(list);
     }
 
-    public void setStringHolder(@IdRes int res){
+    public void setStringHolder(@IdRes int res) {
         stringHolder = res;
     }
 
-    public void setStringHolderContainerFilename(@LayoutRes int res){
+    public void setStringHolderContainerFilename(@LayoutRes int res) {
         stringHolderContainerFilename = res;
     }
 
@@ -84,7 +85,7 @@ public class SimpleStringRecyclerView extends AbstractGradientRecyclerView {
         tv.setTextColor(c);
     }
 
-    private class StringHolder extends AbstractGradientViewHolder{
+    private class StringHolder extends AbstractGradientViewHolder {
 
         TextView textView;
 
@@ -94,7 +95,7 @@ public class SimpleStringRecyclerView extends AbstractGradientRecyclerView {
         }
     }
 
-    public class StringAdapter extends AbstractGradientAdapter<StringHolder,String>{
+    public class StringAdapter extends AbstractGradientAdapter<StringHolder, String> {
 
         public StringAdapter(Context context) {
             super(context);
@@ -111,15 +112,15 @@ public class SimpleStringRecyclerView extends AbstractGradientRecyclerView {
 
         @Override
         public void onBindViewHolder(StringHolder holder, int position) {
-            if(position >= 0 && position < list.size()) {
+            if (position >= 0 && position < list.size()) {
                 holder.textView.setText(list.get(position));
             }
         }
     }
 
-    public String getSelectedString(){
+    public String getSelectedString() {
         LinearLayoutManager lm = (LinearLayoutManager) recyclerView.getLayoutManager();
-        return ((TextView)lm.getChildAt(nearestView(recyclerView)).findViewById(stringHolder)).getText().toString();
+        return ((TextView) lm.getChildAt(nearestView(recyclerView)).findViewById(stringHolder)).getText().toString();
     }
 
 }

@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/border"
+    android:orientation="vertical"
     android:padding="10dp">
+
     <Button
         android:id="@+id/holaButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ClickMe"/>
+        android:text="ClickMe" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="DefaultText"/>
+        android:text="DefaultText" />
 
 </LinearLayout>

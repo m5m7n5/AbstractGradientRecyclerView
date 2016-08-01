@@ -10,71 +10,72 @@
         android:id="@+id/fragment_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal" />
 
 
     <com.example.mbuenacasa.recyclerview.MonthRecyclerView
         android:id="@+id/month_view"
-        android:background="@drawable/seat_gradient"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/fragment_layout"
         android:layout_width="match_parent"
         android:layout_height="70dp"
+        android:layout_below="@+id/fragment_layout"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/seat_gradient"
         app:center_color="@color/seatRed"
-        app:side_color="@color/white"
-        app:orientation="horizontal"/>
+        app:orientation="horizontal"
+        app:side_color="@color/white" />
 
     <com.example.mbuenacasa.recyclerview.DatePickerView
         android:id="@+id/date_picker_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/month_view"/>
+        android:layout_below="@id/month_view"
+        android:layout_centerHorizontal="true" />
 
 
     <com.example.mbuenacasa.recyclerview.TimePickerView
         android:id="@+id/time_picker_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/date_picker_view">
+        android:layout_below="@+id/date_picker_view"
+        android:layout_centerHorizontal="true">
 
     </com.example.mbuenacasa.recyclerview.TimePickerView>
 
 
     <com.example.mbuenacasa.recyclerview.DragView
         android:id="@+id/drag_view"
-        android:layout_centerHorizontal="true"
         android:layout_width="200dp"
         android:layout_height="50dp"
-        android:layout_below="@id/time_picker_view">
+        android:layout_below="@id/time_picker_view"
+        android:layout_centerHorizontal="true">
+
         <TextView
             android:id="@+id/view_for_drag_button"
-            android:background="@color/pink"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@color/pink"
             android:padding="10dp"
             android:text="click me" />
 
         <TextView
             android:id="@+id/view_for_drag"
-            android:background="@color/green"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
+            android:background="@color/green"
             android:padding="10dp"
-            android:text="wwaaaaawww"/>
+            android:text="wwaaaaawww" />
 
     </com.example.mbuenacasa.recyclerview.DragView>
+    <!--
+        <com.example.mbuenacasa.recyclerview.BaseDragView
+            android:id="@+id/base_drag_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
-    <com.example.mbuenacasa.recyclerview.BaseDragView
-        android:id="@+id/base_drag_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-    </com.example.mbuenacasa.recyclerview.BaseDragView>
-
+        </com.example.mbuenacasa.recyclerview.BaseDragView>
+    -->
 </RelativeLayout>

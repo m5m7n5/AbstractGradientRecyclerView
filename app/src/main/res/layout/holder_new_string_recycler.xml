@@ -4,10 +4,10 @@
     android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/asdf"
         style="@style/SeatFontType11"
-        android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/asdf"/>
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

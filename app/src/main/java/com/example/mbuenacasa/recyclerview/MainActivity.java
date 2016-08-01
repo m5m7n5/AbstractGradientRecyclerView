@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
 
-    MonthRecyclerView month,month2;
+    MonthRecyclerView month, month2;
     DatePickerView date;
     TimePickerView time;
 
@@ -17,14 +17,14 @@ public class MainActivity extends AppCompatActivity {
         android.app.FragmentManager fragmentManager = getFragmentManager();
         android.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         MyCustomFragment myCustomFragment = new MyCustomFragment();
-        fragmentTransaction.add(R.id.fragment_layout,myCustomFragment);
+        fragmentTransaction.add(R.id.fragment_layout, myCustomFragment);
         fragmentTransaction.commit();
 
         month = (MonthRecyclerView) findViewById(R.id.month_view);
         date = (DatePickerView) findViewById(R.id.date_picker_view);
         time = (TimePickerView) findViewById(R.id.time_picker_view);
 
-        BaseDragView b = (BaseDragView) findViewById(R.id.base_drag_view);
-        b.inflate(R.layout.draggable_try);
+        //BaseDragView b = (BaseDragView) findViewById(R.id.base_drag_view);
+        //b.inflate(R.layout.draggable_try);
     }
 }

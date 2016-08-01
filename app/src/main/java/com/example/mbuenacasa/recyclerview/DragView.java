@@ -36,8 +36,8 @@ public class DragView extends RelativeLayout {
 
     @Override
     protected void onFinishInflate() {
-        mDragView = (TextView)findViewById(R.id.view_for_drag);
-        mButtonView = (TextView)findViewById(R.id.view_for_drag_button);
+        mDragView = (TextView) findViewById(R.id.view_for_drag);
+        mButtonView = (TextView) findViewById(R.id.view_for_drag_button);
         mButtonView.setOnClickListener(null);
         buttonListener = new OnClickListener() {
             @Override
@@ -48,7 +48,7 @@ public class DragView extends RelativeLayout {
         super.onFinishInflate();
     }
 
-    private void init(){
+    private void init() {
         mDragHelper = ViewDragHelper.create(this, 1.0f, new ViewDragHelper.Callback() {
             @Override
             public boolean tryCaptureView(View child, int pointerId) {
@@ -69,7 +69,7 @@ public class DragView extends RelativeLayout {
             @Override
             public void onViewReleased(View releasedChild, float xvel, float yvel) {
                 super.onViewReleased(releasedChild, xvel, yvel);
-                if(xvel>0) {
+                if (xvel > 0) {
                     mDragHelper.settleCapturedViewAt(0, 0);
                     mButtonView.setOnClickListener(null);
                 } else {
@@ -97,7 +97,7 @@ public class DragView extends RelativeLayout {
     @Override
     public void computeScroll() {
         super.computeScroll();
-        if(mDragHelper.continueSettling(true)) {
+        if (mDragHelper.continueSettling(true)) {
             ViewCompat.postInvalidateOnAnimation(this);
         }
     }
