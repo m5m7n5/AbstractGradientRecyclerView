@@ -45,20 +45,20 @@ public class BaseDragView extends RelativeLayout {
     }
 
     protected void inflate(@LayoutRes int res) {
-        LayoutInflater.from(mContext).inflate(res, this, true);
-        container = (ViewGroup) getChildAt(0);
+        View v = LayoutInflater.from(mContext).inflate(res, this, false);
+        container = (ViewGroup) v;
         mBackView = container.getChildAt(0);
         mUpperView = container.getChildAt(1);
         container.getChildCount();
-
-        initHelper();
+        addView(v);
+        initDefaultHelper();
     }
 
-    private void initHelper() {
+    private void initDefaultHelper() {
         CallBackHelper cb = new CallBackHelper();
         cb.enableHorizontalDrag();
-        cb.setDragDirection(CallBackHelper.RIGHT_LEFT_DRAG);
-        mDragHelper = ViewDragHelper.create((ViewGroup) this.getChildAt(0), cb);
+        cb.setDragDirection(CallBackHelper.LEFT_RIGHT_DRAG);
+        mDragHelper = ViewDragHelper.create(container, cb);
     }
 
 
@@ -93,14 +93,14 @@ public class BaseDragView extends RelativeLayout {
             canDragHorizontal = false;
         }
 
-
+        //TODO: IN BOTH CLAMP VIEW; CHECK RIGHTBOUND CASE WHEN THE VIEW IS NOT FILL_PARENT
         @Override
         public int clampViewPositionHorizontal(View child, int left, int dx) {
             if (canDragHorizontal) {
                 if (dragDirection == LEFT_RIGHT_DRAG) {
                     int leftBound = mBackView.getWidth();
                     int rightBound = getWidth() - mUpperView.getWidth();
-                    int newLeft = Math.min(Math.max(left, leftBound), rightBound);
+                    int newLeft = Math.max(Math.min(left, leftBound), rightBound);
                     return newLeft;
                 } else if (dragDirection == RIGHT_LEFT_DRAG) {
                     int leftBound = -mBackView.getWidth();
@@ -112,19 +112,20 @@ public class BaseDragView extends RelativeLayout {
             return 0;
         }
 
+        //TODO: Check that this method works correctly. (Now it should)
         @Override
         public int clampViewPositionVertical(View child, int top, int dy) {
             if (canDragVertical) {
                 if (dragDirection == TOP_BOTTOM_DRAG) {
                     int leftBound = mBackView.getHeight();
                     int rightBound = getWidth() - mUpperView.getWidth();
-                    int newLeft = Math.min(Math.max(top, leftBound), rightBound);
-                    return newLeft;
+                    int newTop = Math.max(Math.min(top, leftBound), rightBound);
+                    return newTop;
                 } else if (dragDirection == BOTTOM_TOP_DRAG) {
                     int leftBound = -mBackView.getHeight();
                     int rightBound = getWidth() - mUpperView.getWidth();
-                    int newLeft = Math.min(Math.max(top, leftBound), rightBound);
-                    return newLeft;
+                    int newTop = Math.min(Math.max(top, leftBound), rightBound);
+                    return newTop;
                 }
             }
             return 0;

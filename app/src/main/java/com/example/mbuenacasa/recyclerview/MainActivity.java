@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
 
-    MonthRecyclerView month, month2;
+    MonthRecyclerView month;
     DatePickerView date;
     TimePickerView time;
 
@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         date = (DatePickerView) findViewById(R.id.date_picker_view);
         time = (TimePickerView) findViewById(R.id.time_picker_view);
 
-        //BaseDragView b = (BaseDragView) findViewById(R.id.base_drag_view);
-        //b.inflate(R.layout.draggable_try);
+        BaseDragView b = (BaseDragView) findViewById(R.id.base_drag_view);
+        b.inflate(R.layout.draggable_try);
     }
 }

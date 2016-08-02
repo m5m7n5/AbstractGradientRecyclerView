@@ -18,6 +18,7 @@ public class DragView extends RelativeLayout {
     private TextView mDragView;
     private TextView mButtonView;
     private OnClickListener buttonListener;
+    private boolean clicked = false;
 
     public DragView(Context context) {
         super(context);
@@ -42,7 +43,12 @@ public class DragView extends RelativeLayout {
         buttonListener = new OnClickListener() {
             @Override
             public void onClick(View view) {
-                mButtonView.setBackgroundColor(0xFF00FF00);
+                if (clicked) {
+                    mButtonView.setBackgroundColor(0xFF00FF00);
+                } else {
+                    mButtonView.setBackgroundColor(0xFFFF0000);
+                }
+                clicked = !clicked;
             }
         };
         super.onFinishInflate();
@@ -85,7 +91,8 @@ public class DragView extends RelativeLayout {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        return mDragHelper.shouldInterceptTouchEvent(ev);
+        boolean val = mDragHelper.shouldInterceptTouchEvent(ev);
+        return val;
     }
 
     @Override
