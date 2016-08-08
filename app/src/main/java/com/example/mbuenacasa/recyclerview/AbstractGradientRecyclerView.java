@@ -9,12 +9,9 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,17 +26,63 @@ import java.util.List;
  */
 public abstract class AbstractGradientRecyclerView extends RecyclerView {
 
+    /**
+     * Colors to apply to the views.
+     */
     private int centerColor;
     private int sideColor;
     private int whenSelectedColor;
+
+    /**
+     * Timer for apply the whenSelectedColor
+     */
     private CountDownTimer timer;
+
+    /**
+     * Index in the adapter of the selected view index.
+     */
     protected int selectedViewIndex;
-    protected AbstractGradientRecyclerView recyclerView;
+
+    /**
+     * Current selected view, the view which is in the middle of the recyclerView.
+     */
     protected View selectedView;
+
+    /**
+     * A reference for itself, used in some functions.
+     */
+    protected AbstractGradientRecyclerView recyclerView;
+
+    /**
+     * Context provided by the parent.
+     */
     protected Context context;
+
+    /**
+     * Orientation of the recycler.
+     */
     private int orientation;
+
+    /**
+     * Flag value to know when the recycler has been decorated.
+     */
     private boolean decorated;
+
+    /**
+     * An instance of a communicator, for communicate outside the Recycler.
+     */
     private AbstractGradientRecyclerCommunicator communicator;
+
+    /**
+     * Start offset and end offset of the first and last item. To see them centered.
+     */
+    private int startOffset;
+    private int endOffset;
+
+    /**
+     * Value to know when can be scrolled the recycler.
+     */
+    private boolean canScroll;
 
     /**
      * Default constructor of the class
@@ -60,7 +103,8 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
     public AbstractGradientRecyclerView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
-        init(attrs);
+        readXMLAttributes(attrs);
+        init();
     }
 
     /**
@@ -73,7 +117,8 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
     public AbstractGradientRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         this.context = context;
-        init(attrs);
+        readXMLAttributes(attrs);
+        init();
     }
 
     /**
@@ -105,11 +150,21 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
     /**
      * Init method that initializes all the variables and listeners needed.
      *
-     * @param attrs
      */
-    private void init(@Nullable AttributeSet attrs) {
+    private void init() {
         recyclerView = this;
         decorated = false;
+        DynamicPosibleScrollLinearLayoutManager dynamicLLM = new DynamicPosibleScrollLinearLayoutManager(getContext());
+        dynamicLLM.setOrientation(orientation);
+        dynamicLLM.setCanScroll(canScroll);
+        dynamicLLM.setAutoMeasureEnabled(false);
+        setLayoutManager(dynamicLLM);
+        settingCustomListeners();
+        setResponseTime(150);
+    }
+
+
+    private void readXMLAttributes(@Nullable AttributeSet attrs){
         if (attrs != null) {
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.AbstractGradientRecyclerView, 0, 0);
             String center = a.getString(R.styleable.AbstractGradientRecyclerView_center_color);
@@ -136,17 +191,24 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
             } else {
                 this.orientation = LinearLayoutManager.HORIZONTAL;
             }
+            String canScroll = a.getString(R.styleable.AbstractGradientRecyclerView_orientation);
+            if (canScroll != null) {
+                this.canScroll = Boolean.parseBoolean(canScroll);
+            } else {
+                this.canScroll = true;
+            }
             a.recycle();
         }
-        DynamicPosibleScrollLinearLayoutManager dynamicLLM = new DynamicPosibleScrollLinearLayoutManager(getContext());
-        dynamicLLM.setOrientation(orientation);
-        dynamicLLM.setCanScroll(true);
-        dynamicLLM.setAutoMeasureEnabled(false);
-        setLayoutManager(dynamicLLM);
-        settingCustomListeners();
-        timer = new CountDownTimer(200, 200) {
+    }
+    /**
+     * Method that initializes the timer with the new time as a countdown value.
+     * @param time
+     */
+    public void setResponseTime(int time){
+        timer = new CountDownTimer(time,time) {
             @Override
-            public void onTick(long l) {
+            public void onTick(long millisUntilFinished) {
+
             }
 
             @Override
@@ -170,8 +232,6 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
      * @param recyclerView
      */
     protected void offset(RecyclerView recyclerView) {
-        int startOffset;
-        int endOffset;
 
         RecyclerView.Adapter adapter = getAdapter();
         AbstractGradientViewHolder firstViewHolder = (AbstractGradientViewHolder) adapter.createViewHolder(this, 0);
@@ -285,17 +345,25 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
                 if (secondMaxIndex == firstMaxIndex && firstMaxIndex == 0) {
                     secondMaxIndex = 1;
                 }
-
+                double getChangeValue;
                 if (l.getOrientation() == LinearLayoutManager.HORIZONTAL) {
-                    double getChangeValue = Math.abs(getDistanceFromCenter(recyclerView, firstMaxIndex) / (double) l.getChildAt(firstMaxIndex).getWidth());
-                    changeColorFromView(l.getChildAt(firstMaxIndex), generateGradientColor(centerColor, sideColor, (float) (getChangeValue)));
-                    getChangeValue = Math.abs(getDistanceFromCenter(recyclerView, secondMaxIndex) / (double) l.getChildAt(secondMaxIndex).getWidth());
-                    changeColorFromView(l.getChildAt(secondMaxIndex), generateGradientColor(centerColor, sideColor, (float) (getChangeValue)));
+                    if (l.getChildAt(firstMaxIndex) != null) {
+                        getChangeValue = Math.abs(getDistanceFromCenter(recyclerView, firstMaxIndex) / (double) l.getChildAt(firstMaxIndex).getWidth());
+                        changeColorFromView(l.getChildAt(firstMaxIndex), generateGradientColor(centerColor, sideColor, (float) (getChangeValue)));
+                    }
+                    if (l.getChildAt(secondMaxIndex) != null) {
+                        getChangeValue = Math.abs(getDistanceFromCenter(recyclerView, secondMaxIndex) / (double) l.getChildAt(secondMaxIndex).getWidth());
+                        changeColorFromView(l.getChildAt(secondMaxIndex), generateGradientColor(centerColor, sideColor, (float) (getChangeValue)));
+                    }
                 } else {
-                    double getChangeValue = Math.abs(getDistanceFromCenter(recyclerView, firstMaxIndex) / (double) l.getChildAt(firstMaxIndex).getHeight());
-                    changeColorFromView(l.getChildAt(firstMaxIndex), generateGradientColor(centerColor, sideColor, (float) (getChangeValue)));
-                    getChangeValue = Math.abs(getDistanceFromCenter(recyclerView, secondMaxIndex) / (double) l.getChildAt(secondMaxIndex).getHeight());
-                    changeColorFromView(l.getChildAt(secondMaxIndex), generateGradientColor(centerColor, sideColor, (float) (getChangeValue)));
+                    if (l.getChildAt(firstMaxIndex) != null) {
+                        getChangeValue = Math.abs(getDistanceFromCenter(recyclerView, firstMaxIndex) / (double) l.getChildAt(firstMaxIndex).getHeight());
+                        changeColorFromView(l.getChildAt(firstMaxIndex), generateGradientColor(centerColor, sideColor, (float) (getChangeValue)));
+                    }
+                    if (l.getChildAt(secondMaxIndex) != null) {
+                        getChangeValue = Math.abs(getDistanceFromCenter(recyclerView, secondMaxIndex) / (double) l.getChildAt(secondMaxIndex).getHeight());
+                        changeColorFromView(l.getChildAt(secondMaxIndex), generateGradientColor(centerColor, sideColor, (float) (getChangeValue)));
+                    }
                 }
 
 
@@ -448,18 +516,22 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
         LinearLayoutManager lm = (LinearLayoutManager) rv.getLayoutManager();
         if (lm.getOrientation() == LinearLayoutManager.HORIZONTAL) {
             Rect aux = new Rect();
-            lm.getChildAt(index).getGlobalVisibleRect(aux);
-            Rect recyclerRectangle = new Rect();
-            rv.getGlobalVisibleRect(recyclerRectangle);
-            return aux.centerX() - recyclerRectangle.centerX();
+            if (lm.getChildAt(index) != null) {
+                lm.getChildAt(index).getGlobalVisibleRect(aux);
+                Rect recyclerRectangle = new Rect();
+                rv.getGlobalVisibleRect(recyclerRectangle);
+                return aux.centerX() - recyclerRectangle.centerX();
+            }
         } else {
             Rect aux = new Rect();
-            lm.getChildAt(index).getGlobalVisibleRect(aux);
-            Rect recyclerRectangle = new Rect();
-            rv.getGlobalVisibleRect(recyclerRectangle);
-            return aux.centerY() - recyclerRectangle.centerY();
+            if (lm.getChildAt(index) != null) {
+                lm.getChildAt(index).getGlobalVisibleRect(aux);
+                Rect recyclerRectangle = new Rect();
+                rv.getGlobalVisibleRect(recyclerRectangle);
+                return aux.centerY() - recyclerRectangle.centerY();
+            }
         }
-
+        return 0;
     }
 
 
@@ -572,7 +644,8 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
                         outRect.bottom = endOffset;
                     }
                 }
-            } else if (parent.getChildAdapterPosition(view) == 0) {
+            }
+            if (parent.getChildAdapterPosition(view) == 0) {
                 if (orientation == LinearLayoutManager.HORIZONTAL) {
                     if (startOffset > 0) {
                         outRect.left = startOffset;
@@ -717,7 +790,24 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
     }
 
     @Override
-    public void setAdapter(Adapter adapter) {
+    public final void setAdapter(Adapter adapter) {
         this.setAdapter((AbstractGradientAdapter) adapter);
+    }
+
+    public int getEndOffset() {
+        return endOffset;
+    }
+
+    public int getStartOffset() {
+        return startOffset;
+    }
+
+    public void setCanScroll(boolean b){
+        canScroll = b;
+        ((DynamicPosibleScrollLinearLayoutManager)getLayoutManager()).setCanScroll(b);
+    }
+
+    public boolean canScroll(){
+        return canScroll;
     }
 }
