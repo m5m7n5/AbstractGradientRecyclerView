@@ -8,6 +8,7 @@
             <enum name="horizontal" value="0"/>
             <enum name="vertical" value="1"/>
         </attr>
+        <attr name="can_scroll" format="boolean"/>
         <!--
         <attr name="android:layout_width" format="enum|dimension">
             <enum name="wrap_content" value="0"/>

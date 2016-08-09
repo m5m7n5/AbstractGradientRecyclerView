@@ -259,9 +259,9 @@ public class DatePickerView extends RelativeLayout implements AbstractGradientRe
     @Override
     public void whenSelected(AbstractGradientRecyclerView aRecycler, View view, int index) {
 
-        ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager) days.getLayoutManager()).setCanScroll(true);
-        ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager) months.getLayoutManager()).setCanScroll(true);
-        ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager) years.getLayoutManager()).setCanScroll(true);
+        ((AbstractGradientRecyclerView.AbstractGradientLayoutManager) days.getLayoutManager()).setCanScroll(true);
+        ((AbstractGradientRecyclerView.AbstractGradientLayoutManager) months.getLayoutManager()).setCanScroll(true);
+        ((AbstractGradientRecyclerView.AbstractGradientLayoutManager) years.getLayoutManager()).setCanScroll(true);
         SimpleStringRecyclerView.StringAdapter daysAdapter = (SimpleStringRecyclerView.StringAdapter) days.getAdapter();
         SimpleStringRecyclerView.StringAdapter monthsAdapter = (SimpleStringRecyclerView.StringAdapter) months.getAdapter();
         if (days == aRecycler) {
@@ -280,16 +280,16 @@ public class DatePickerView extends RelativeLayout implements AbstractGradientRe
     }
 
     @Override
-    public void whenScrolled(AbstractGradientRecyclerView recyclerView) {
+    public void whenScrolled(AbstractGradientRecyclerView recyclerView, View selectedView, int selectedViewIndex) {
         if (days == recyclerView) {
-            ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager) months.getLayoutManager()).setCanScroll(false);
-            ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager) years.getLayoutManager()).setCanScroll(false);
+            ((AbstractGradientRecyclerView.AbstractGradientLayoutManager) months.getLayoutManager()).setCanScroll(false);
+            ((AbstractGradientRecyclerView.AbstractGradientLayoutManager) years.getLayoutManager()).setCanScroll(false);
         } else if (months == recyclerView) {
-            ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager) days.getLayoutManager()).setCanScroll(false);
-            ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager) years.getLayoutManager()).setCanScroll(false);
+            ((AbstractGradientRecyclerView.AbstractGradientLayoutManager) days.getLayoutManager()).setCanScroll(false);
+            ((AbstractGradientRecyclerView.AbstractGradientLayoutManager) years.getLayoutManager()).setCanScroll(false);
         } else if (years == recyclerView) {
-            ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager) days.getLayoutManager()).setCanScroll(false);
-            ((AbstractGradientRecyclerView.DynamicPosibleScrollLinearLayoutManager) months.getLayoutManager()).setCanScroll(false);
+            ((AbstractGradientRecyclerView.AbstractGradientLayoutManager) days.getLayoutManager()).setCanScroll(false);
+            ((AbstractGradientRecyclerView.AbstractGradientLayoutManager) months.getLayoutManager()).setCanScroll(false);
         }
     }
 

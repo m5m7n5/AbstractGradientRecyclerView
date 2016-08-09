@@ -154,7 +154,7 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
     private void init() {
         recyclerView = this;
         decorated = false;
-        DynamicPosibleScrollLinearLayoutManager dynamicLLM = new DynamicPosibleScrollLinearLayoutManager(getContext());
+        AbstractGradientLayoutManager dynamicLLM = new AbstractGradientLayoutManager(getContext());
         dynamicLLM.setOrientation(orientation);
         dynamicLLM.setCanScroll(canScroll);
         dynamicLLM.setAutoMeasureEnabled(false);
@@ -191,7 +191,7 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
             } else {
                 this.orientation = LinearLayoutManager.HORIZONTAL;
             }
-            String canScroll = a.getString(R.styleable.AbstractGradientRecyclerView_orientation);
+            String canScroll = a.getString(R.styleable.AbstractGradientRecyclerView_can_scroll);
             if (canScroll != null) {
                 this.canScroll = Boolean.parseBoolean(canScroll);
             } else {
@@ -207,8 +207,7 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
     public void setResponseTime(int time){
         timer = new CountDownTimer(time,time) {
             @Override
-            public void onTick(long millisUntilFinished) {
-
+            public void onTick(long l) {
             }
 
             @Override
@@ -281,7 +280,7 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
      * @param recyclerView recyclerView to search the nearest view
      * @return returns the index of the current visible nearest view
      */
-    protected static int nearestView(RecyclerView recyclerView) {
+    public static int nearestView(RecyclerView recyclerView) {
 
         LinearLayoutManager l = (LinearLayoutManager) recyclerView.getLayoutManager();
         int firstMaxIndex = 0;
@@ -404,7 +403,7 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
                 } else {
                     //It enters here when the scroll is not stopping
                     if (communicator != null) {
-                        communicator.whenScrolled((AbstractGradientRecyclerView) recyclerView);
+                        communicator.whenScrolled((AbstractGradientRecyclerView) recyclerView, selectedView, selectedViewIndex);
                     }
                 }
             }
@@ -666,14 +665,14 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
     public interface AbstractGradientRecyclerCommunicator {
         void whenSelected(AbstractGradientRecyclerView recyclerView, View selectedView, int selectedViewIndex);
 
-        void whenScrolled(AbstractGradientRecyclerView recyclerView);
+        void whenScrolled(AbstractGradientRecyclerView recyclerView, View selectedView, int selectedViewIndex);
     }
 
     /**
      * This class is used to lock some of the scrolls, is a linearLayoutManager where you can
      * change the value canScroll for make it scroll o for don't let it scroll.
      */
-    public class DynamicPosibleScrollLinearLayoutManager extends LinearLayoutManager {
+    public class AbstractGradientLayoutManager extends LinearLayoutManager {
 
         private boolean canScroll;
 
@@ -682,7 +681,7 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
          *
          * @param context
          */
-        public DynamicPosibleScrollLinearLayoutManager(Context context) {
+        public AbstractGradientLayoutManager(Context context) {
             super(context);
         }
 
@@ -693,7 +692,7 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
          * @param orientation
          * @param reverseLayout
          */
-        public DynamicPosibleScrollLinearLayoutManager(Context context, int orientation, boolean reverseLayout) {
+        public AbstractGradientLayoutManager(Context context, int orientation, boolean reverseLayout) {
             super(context, orientation, reverseLayout);
         }
 
@@ -705,7 +704,7 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
          * @param defStyleAttr
          * @param defStyleRes
          */
-        public DynamicPosibleScrollLinearLayoutManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        public AbstractGradientLayoutManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
             super(context, attrs, defStyleAttr, defStyleRes);
         }
 
@@ -737,17 +736,23 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
         public void setCanScroll(boolean b) {
             canScroll = b;
         }
+
+        public AbstractGradientViewHolder getViewHolderFromViewIndex(int index){
+            return (AbstractGradientViewHolder) getChildViewHolder(findViewById(index));
+        }
     }
 
     /**
      * Custom class for instantiate the viewHolder and, in he function offset, get the itemView
      * and apply it to the items.
      */
-    public class AbstractGradientViewHolder extends RecyclerView.ViewHolder {
+    public abstract class AbstractGradientViewHolder extends RecyclerView.ViewHolder {
 
         public AbstractGradientViewHolder(View itemView) {
             super(itemView);
         }
+
+        public abstract void changeColor(int color);
 
     }
 
@@ -797,17 +802,5 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
     public int getEndOffset() {
         return endOffset;
     }
-
-    public int getStartOffset() {
-        return startOffset;
-    }
-
-    public void setCanScroll(boolean b){
-        canScroll = b;
-        ((DynamicPosibleScrollLinearLayoutManager)getLayoutManager()).setCanScroll(b);
-    }
-
-    public boolean canScroll(){
-        return canScroll;
-    }
 }
+

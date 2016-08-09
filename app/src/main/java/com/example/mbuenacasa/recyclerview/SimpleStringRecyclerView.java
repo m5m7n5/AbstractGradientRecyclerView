@@ -93,6 +93,11 @@ public class SimpleStringRecyclerView extends AbstractGradientRecyclerView {
             super(itemView);
             textView = (TextView) itemView.findViewById(stringHolder);
         }
+
+        @Override
+        public void changeColor(int color) {
+            textView.setTextColor(color);
+        }
     }
 
     public class StringAdapter extends AbstractGradientAdapter<StringHolder, String> {

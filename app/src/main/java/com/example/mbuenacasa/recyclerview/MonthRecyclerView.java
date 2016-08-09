@@ -106,6 +106,11 @@ public class MonthRecyclerView extends AbstractGradientRecyclerView {
             super(itemView);
             month = (TextView) itemView.findViewById(R.id.month_holder_textview);
         }
+
+        @Override
+        public void changeColor(int color) {
+            month.setTextColor(color);
+        }
     }
 
     /**
