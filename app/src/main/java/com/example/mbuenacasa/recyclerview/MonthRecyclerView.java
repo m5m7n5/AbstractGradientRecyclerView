@@ -55,22 +55,6 @@ public class MonthRecyclerView extends AbstractGradientRecyclerView {
         this.setAdapter(new MonthViewAdapter(monthList, this.context));
     }
 
-    @Override
-    public void whenSelected(View v) {
-    }
-
-    /**
-     * Method that changes the desired views of the view with the color passed as an argument
-     *
-     * @param v View that is currently going to change his color
-     * @param c Color to apply on the desired elements
-     */
-    @Override
-    protected void changeColorFromView(View v, int c) {
-        TextView tv = (TextView) v.findViewById(R.id.month_holder_textview);
-        tv.setTextColor(c);
-    }
-
     /**
      * Public enum with the name of the months
      */
@@ -110,6 +94,11 @@ public class MonthRecyclerView extends AbstractGradientRecyclerView {
         @Override
         public void changeColor(int color) {
             month.setTextColor(color);
+        }
+
+        @Override
+        public void whenSelected() {
+
         }
     }
 

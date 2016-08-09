@@ -74,17 +74,6 @@ public class SimpleStringRecyclerView extends AbstractGradientRecyclerView {
         stringHolderContainerFilename = res;
     }
 
-    @Override
-    protected void whenSelected(View v) {
-
-    }
-
-    @Override
-    protected void changeColorFromView(View v, int c) {
-        TextView tv = (TextView) v.findViewById(stringHolder);
-        tv.setTextColor(c);
-    }
-
     private class StringHolder extends AbstractGradientViewHolder {
 
         TextView textView;
@@ -97,6 +86,11 @@ public class SimpleStringRecyclerView extends AbstractGradientRecyclerView {
         @Override
         public void changeColor(int color) {
             textView.setTextColor(color);
+        }
+
+        @Override
+        public void whenSelected() {
+
         }
     }
 
