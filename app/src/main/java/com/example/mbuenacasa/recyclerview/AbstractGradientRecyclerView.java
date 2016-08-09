@@ -365,7 +365,7 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
                 /*
                 Apply the gradient to the first and the las visible element
                  */
-                applyAlpha((LinearLayoutManager) recyclerView.getLayoutManager());
+                applyAlpha();
             }
 
             /**
@@ -379,7 +379,6 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    LinearLayoutManager l = (LinearLayoutManager) recyclerView.getLayoutManager();
                     int nearest = nearestView(recyclerView);
                     int offset = getDistanceFromCenter(recyclerView, nearest);
                     if (getOrientation() == LinearLayoutManager.HORIZONTAL) {
@@ -411,31 +410,29 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
     /**
      * Method that iterates over the current visible items and changes alpha values of the items,
      * depending of the current visible portion.
-     *
-     * @param l LinearLayoutManager to apply alpha
      */
-    private static void applyAlpha(LinearLayoutManager l) {
-        int length = l.getChildCount();
+    private void applyAlpha() {
+        int length = getChildCount();
         float alpha;
-        if (l.getOrientation() == LinearLayoutManager.HORIZONTAL) {
+        if (getOrientation() == LinearLayoutManager.HORIZONTAL) {
             for (int i = 0; i < length; i++) {
-                if (l.getChildAt(i).getWidth() > 0) {
-                    alpha = (float) getVisibleWidth(l.getChildAt(i)) / l.getChildAt(i).getWidth();
+                if (getChildAt(i).getWidth() > 0) {
+                    alpha = (float) getVisibleWidth(getChildAt(i)) / getChildAt(i).getWidth();
                     if (alpha < 1) {
-                        l.getChildAt(i).setAlpha(alpha * alpha);
+                        getChildAt(i).setAlpha(alpha * alpha);
                     } else {
-                        l.getChildAt(i).setAlpha(1);
+                        getChildAt(i).setAlpha(1);
                     }
                 }
             }
         } else {
             for (int i = 0; i < length; i++) {
-                if (l.getChildAt(i).getWidth() > 0) {
-                    alpha = (float) getVisibleHeight(l.getChildAt(i)) / l.getChildAt(i).getHeight();
+                if (getChildAt(i).getWidth() > 0) {
+                    alpha = (float) getVisibleHeight(getChildAt(i)) / getChildAt(i).getHeight();
                     if (alpha < 1) {
-                        l.getChildAt(i).setAlpha(alpha * alpha);
+                        getChildAt(i).setAlpha(alpha * alpha);
                     } else {
-                        l.getChildAt(i).setAlpha(1);
+                        getChildAt(i).setAlpha(1);
                     }
                 }
             }
