@@ -26,5 +26,10 @@ public class MainActivity extends AppCompatActivity {
 
         BaseDragView b = (BaseDragView) findViewById(R.id.base_drag_view);
         b.inflate(R.layout.draggable_try);
+
+        BaseCollapsableView c = (BaseCollapsableView) findViewById(R.id.base_collapsable_view);
+        c.inflate(R.layout.collapsable_try);
+        c = (BaseCollapsableView) findViewById(R.id.base_collapsable_view2);
+        c.inflate(R.layout.collapsable_try);
     }
 }

@@ -77,4 +77,20 @@
         android:layout_height="wrap_content">
 
     </com.example.mbuenacasa.recyclerview.BaseDragView>
+
+    <com.example.mbuenacasa.recyclerview.BaseCollapsableView
+        android:id="@+id/base_collapsable_view"
+        android:layout_below="@+id/drag_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+    </com.example.mbuenacasa.recyclerview.BaseCollapsableView>
+
+    <com.example.mbuenacasa.recyclerview.BaseCollapsableView
+        android:id="@+id/base_collapsable_view2"
+        android:layout_below="@+id/base_collapsable_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+    </com.example.mbuenacasa.recyclerview.BaseCollapsableView>
 </RelativeLayout>

@@ -44,12 +44,16 @@ public class BaseDragView extends RelativeLayout {
 
     }
 
+
+    /**
+     * For correct working of this method, you should have only 2 nested views in your layout resource
+     * @param res
+     */
     protected void inflate(@LayoutRes int res) {
         View v = LayoutInflater.from(mContext).inflate(res, this, false);
         container = (ViewGroup) v;
         mBackView = container.getChildAt(0);
         mUpperView = container.getChildAt(1);
-        container.getChildCount();
         addView(v);
         initDefaultHelper();
     }
