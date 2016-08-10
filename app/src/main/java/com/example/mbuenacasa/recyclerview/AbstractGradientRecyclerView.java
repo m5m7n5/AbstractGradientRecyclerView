@@ -84,6 +84,9 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
      */
     private boolean canScroll;
 
+
+    private RecyclerView.OnScrollListener scrollListener;
+
     /**
      * Default constructor of the class
      *
@@ -298,7 +301,7 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
      */
     private void settingCustomListeners() {
 
-        addOnScrollListener(new RecyclerView.OnScrollListener() {
+        scrollListener = new RecyclerView.OnScrollListener() {
             /**
              * This method changes the color and the alpha value of  the visible views to make
              * the desired effect.
@@ -366,6 +369,11 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
                 Apply the gradient to the first and the las visible element
                  */
                 applyAlpha();
+                selectedView = getChildAt(firstMaxIndex);
+                selectedViewIndex = getChildAdapterPosition(selectedView);
+                if(communicator!=null){
+                    communicator.whenScrolled((AbstractGradientRecyclerView) recyclerView, selectedView, selectedViewIndex);
+                }
             }
 
             /**
@@ -394,16 +402,14 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
                     selectedView = getChildAt(nearest);
                     selectedViewIndex = getChildAdapterPosition(selectedView);
                     getChildViewHolder(selectedView).changeColor(centerColor);
-
                     timer.start();
-                } else {
-                    //It enters here when the scroll is not stopping
-                    if (communicator != null) {
-                        communicator.whenScrolled((AbstractGradientRecyclerView) recyclerView, selectedView, selectedViewIndex);
-                    }
+                }
+                if (communicator != null) {
+                    communicator.whenScrollStateChanged(newState,(AbstractGradientRecyclerView) recyclerView, selectedView, selectedViewIndex);
                 }
             }
-        });
+        };
+        addOnScrollListener(scrollListener);
 
     }
 
@@ -661,6 +667,8 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
         void whenSelected(AbstractGradientRecyclerView recyclerView, View selectedView, int selectedViewIndex);
 
         void whenScrolled(AbstractGradientRecyclerView recyclerView, View selectedView, int selectedViewIndex);
+
+        void whenScrollStateChanged(int newState, AbstractGradientRecyclerView recyclerView, View selectedView, int selectedViewIndex);
     }
 
     /**
@@ -799,5 +807,8 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
     public int getStartOffset() {
         return startOffset;
     }
-}
 
+    public RecyclerView.OnScrollListener getOnScrollListener(){
+        return scrollListener;
+    }
+}

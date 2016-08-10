@@ -1,6 +1,7 @@
 package com.example.mbuenacasa.recyclerview;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -281,15 +282,22 @@ public class DatePickerView extends RelativeLayout implements AbstractGradientRe
 
     @Override
     public void whenScrolled(AbstractGradientRecyclerView recyclerView, View selectedView, int selectedViewIndex) {
-        if (days == recyclerView) {
-            ((AbstractGradientRecyclerView.AbstractGradientLayoutManager) months.getLayoutManager()).setCanScroll(false);
-            ((AbstractGradientRecyclerView.AbstractGradientLayoutManager) years.getLayoutManager()).setCanScroll(false);
-        } else if (months == recyclerView) {
-            ((AbstractGradientRecyclerView.AbstractGradientLayoutManager) days.getLayoutManager()).setCanScroll(false);
-            ((AbstractGradientRecyclerView.AbstractGradientLayoutManager) years.getLayoutManager()).setCanScroll(false);
-        } else if (years == recyclerView) {
-            ((AbstractGradientRecyclerView.AbstractGradientLayoutManager) days.getLayoutManager()).setCanScroll(false);
-            ((AbstractGradientRecyclerView.AbstractGradientLayoutManager) months.getLayoutManager()).setCanScroll(false);
+
+    }
+
+    @Override
+    public void whenScrollStateChanged(int newState, AbstractGradientRecyclerView recyclerView, View selectedView, int selectedViewIndex) {
+        if(newState == RecyclerView.SCROLL_STATE_IDLE) {
+            if (days == recyclerView) {
+                ((AbstractGradientRecyclerView.AbstractGradientLayoutManager) months.getLayoutManager()).setCanScroll(false);
+                ((AbstractGradientRecyclerView.AbstractGradientLayoutManager) years.getLayoutManager()).setCanScroll(false);
+            } else if (months == recyclerView) {
+                ((AbstractGradientRecyclerView.AbstractGradientLayoutManager) days.getLayoutManager()).setCanScroll(false);
+                ((AbstractGradientRecyclerView.AbstractGradientLayoutManager) years.getLayoutManager()).setCanScroll(false);
+            } else if (years == recyclerView) {
+                ((AbstractGradientRecyclerView.AbstractGradientLayoutManager) days.getLayoutManager()).setCanScroll(false);
+                ((AbstractGradientRecyclerView.AbstractGradientLayoutManager) months.getLayoutManager()).setCanScroll(false);
+            }
         }
     }
 
