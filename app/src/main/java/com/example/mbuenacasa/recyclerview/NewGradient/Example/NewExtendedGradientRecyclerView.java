@@ -72,7 +72,7 @@ public class NewExtendedGradientRecyclerView extends NewGradientRecyclerView {
         }
     }
 
-    public class GradientItemDecoration extends ItemDecoration{
+    private final class GradientItemDecoration extends ItemDecoration{
 
         @Override
         public void onDraw(Canvas c, RecyclerView parent, State state) {

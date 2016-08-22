@@ -6,6 +6,7 @@ import android.graphics.Rect;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 /**
@@ -57,6 +58,7 @@ public abstract class GradientContainerView extends RelativeLayout {
                 int color = generateGradientColor(centerColor,sideColor,(float)(childRelativePositionScaled*childRelativePositionScaled));
                 changeColor(color);
             }
+            setAlpha(childWidth/(float)getMeasuredWidth());
         }else{
             int parentCenterY = parentRect.centerY();
             int childCenterY = childRect.centerY();
@@ -67,6 +69,7 @@ public abstract class GradientContainerView extends RelativeLayout {
                 int color = generateGradientColor(centerColor,sideColor,(float)(childRelativePositionScaled*childRelativePositionScaled));
                 changeColor(color);
             }
+            setAlpha(childHeight/(float)getMeasuredHeight());
 
         }
 
@@ -108,4 +111,5 @@ public abstract class GradientContainerView extends RelativeLayout {
         }
 
     }
+
 }
