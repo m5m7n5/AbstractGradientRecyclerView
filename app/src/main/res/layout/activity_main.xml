@@ -93,4 +93,12 @@
         android:layout_height="wrap_content">
 
     </com.example.mbuenacasa.recyclerview.BaseCollapsableView>
+    <com.example.mbuenacasa.recyclerview.NewGradient.Example.NewExtendedGradientRecyclerView
+        android:id="@+id/new_gradient_recycler_view"
+        android:layout_toRightOf="@+id/base_collapsable_view"
+        android:layout_below="@+id/drag_view"
+        android:layout_width="wrap_content"
+        android:layout_height="300dp">
+
+    </com.example.mbuenacasa.recyclerview.NewGradient.Example.NewExtendedGradientRecyclerView>
 </RelativeLayout>

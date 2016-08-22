@@ -1,13 +1,20 @@
 package com.example.mbuenacasa.recyclerview;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+
+import com.example.mbuenacasa.recyclerview.NewGradient.Example.NewExtendedGradientRecyclerView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     MonthRecyclerView month;
     DatePickerView date;
     TimePickerView time;
+
+    NewExtendedGradientRecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,5 +38,12 @@ public class MainActivity extends AppCompatActivity {
         c.inflate(R.layout.collapsable_try);
         c = (BaseCollapsableView) findViewById(R.id.base_collapsable_view2);
         c.inflate(R.layout.collapsable_try);
+
+        recyclerView = (NewExtendedGradientRecyclerView) findViewById(R.id.new_gradient_recycler_view);
+        List<String> asd = new ArrayList<>();
+        for(int i = 0;i<10;i++){
+            asd.add(Integer.toString(i));
+        }
+        recyclerView.setAdapterList(asd);
     }
 }
