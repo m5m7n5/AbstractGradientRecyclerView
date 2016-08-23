@@ -316,60 +316,10 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
                 For the correct working of this method, always should be a full element on the view.
                  */
                 timer.cancel();
-                int length = getChildCount();
-                int firstMaxIndex = nearestView(recyclerView);
-                for (int i = 0; i < length; i++) {
-                    if (i != firstMaxIndex) {
-                        getChildViewHolder(getChildAt(i)).changeColor(sideColor);
-                    }
-                    getChildAt(i).setAlpha(1);
-                }
-                /*
-                Apply the gradient of color to the nearest two elements from center, for this, i calculate the two elements with less distance to the center,
-                this has low cost because of low quantity of items.
-                 */
-                int secondMaxIndex = 0;
-                int firstDistance = Math.abs(getDistanceFromCenter(recyclerView, firstMaxIndex));
-                int secondDistance = Math.abs(getDistanceFromCenter(recyclerView, secondMaxIndex));
-                for (int i = 1; i < length; i++) {
-                    int aux = Math.abs(getDistanceFromCenter(recyclerView, i));
-                    if (aux <= secondDistance && i != firstMaxIndex) {
-                        secondMaxIndex = i;
-                        secondDistance = aux;
-                    }
-                }
-                if (secondMaxIndex == firstMaxIndex && firstMaxIndex == 0) {
-                    secondMaxIndex = 1;
-                    secondDistance = Math.abs(getDistanceFromCenter(recyclerView, secondMaxIndex));
-                }
-                double getChangeValue;
-                if (getOrientation() == LinearLayoutManager.HORIZONTAL) {
-                    if (getChildAt(firstMaxIndex) != null) {
-                        getChangeValue = firstDistance / (double) getChildAt(firstMaxIndex).getWidth();
-                        getChildViewHolder(getChildAt(firstMaxIndex)).changeColor(generateGradientColor(centerColor, sideColor, (float) getChangeValue));
-                    }
-                    if (getChildAt(secondMaxIndex) != null) {
-                        getChangeValue = secondDistance / (double) getChildAt(secondMaxIndex).getWidth();
-                        getChildViewHolder(getChildAt(secondMaxIndex)).changeColor(generateGradientColor(centerColor, sideColor, (float) getChangeValue));
-                    }
-                } else {
-                    if (getChildAt(firstMaxIndex) != null) {
-                        getChangeValue = firstDistance / (double) getChildAt(firstMaxIndex).getHeight();
-                        getChildViewHolder(getChildAt(firstMaxIndex)).changeColor(generateGradientColor(centerColor, sideColor, (float) getChangeValue));
-                    }
-                    if (getChildAt(secondMaxIndex) != null) {
-                        getChangeValue = secondDistance / (double) getChildAt(secondMaxIndex).getHeight();
-                        getChildViewHolder(getChildAt(secondMaxIndex)).changeColor(generateGradientColor(centerColor, sideColor, (float) getChangeValue));
 
-                    }
-                }
+                updateGradientColors(recyclerView);
 
-
-                /*
-                Apply the gradient to the first and the las visible element
-                 */
-                applyAlpha();
-                selectedView = getChildAt(firstMaxIndex);
+                selectedView = getChildAt(nearestView(recyclerView));
                 selectedViewIndex = getChildAdapterPosition(selectedView);
                 if(communicator!=null){
                     communicator.whenScrolled((AbstractGradientRecyclerView) recyclerView, selectedView, selectedViewIndex);
@@ -394,14 +344,9 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
                     } else {
                         recyclerView.smoothScrollBy(0, offset);
                     }
-                    for (int i = 0; i < getChildCount(); i++) {
-                        if (i != nearest) {
-                            getChildViewHolder(getChildAt(i)).changeColor(sideColor);
-                        }
-                    }
+                    updateGradientColors(recyclerView);
                     selectedView = getChildAt(nearest);
                     selectedViewIndex = getChildAdapterPosition(selectedView);
-                    getChildViewHolder(selectedView).changeColor(centerColor);
                     timer.start();
                 }
                 if (communicator != null) {
@@ -413,42 +358,48 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
 
     }
 
-    /**
-     * Method that iterates over the current visible items and changes alpha values of the items,
-     * depending of the current visible portion.
-     */
-    private void applyAlpha() {
-        int length = getChildCount();
-        float alpha;
-        if (getOrientation() == LinearLayoutManager.HORIZONTAL) {
-            for (int i = 0; i < length; i++) {
-                if (getChildAt(i).getWidth() > 0) {
-                    alpha = (float) getVisibleWidth(getChildAt(i)) / getChildAt(i).getWidth();
-                    if (alpha < 1) {
-                        getChildAt(i).setAlpha(alpha * alpha);
-                    } else {
-                        getChildAt(i).setAlpha(1);
-                    }
+
+    private void updateGradientColors(RecyclerView recyclerView){
+        for(int i=0;i<recyclerView.getChildCount();i++) {
+            View child = recyclerView.getChildAt(i);
+            Rect childRect = new Rect();
+            child.getGlobalVisibleRect(childRect);
+            Rect parentRect = new Rect();
+            RecyclerView parent = (RecyclerView) child.getParent();
+            parent.getGlobalVisibleRect(parentRect);
+            if (((LinearLayoutManager) parent.getLayoutManager()).getOrientation() == LinearLayoutManager.HORIZONTAL) {
+                int parentCenterX = parentRect.centerX();
+                int childCenterX = childRect.centerX();
+                int childRelativePosition = childCenterX - parentCenterX;
+                int childWidth = childRect.right - childRect.left;
+                if ((childWidth / 2) > 0) {
+                    float childRelativePositionScaled = 2 * (childRelativePosition / (float) childWidth);
+                    int color = generateGradientColor(centerColor, sideColor, (childRelativePositionScaled * childRelativePositionScaled));
+                    ((AbstractGradientViewHolder) recyclerView.getChildViewHolder(child)).changeColor(color);
                 }
-            }
-        } else {
-            for (int i = 0; i < length; i++) {
-                if (getChildAt(i).getWidth() > 0) {
-                    alpha = (float) getVisibleHeight(getChildAt(i)) / getChildAt(i).getHeight();
-                    if (alpha < 1) {
-                        getChildAt(i).setAlpha(alpha * alpha);
-                    } else {
-                        getChildAt(i).setAlpha(1);
-                    }
+                float alpha = (childWidth / (float) child.getMeasuredWidth()) * (childWidth / (float) child.getMeasuredWidth());
+                child.setAlpha(alpha);
+            } else {
+                int parentCenterY = parentRect.centerY();
+                int childCenterY = childRect.centerY();
+                int childRelativePosition = childCenterY - parentCenterY;
+                int childHeight = childRect.bottom - childRect.top;
+                if ((childHeight / 2) > 0) {
+                    float childRelativePositionScaled = 2 * (childRelativePosition / (float) childHeight);
+                    int color = generateGradientColor(centerColor, sideColor, (childRelativePositionScaled * childRelativePositionScaled));
+                    ((AbstractGradientViewHolder) recyclerView.getChildViewHolder(child)).changeColor(color);
                 }
+                float alpha = (childHeight / (float) child.getMeasuredHeight()) * (childHeight / (float) child.getMeasuredHeight());
+                child.setAlpha(alpha);
+
             }
         }
     }
 
-
     /**
      * Method that returns a value of color between fromColor and toColor, depending of the variation
-     * value, if variation is greater than 1, it returns toColor value (this method uses alpha value too)
+     * value, if variation is greater than 1, it returns toColor value (this method uses alpha value too),
+     * if variation is lesser than 0, it returns fromColor value.
      *
      * @param fromColor start color of the gradient
      * @param toColor   end color of the gradient
@@ -459,6 +410,8 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
 
         if (variation >= 1) {
             return toColor;
+        }else if(variation <= 0){
+            return fromColor;
         }
         //Split of the components into A R G B variables for both colors
         int A0 = (fromColor & 0xFF000000) >> 24;
