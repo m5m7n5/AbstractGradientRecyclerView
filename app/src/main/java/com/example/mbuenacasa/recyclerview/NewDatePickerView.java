@@ -35,6 +35,8 @@ public class NewDatePickerView extends RelativeLayout implements AbstractGradien
     private boolean scrollingDays;
     private boolean scrollingMonths;
     private boolean scrollingYears;
+    private List<String> longDaysList;
+    private List<String> longMonthsList;
 
     public NewDatePickerView(Context context) {
 
@@ -96,14 +98,14 @@ public class NewDatePickerView extends RelativeLayout implements AbstractGradien
         generateTablesAndValues(monthsStrings, start, end);
 
 
-        List<String> longDaysList = new ArrayList<>();
-        List<String> longMonthsList = new ArrayList<>();
+        longDaysList = new ArrayList<>();
+        longMonthsList = new ArrayList<>();
 
-        for(int i=0;i<yearsData.size();i++){
+        for (int i = 0; i < yearsData.size(); i++) {
             List<String> monthList = monthsDataMap.get(yearsData.get(i));
-            for(int j=0;j<monthList.size();j++){
+            for (int j = 0; j < monthList.size(); j++) {
                 List<String> daysList = daysDataMap.get(monthsDataMap.get(yearsData.get(i)).get(j) + yearsData.get(i));
-                for(int k = 0;k<daysList.size();k++){
+                for (int k = 0; k < daysList.size(); k++) {
                     longDaysList.add(daysList.get(k));
                 }
                 longMonthsList.add(monthList.get(j));
@@ -310,16 +312,27 @@ public class NewDatePickerView extends RelativeLayout implements AbstractGradien
 
     @Override
     public void whenScrolled(AbstractGradientRecyclerView recyclerView, View selectedView, int selectedViewIndex) {
-        if(recyclerView == days){
-            if(previousDaysPosition != selectedViewIndex/30) {
-                previousDaysPosition = selectedViewIndex/30;
-                months.smoothScrollToPosition(previousDaysPosition);
+        if (recyclerView == days) {
+            int diff = Integer.parseInt(longDaysList.get(previousDaysPosition)) - Integer.parseInt(longDaysList.get(selectedViewIndex));
+            if (Math.abs(diff) > 4) {
+                if (diff > 0) {
+                    if (months.getSelectedViewIndex() < months.getAdapter().getItemCount() - 1) {
+                        months.smoothScrollToPosition(months.getSelectedViewIndex() + 1);
+                    }
+                } else {
+                    if (months.getSelectedViewIndex() >= 1) {
+                        months.smoothScrollToPosition(months.getSelectedViewIndex() - 1);
+                    }
+                }
+
+
             }
+            previousDaysPosition = selectedViewIndex;
             //((LinearLayoutManager)(months.getLayoutManager())).scrollToPositionWithOffset(selectedViewIndex%months.getAdapter().getItemCount(),months.getEndOffset());
-        }else if(recyclerView == months && scrollingMonths){
+        } else if (recyclerView == months && scrollingMonths) {
             //if(previousMonthsPosition != selectedViewIndex){
-                //previousMonthsPosition = selectedViewIndex;
-                //days.smoothScrollToPosition(selectedViewIndex % months.getAdapter().getItemCount());
+            //previousMonthsPosition = selectedViewIndex;
+            //days.smoothScrollToPosition(selectedViewIndex % months.getAdapter().getItemCount());
             //}
         }
     }

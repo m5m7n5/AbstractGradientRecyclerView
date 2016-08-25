@@ -552,6 +552,10 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
         }
     }
 
+    public int getSelectedViewIndex() {
+        return selectedViewIndex;
+    }
+
     /**
      * This class is the reponsible of the scroll limit over the recyclers
      */
@@ -730,13 +734,13 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
 
                 if (recyclerView.getOrientation() == HORIZONTAL) {
                     final int distance = (int) Math.sqrt(dx * dx);
-                    final int time = 10*calculateTimeForDeceleration(distance);
+                    final int time = 10 * calculateTimeForDeceleration(distance);
                     if (time > 0) {
                         action.update(dx, 0, time, mDecelerateInterpolator);
                     }
                 } else {
                     final int distance = (int) Math.sqrt(dy * dy);
-                    final int time = 10*calculateTimeForDeceleration(distance);
+                    final int time = 10 * calculateTimeForDeceleration(distance);
                     if (time > 0) {
                         action.update(0, dy, time, mDecelerateInterpolator);
                     }
