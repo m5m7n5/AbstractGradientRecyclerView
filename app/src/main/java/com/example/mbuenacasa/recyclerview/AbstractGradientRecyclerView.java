@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
@@ -783,6 +784,11 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
             @Override
             public PointF computeScrollVectorForPosition(int targetPosition) {
                 return AbstractGradientLayoutManager.this.computeScrollVectorForPosition(targetPosition);
+            }
+
+            @Override
+            protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics) {
+                return 10f/displayMetrics.densityDpi;
             }
         }
     }
