@@ -25,7 +25,7 @@
         app:orientation="horizontal"
         app:side_color="@color/white" />
 
-    <com.example.mbuenacasa.recyclerview.DatePickerView
+    <com.example.mbuenacasa.recyclerview.NewDatePickerView
         android:id="@+id/date_picker_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

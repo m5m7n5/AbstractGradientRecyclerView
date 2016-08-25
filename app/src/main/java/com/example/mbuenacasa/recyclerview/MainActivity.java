@@ -11,7 +11,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     MonthRecyclerView month;
-    DatePickerView date;
+    NewDatePickerView date;
     TimePickerView time;
 
     NewExtendedGradientRecyclerView recyclerView;
@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
 
         month = (MonthRecyclerView) findViewById(R.id.month_view);
-        date = (DatePickerView) findViewById(R.id.date_picker_view);
+        date = (NewDatePickerView) findViewById(R.id.date_picker_view);
         time = (TimePickerView) findViewById(R.id.time_picker_view);
 
         BaseDragView b = (BaseDragView) findViewById(R.id.base_drag_view);

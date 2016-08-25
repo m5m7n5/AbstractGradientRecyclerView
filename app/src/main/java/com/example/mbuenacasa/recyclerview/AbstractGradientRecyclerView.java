@@ -3,10 +3,12 @@ package com.example.mbuenacasa.recyclerview;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
@@ -319,9 +321,9 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
 
                 updateGradientColors(recyclerView);
 
-                selectedView = getChildAt(nearestView(recyclerView));
-                selectedViewIndex = getChildAdapterPosition(selectedView);
-                if(communicator!=null){
+                selectedView = recyclerView.getChildAt(nearestView(recyclerView));
+                selectedViewIndex = recyclerView.getChildAdapterPosition(selectedView);
+                if (communicator != null) {
                     communicator.whenScrolled((AbstractGradientRecyclerView) recyclerView, selectedView, selectedViewIndex);
                 }
             }
@@ -345,12 +347,12 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
                         recyclerView.smoothScrollBy(0, offset);
                     }
                     updateGradientColors(recyclerView);
-                    selectedView = getChildAt(nearest);
-                    selectedViewIndex = getChildAdapterPosition(selectedView);
+                    selectedView = recyclerView.getChildAt(nearest);
+                    selectedViewIndex = recyclerView.getChildAdapterPosition(selectedView);
                     timer.start();
                 }
                 if (communicator != null) {
-                    communicator.whenScrollStateChanged(newState,(AbstractGradientRecyclerView) recyclerView, selectedView, selectedViewIndex);
+                    communicator.whenScrollStateChanged(newState, (AbstractGradientRecyclerView) recyclerView, selectedView, selectedViewIndex);
                 }
             }
         };
@@ -359,8 +361,8 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
     }
 
 
-    private void updateGradientColors(RecyclerView recyclerView){
-        for(int i=0;i<recyclerView.getChildCount();i++) {
+    private void updateGradientColors(RecyclerView recyclerView) {
+        for (int i = 0; i < recyclerView.getChildCount(); i++) {
             View child = recyclerView.getChildAt(i);
             Rect childRect = new Rect();
             child.getGlobalVisibleRect(childRect);
@@ -410,7 +412,7 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
 
         if (variation >= 1) {
             return toColor;
-        }else if(variation <= 0){
+        } else if (variation <= 0) {
             return fromColor;
         }
         //Split of the components into A R G B variables for both colors
@@ -562,9 +564,9 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
         /**
          * Constructor of the class
          *
-         * @param startOffset
-         * @param endOffset
-         * @param orientation
+         * @param startOffset offset applied to the first child of the recycler
+         * @param endOffset   offset applied to the last child of the recycler
+         * @param orientation orientation for apply the offset to bottom/top
          */
         public OffsetStartEndItemDecorator(int startOffset, int endOffset, int orientation) {
             this.startOffset = startOffset + 1;
@@ -693,6 +695,92 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
             canScroll = b;
         }
 
+
+        @Override
+        public void smoothScrollToPosition(RecyclerView recyclerView, State state, int position) {
+            RecyclerView.SmoothScroller smoothScroller = new TopSnappedSmoothScroller(recyclerView.getContext());
+            smoothScroller.setTargetPosition(position);
+            startSmoothScroll(smoothScroller);
+        }
+
+        @Override
+        public void scrollToPositionWithOffset(int position, int offset) {
+            smoothScrollToPosition(recyclerView, null, position);
+        }
+
+        private class TopSnappedSmoothScroller extends LinearSmoothScroller {
+
+            public TopSnappedSmoothScroller(Context context) {
+                super(context);
+
+            }
+
+            //MAYBE THIS
+            @Override
+            protected void updateActionForInterimTarget(Action action) {
+                super.updateActionForInterimTarget(action);
+            }
+
+            @Override
+            protected void onTargetFound(View targetView, State state, Action action) {
+                AbstractGradientRecyclerView recyclerView = (AbstractGradientRecyclerView) targetView.getParent();
+
+                final int dx = getHorizontalDistance(targetView);
+                final int dy = getVerticalDistance(targetView);
+
+                if (recyclerView.getOrientation() == HORIZONTAL) {
+                    final int distance = (int) Math.sqrt(dx * dx);
+                    final int time = 10*calculateTimeForDeceleration(distance);
+                    if (time > 0) {
+                        action.update(dx, 0, time, mDecelerateInterpolator);
+                    }
+                } else {
+                    final int distance = (int) Math.sqrt(dy * dy);
+                    final int time = 10*calculateTimeForDeceleration(distance);
+                    if (time > 0) {
+                        action.update(0, dy, time, mDecelerateInterpolator);
+                    }
+                }
+            }
+
+            public int getHorizontalDistance(View view) {
+                final RecyclerView.LayoutManager layoutManager = getLayoutManager();
+                if (layoutManager == null || !layoutManager.canScrollHorizontally()) {
+                    return 0;
+                }
+                final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams)
+                        view.getLayoutParams();
+                final int left = layoutManager.getDecoratedLeft(view) + layoutManager.getLeftDecorationWidth(view) - params.leftMargin;
+                final int right = layoutManager.getDecoratedRight(view) + params.rightMargin;
+                final int start = layoutManager.getPaddingLeft();
+                final int end = layoutManager.getWidth() - layoutManager.getPaddingRight();
+                int viewCenter = (right + left) / 2;
+                int recyclerCenter = (end + start) / 2;
+                return viewCenter - recyclerCenter;
+            }
+
+            public int getVerticalDistance(View view) {
+                final RecyclerView.LayoutManager layoutManager = getLayoutManager();
+                if (layoutManager == null || !layoutManager.canScrollVertically()) {
+                    return 0;
+                }
+                final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams)
+                        view.getLayoutParams();
+
+                final int top = layoutManager.getDecoratedTop(view) + layoutManager.getTopDecorationHeight(view) - params.topMargin;
+                final int bottom = layoutManager.getDecoratedBottom(view) + params.bottomMargin;
+                final int start = layoutManager.getPaddingTop();
+                final int end = layoutManager.getHeight() - layoutManager.getPaddingBottom();
+                int viewCenter = (bottom + top) / 2;
+                int recyclerCenter = (end + start) / 2;
+                return viewCenter - recyclerCenter;
+            }
+
+            @Override
+            public PointF computeScrollVectorForPosition(int targetPosition) {
+                return AbstractGradientLayoutManager.this.computeScrollVectorForPosition(targetPosition);
+            }
+        }
     }
 
     /**
@@ -761,7 +849,7 @@ public abstract class AbstractGradientRecyclerView extends RecyclerView {
         return startOffset;
     }
 
-    public RecyclerView.OnScrollListener getOnScrollListener(){
+    public RecyclerView.OnScrollListener getOnScrollListener() {
         return scrollListener;
     }
 }
